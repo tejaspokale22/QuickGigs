@@ -1,76 +1,66 @@
 "use client";
-import React from "react";
 
-// Static Page Component (For illustration purposes)
-const Page: React.FC = () => {
+import { useEffect, useState } from "react";
+import { fetchUser } from "@/app/utils/actions/authActions";
+import Image from "next/image";
+
+const Profile: React.FC = () => {
+  const [userInfo, setUserInfo] = useState<any>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const userUid = localStorage.getItem("uid"); // Get UID from local storage
+      if (!userUid) {
+        setError("User UID not found. Please log in again.");
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const userData = await fetchUser(userUid); // Use the action
+        setUserInfo(userData);
+      } catch (err: any) {
+        setError(err.message || "Failed to fetch user data.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUserData();
+  }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
   return (
-    <div className="p-4">
-      <h1 className="text-2xl font-semibold mb-4">Dashboard</h1>
-
-      {/* Home Section */}
-      <section className="mb-6">
-        <h2 className="text-xl font-medium">Home</h2>
-        <p>
-          Welcome to the home page! Here you can see the overview of your
-          profile and activities.
-        </p>
-      </section>
-
-      {/* Profile Section */}
-      <section className="mb-6">
-        <h2 className="text-xl font-medium">Profile</h2>
-        <p>
-          This is your profile section where you can view and edit your personal
-          details.
-        </p>
-      </section>
-
-      {/* Posted Gigs Section */}
-      <section className="mb-6">
-        <h2 className="text-xl font-medium">Posted Gigs</h2>
-        <p>
-          This section contains a list of gigs you have posted. You can manage
-          and edit them here.
-        </p>
-      </section>
-
-      {/* Applied Gigs Section */}
-      <section className="mb-6">
-        <h2 className="text-xl font-medium">Applied Gigs</h2>
-        <p>
-          Here you will find a list of gigs you have applied to. Track your
-          applications and their status.
-        </p>
-      </section>
-
-      {/* Completed Gigs Section */}
-      <section className="mb-6">
-        <h2 className="text-xl font-medium">Completed Gigs</h2>
-        <p>
-          This section shows the gigs you have successfully completed. Review
-          and manage your completed work.
-        </p>
-      </section>
-
-      {/* Assigned Gigs Section */}
-      <section className="mb-6">
-        <h2 className="text-xl font-medium">Assigned Gigs</h2>
-        <p>
-          These are the gigs assigned to you. Track your progress and manage
-          tasks here.
-        </p>
-      </section>
-
-      {/* Wallet Section */}
-      <section className="mb-6">
-        <h2 className="text-xl font-medium">Wallet</h2>
-        <p>
-          Here you can view your earnings, manage your balance, and perform
-          transactions.
-        </p>
-      </section>
+    <div className="profile-page p-6 bg-white rounded-md shadow-md">
+      <h1 className="text-2xl font-bold text-center">Profile</h1>
+      {userInfo && (
+        <div className="profile-info mt-6 flex flex-col items-center">
+          <div className="profile-image mb-4">
+            <Image
+              src={userInfo.profilePicture || "/default-profile.jpg"}
+              alt="Profile Image"
+              width={150}
+              height={150}
+              className="rounded-full"
+            />
+          </div>
+          <div className="profile-details text-center">
+            <h2 className="text-xl font-semibold">{userInfo.name}</h2>
+            <p className="text-sm text-gray-500">{userInfo.email}</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
-export default Page;
+export default Profile;

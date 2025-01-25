@@ -10,6 +10,7 @@ import {
   signInWithPopup,
   createUserWithEmailAndPassword,
   sendEmailVerification,
+  firestore
 } from "@/app/utils/firebase";
 import { useForm, SubmitHandler } from "react-hook-form";
 import Image from "next/image";
@@ -17,6 +18,7 @@ import googleLogo from "../../public/google-icon.svg";
 import Logo from "./Logo";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { doc, setDoc, getDoc } from "firebase/firestore";
 
 interface SignUpFormInputs {
   email: string;
@@ -37,49 +39,65 @@ const Register: React.FC = () => {
     try {
       const result = await signInWithPopup(auth, new GoogleAuthProvider());
       const user = result.user;
-
+  
       if (!user.emailVerified) {
         alert("Please verify your email to proceed.");
         return;
       }
-
-      // Set isAuthenticated to true in localStorage
+  
+      // Check if user already exists in Firestore
+      const userRef = doc(firestore, "users", user.uid); // Using user.uid
+      const userDoc = await getDoc(userRef);
+  
+      if (!userDoc.exists()) {
+        // Add the user to Firestore if not already exists
+        await setDoc(userRef, {
+          uid: user.uid, // Store the uid as the identifier in Firestore
+          name: user.displayName,
+          email: user.email,
+          profilePicture: user.photoURL,
+          createdAt: new Date().toISOString(),
+        });
+        console.log("User added to Firestore:", user.displayName);
+      } else {
+        console.log("User already exists in Firestore");
+      }
+  
+      // Store isAuthenticated and uid in localStorage
       localStorage.setItem("isAuthenticated", JSON.stringify(true));
-
+      localStorage.setItem("uid", user.uid); // Store the uid
+  
       router.push("/"); // Redirect after successful login
     } catch (error) {
       console.error("Google login error:", error);
       alert("Failed to log in with Google. Please try again.");
     }
   };
-
+  
   const onSubmit: SubmitHandler<SignUpFormInputs> = async (data) => {
     setLoading(true);
     const { email, password, confirmPassword } = data;
-
+  
     if (password !== confirmPassword) {
       alert("Passwords do not match!");
       setLoading(false);
       return;
     }
-
+  
     try {
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
-
+  
       if (user) {
         await sendEmailVerification(user);
         alert("Verification email sent! Please check your inbox.");
-
-        // Set isAuthenticated to true in localStorage after successful registration
+  
+        // Store isAuthenticated and uid in localStorage
         localStorage.setItem("isAuthenticated", JSON.stringify(true));
-
+        localStorage.setItem("uid", user.uid); // Store the uid
+  
         // Redirect to home page after registration
-        router.push("/"); // Push user to home page
+        router.push("/");
       }
     } catch (error: any) {
       alert(error.message || "Failed to register. Please try again.");
