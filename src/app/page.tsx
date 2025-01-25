@@ -80,7 +80,7 @@ export default function Home() {
         </h2>
         <p className="text-gray-700 mt-4">
           Sign up now and discover how QuickGigs can help you earn more in less
-          time.
+          time.Register Now!
         </p>
         <button className="mt-6 bg-purple-950 text-white px-6 py-2 rounded shadow-md hover:bg-purple-900">
           Join Now
