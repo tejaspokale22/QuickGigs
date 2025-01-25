@@ -6,9 +6,10 @@ import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   sendEmailVerification,
+  onAuthStateChanged,
+  signOut,
 } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
-import { get } from "http";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -23,6 +24,7 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
+const firestore = getFirestore(app);
 const auth = getAuth(app);
 export {
   auth,
@@ -31,4 +33,7 @@ export {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   sendEmailVerification,
+  onAuthStateChanged,
+  signOut,
+  firestore,
 };

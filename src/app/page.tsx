@@ -1,12 +1,14 @@
 import Image from "next/image";
+import Google from "../../public/google-icon.svg";
 
 export default function Home() {
   return (
     <div className="p-8">
       {/* Hero Section */}
       <section className="text-center mb-10">
-        <h1 className="text-purple-950 text-4xl font-bold">
-          Welcome to QuickGigs
+        <h1 className="text-black text-4xl font-bold">
+          Welcome to{" "}
+          <span className="logo-font text-purple-950">QuickGigs!</span>
         </h1>
         <p className="text-gray-700 text-lg mt-4">
           Your platform for <span className="font-semibold">Quick Tasks</span>{" "}
@@ -20,7 +22,7 @@ export default function Home() {
         {/* Feature 1 */}
         <div className="bg-white shadow-lg rounded-lg p-6 border border-gray-200">
           <Image
-            src="/images/tasks.svg" // Replace with an actual image path
+            src="/globe.svg" // Image from public folder
             alt="Quick Tasks"
             width={100}
             height={100}
@@ -38,7 +40,7 @@ export default function Home() {
         {/* Feature 2 */}
         <div className="bg-white shadow-lg rounded-lg p-6 border border-gray-200">
           <Image
-            src="/images/payment.svg" // Replace with an actual image path
+            src={Google} // Image from public folder
             alt="Quick Pay"
             width={100}
             height={100}
@@ -55,7 +57,7 @@ export default function Home() {
         {/* Feature 3 */}
         <div className="bg-white shadow-lg rounded-lg p-6 border border-gray-200">
           <Image
-            src="/images/community.svg" // Replace with an actual image path
+            src={Google}
             alt="Freelancer Community"
             width={100}
             height={100}
@@ -80,7 +82,7 @@ export default function Home() {
           Sign up now and discover how QuickGigs can help you earn more in less
           time.
         </p>
-        <button className="mt-6 bg-purple-900 text-white px-6 py-3 rounded-lg shadow-md hover:bg-purple-800">
+        <button className="mt-6 bg-purple-950 text-white px-6 py-2 rounded shadow-md hover:bg-purple-900">
           Join Now
         </button>
       </section>

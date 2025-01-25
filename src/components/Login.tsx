@@ -35,6 +35,9 @@ const Login: React.FC = () => {
       const result = await signInWithPopup(auth, new GoogleAuthProvider());
       const user = result.user;
       console.log("Google user:", user);
+      // Set isAuthenticated to true in localStorage
+      localStorage.setItem("isAuthenticated", JSON.stringify(true));
+
       router.push("/"); // Redirect to home page on successful login
     } catch (error) {
       console.error("Google login error:", error);
@@ -48,6 +51,8 @@ const Login: React.FC = () => {
     try {
       await signInWithEmailAndPassword(auth, email, password);
       console.log("Logged in as:", email);
+      // Set isAuthenticated to true in localStorage
+      localStorage.setItem("isAuthenticated", JSON.stringify(true));
       router.push("/"); // Redirect to home page on successful login
     } catch (error) {
       console.error("Authentication error:", error);
@@ -56,7 +61,7 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-lg  border border-gray-300">
+    <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-lg  border border-gray-400">
       <h2 className="text-2xl font-bold text-center mb-6 flex items-center justify-center gap-2">
         Login to <Logo />
       </h2>
@@ -75,7 +80,7 @@ const Login: React.FC = () => {
                 message: "Please enter a valid email address",
               },
             })}
-            className="w-full p-3 border border-gray-300 rounded-md focus:border-2 focus:border-black"
+            className="w-full p-3 border border-gray-400 rounded-md focus:border-2 focus:border-black"
           />
           {errors.email && (
             <p className="mt-1 text-sm text-red-500">{errors.email.message}</p>
@@ -95,7 +100,7 @@ const Login: React.FC = () => {
               },
             })}
             onFocus={() => setFocus("password")}
-            className="w-full p-3 border border-gray-300 rounded-md focus:border-2 focus:border-black"
+            className="w-full p-3 border border-gray-400 rounded-md focus:border-2 focus:border-black"
           />
           {errors.password && (
             <p className="mt-1 text-sm text-red-500">
@@ -107,7 +112,7 @@ const Login: React.FC = () => {
         {/* Submit Button */}
         <Button
           type="submit"
-          className="w-full bg-purple-900 text-white py-3 rounded-md hover:bg-purple-800"
+          className="w-full bg-purple-950 text-white py-3 rounded-md hover:bg-purple-900"
         >
           Login
         </Button>
@@ -119,7 +124,7 @@ const Login: React.FC = () => {
       <div className="flex justify-center">
         <Button
           onClick={handleGoogleLogin}
-          className="w-full text-black py-3 rounded-md flex items-center justify-center bg-white shadow-xl border border-gray-400 hover:bg-gray-200"
+          className="w-full text-black py-3 rounded-md flex items-center justify-center bg-white shadow-md border border-gray-400 hover:bg-gray-200"
         >
           <Image
             src={googleLogo}
@@ -135,7 +140,10 @@ const Login: React.FC = () => {
       {/* Register Link */}
       <p className="text-center mt-4">
         Don&apos;t have an account?{" "}
-        <Link href="/register" className="text-purple-900 underline">
+        <Link
+          href="/register"
+          className="text-purple-950 hover:underline font-bold"
+        >
           Register
         </Link>
       </p>

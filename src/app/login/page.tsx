@@ -9,7 +9,7 @@ const Page: React.FC = () => {
         <Login />
       </div>
     </div>
-  )
+  );
 };
 
 export default Page;
