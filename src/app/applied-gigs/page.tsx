@@ -65,8 +65,7 @@ const Page: React.FC = () => {
       <section className="mb-6">
         <h2 className="text-xl font-medium">Wallet</h2>
         <p>
-          Here you can view your earnings, manage your balance, and perform
-          transactions.
+          Here you can view your earnings, manage your balance, and perform.
         </p>
       </section>
     </div>
