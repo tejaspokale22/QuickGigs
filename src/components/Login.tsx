@@ -1,21 +1,19 @@
 "use client";
 
 import { useForm, SubmitHandler } from "react-hook-form";
-import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 import {
   auth,
   GoogleAuthProvider,
   signInWithPopup,
   signInWithEmailAndPassword,
 } from "@/app/utils/firebase";
-import { DialogContent, DialogTitle } from "@/components/ui/dialog";
-import { useRouter } from "next/navigation";
-import Logo from "./Logo";
 import Image from "next/image";
 import googleLogo from "../../public/google-icon.svg";
 import { Input } from "@/components/ui/input";
-import { Dialog, DialogTrigger } from "@radix-ui/react-dialog";
-import Register from "./Register";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import Logo from "./Logo";
 
 interface LoginFormInputs {
   email: string;
@@ -37,6 +35,7 @@ const Login: React.FC = () => {
       const result = await signInWithPopup(auth, new GoogleAuthProvider());
       const user = result.user;
       console.log("Google user:", user);
+      router.push("/"); // Redirect to home page on successful login
     } catch (error) {
       console.error("Google login error:", error);
       alert("Failed to log in with Google. Please try again.");
@@ -49,6 +48,7 @@ const Login: React.FC = () => {
     try {
       await signInWithEmailAndPassword(auth, email, password);
       console.log("Logged in as:", email);
+      router.push("/"); // Redirect to home page on successful login
     } catch (error) {
       console.error("Authentication error:", error);
       alert("Invalid email or password. Please try again.");
@@ -56,16 +56,13 @@ const Login: React.FC = () => {
   };
 
   return (
-    <DialogContent className="w-full max-w-md bg-white rounded-md shadow-lg p-6">
-      <DialogTitle>
-        <h2 className="text-2xl font-bold text-center flex gap-2 items-center justify-center">
-          Login to
-          <Logo />
-        </h2>
-      </DialogTitle>
+    <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-lg  border border-gray-300">
+      <h2 className="text-2xl font-bold text-center mb-6 flex items-center justify-center gap-2">
+        Login to <Logo />
+      </h2>
 
       {/* Form */}
-      <form onSubmit={handleSubmit(onSubmit)} className="mt-6 space-y-4">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         {/* Email Field */}
         <div>
           <Input
@@ -97,7 +94,7 @@ const Login: React.FC = () => {
                 message: "Password must be at least 6 characters long",
               },
             })}
-            onFocus={() => setFocus("password")} // Focus to password on input
+            onFocus={() => setFocus("password")}
             className="w-full p-3 border border-gray-300 rounded-md focus:border-2 focus:border-black"
           />
           {errors.password && (
@@ -115,12 +112,14 @@ const Login: React.FC = () => {
           Login
         </Button>
       </form>
-      <span className="text-center">Or</span>
+
+      <span className="block text-center font-bold my-4">Or</span>
+
       {/* Google Login Button */}
-      <div className="flex justify-center space-x-2">
+      <div className="flex justify-center">
         <Button
           onClick={handleGoogleLogin}
-          className="w-full text-black py-3 rounded-md flex items-center justify-center bg-white shadow-md border-gray-200 border-2"
+          className="w-full text-black py-3 rounded-md flex items-center justify-center bg-white shadow-xl border border-gray-400 hover:bg-gray-200"
         >
           <Image
             src={googleLogo}
@@ -132,7 +131,15 @@ const Login: React.FC = () => {
           Login with Google
         </Button>
       </div>
-    </DialogContent>
+
+      {/* Register Link */}
+      <p className="text-center mt-4">
+        Don&apos;t have an account?{" "}
+        <Link href="/register" className="text-purple-900 underline">
+          Register
+        </Link>
+      </p>
+    </div>
   );
 };
 

@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Header } from "@/components";
+import { Button } from "@/components/ui/button"; // Importing ShadCN Button component
+import Link from "next/link"; // Importing Link from Next.js
 
 export const metadata: Metadata = {
   title: "QuickGigs",
@@ -14,9 +16,65 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="bg-gray-50">
+      <body>
+        {/* Header */}
         <Header />
-        {children}
+
+        {/* Main Layout with Sidebars */}
+        <div className="flex h-screen pt-[50px]">
+          {/* Left Sidebar */}
+          <aside className="w-1/6 bg-white shadow-lg rounded-lg p-4 border-r border-gray-400 fixed top-[50px] h-[calc(100vh-50px)]">
+            <ul className="space-y-2">
+              <li>
+                <Link href="/">
+                  <Button
+                    variant="ghost"
+                    className="w-full justify-start hover:bg-gray-200 text-left"
+                  >
+                    Home
+                  </Button>
+                </Link>
+              </li>
+              <li>
+                <Link href="/posted-gigs">
+                  <Button
+                    variant="ghost"
+                    className="w-full justify-start hover:bg-gray-200 text-left"
+                  >
+                    Posted Gigs
+                  </Button>
+                </Link>
+              </li>
+            </ul>
+          </aside>
+
+          {/* Main Content */}
+          <main className="flex-1 ml-[16.6667%] mr-[16.6667%] overflow-auto bg-white shadow-lg rounded-lg min-h-screen">
+            {children}
+          </main>
+
+          {/* Right Sidebar */}
+          <aside className="w-1/6 bg-white shadow-lg rounded-lg p-4 border-l border-gray-400 fixed top-[50px] right-0 h-[calc(100vh-50px)]">
+            <h3 className="text-lg font-semibold mb-3">Right Sidebar</h3>
+            <ul className="space-y-2">
+              <li>
+                <Link href="#" className="text-blue-600 hover:underline">
+                  Link 1
+                </Link>
+              </li>
+              <li>
+                <Link href="#" className="text-blue-600 hover:underline">
+                  Link 2
+                </Link>
+              </li>
+              <li>
+                <Link href="#" className="text-blue-600 hover:underline">
+                  Link 3
+                </Link>
+              </li>
+            </ul>
+          </aside>
+        </div>
       </body>
     </html>
   );
