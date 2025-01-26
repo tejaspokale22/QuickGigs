@@ -116,14 +116,14 @@ const LeftSidebar: React.FC = () => {
             <li key={item.id}>
               <Link href={item.href}>
                 <div
-                  className={`font-semibold w-full flex items-center text-left rounded text-base p-2 ${
+                  className={`font-medium w-full flex items-center text-left rounded text-base p-2 ${
                     activeItem === item.id
                       ? "bg-purple-200 !hover:bg-purple-200"
                       : "hover:bg-gray-200"
                   }`}
                   onClick={() => handleActiveItem(item.id)} // Set active item on click
                 >
-                  <Icon size={20} className="mr-3" />
+                  <Icon size={20} className="mr-3" strokeWidth={3} />
                   <span className="text-base">{item.label}</span>
                 </div>
               </Link>

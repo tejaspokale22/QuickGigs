@@ -3,6 +3,7 @@ import "./globals.css";
 import { Header } from "@/components";
 import LeftSidebar from "@/components/LeftSidebar";
 import RightSidebar from "@/components/RightSidebar";
+import NextTopLoader from "nextjs-toploader";
 
 export const metadata: Metadata = {
   title: "QuickGigs",
@@ -17,6 +18,18 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
+        <NextTopLoader
+          color="#6A0DAD"
+          initialPosition={0.08}
+          crawlSpeed={150}
+          height={4}
+          crawl={true}
+          showSpinner={false}
+          easing="ease-in-out"
+          speed={300}
+          zIndex={1600}
+          showAtBottom={false}
+        />
         {/* Header */}
         <Header />
 
@@ -25,7 +38,7 @@ export default function RootLayout({
           <LeftSidebar />
 
           {/* Main Content */}
-          <main className="flex-1 ml-[16.6667%] mr-[16.6667%] overflow-auto bg-white shadow-lg rounded-lg min-h-screen">
+          <main className="flex justify-center mx-auto max-w-5xl min-h-screen">
             {children}
           </main>
 
