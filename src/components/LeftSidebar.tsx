@@ -123,7 +123,7 @@ const LeftSidebar: React.FC = () => {
                   }`}
                   onClick={() => handleActiveItem(item.id)} // Set active item on click
                 >
-                  <Icon size={20} className="mr-3" strokeWidth={3} />
+                  <Icon size={20} className="mr-3" strokeWidth={2} />
                   <span className="text-base">{item.label}</span>
                 </div>
               </Link>

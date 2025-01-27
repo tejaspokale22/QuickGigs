@@ -61,13 +61,13 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-lg  border border-gray-400">
+    <div className="w-[500px] bg-white p-10 rounded-lg shadow-lg border border-gray-400">
       <h2 className="text-2xl font-bold text-center mb-6 flex items-center justify-center gap-2">
         Login to <Logo />
       </h2>
 
       {/* Form */}
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 w-full">
         {/* Email Field */}
         <div>
           <Input
@@ -80,7 +80,7 @@ const Login: React.FC = () => {
                 message: "Please enter a valid email address",
               },
             })}
-            className="w-full p-3 border border-gray-400 rounded-md focus:border-2 focus:border-black"
+            className="w-full p-4 border border-gray-400 rounded-md focus:border-2 focus:border-black"
           />
           {errors.email && (
             <p className="mt-1 text-sm text-red-500">{errors.email.message}</p>

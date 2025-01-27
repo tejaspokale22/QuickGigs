@@ -3,38 +3,38 @@ import { Medal } from "lucide-react";
 
 const RightSidebar: React.FC = () => {
   return (
-    <aside className="w-1/6 bg-white shadow-lg rounded-lg p-4 border-l border-gray-400 fixed top-[50px] right-0 h-[calc(100vh-50px)] flex flex-col items-center">
+    <aside className="w-2/12 bg-white shadow-lg rounded-lg p-4 border-l border-gray-400 fixed top-[50px] right-0 h-[calc(100vh-50px)] flex flex-col items-center">
       <h3 className="text-lg font-semibold mb-3 flex items-center justify-center gap-1 mt-4">
-        <Medal size={26} /> Leaderboard
+        <Medal size={26} strokeWidth={2} /> Leaderboard
       </h3>
 
       {/* Table Section */}
       <div className="mt-2">
-        <table className="w-full text-left border-collapse border border-gray-300">
+        <table className="w-full text-left border-collapse border border-gray-400">
           <thead>
             <tr>
-              <th className="border border-gray-300 px-2 py-1">Name</th>
-              <th className="border border-gray-300 px-2 py-1">Rating</th>
-              <th className="border border-gray-300 px-2 py-1">Earned Money</th>
+              <th className="border border-gray-400 px-2 py-1">Name</th>
+              <th className="border border-gray-400 px-2 py-1">Rating</th>
+              <th className="border border-gray-400 px-2 py-1">Earned Money</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td className="border border-gray-300 px-2 py-1">John Doe</td>
-              <td className="border border-gray-300 px-2 py-1">4.8</td>
-              <td className="border border-gray-300 px-2 py-1">$500</td>
+              <td className="border border-gray-400 px-2 py-1">John Doe</td>
+              <td className="border border-gray-400 px-2 py-1">4.8</td>
+              <td className="border border-gray-400 px-2 py-1">$500</td>
             </tr>
             <tr>
-              <td className="border border-gray-300 px-2 py-1">Jane Smith</td>
-              <td className="border border-gray-300 px-2 py-1">4.6</td>
-              <td className="border border-gray-300 px-2 py-1">$450</td>
+              <td className="border border-gray-400 px-2 py-1">Jane Smith</td>
+              <td className="border border-gray-400 px-2 py-1">4.6</td>
+              <td className="border border-gray-400 px-2 py-1">$450</td>
             </tr>
             <tr>
-              <td className="border border-gray-300 px-2 py-1">
+              <td className="border border-gray-400 px-2 py-1">
                 Alice Johnson
               </td>
-              <td className="border border-gray-300 px-2 py-1">4.5</td>
-              <td className="border border-gray-300 px-2 py-1">$400</td>
+              <td className="border border-gray-400 px-2 py-1">4.5</td>
+              <td className="border border-gray-400 px-2 py-1">$400</td>
             </tr>
           </tbody>
         </table>

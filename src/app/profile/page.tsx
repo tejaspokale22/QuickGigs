@@ -15,8 +15,7 @@ import Github from "../../../public/github.svg";
 import X from "../../../public/X.svg";
 import Image from 'next/image';
 import { Phone, MapPin, User, Star, Link2, Briefcase, Mail } from 'lucide-react';
-import { BounceLoader, ClipLoader } from 'react-spinners';
-import { Skeleton } from "@/components/ui/skeleton";
+import {Spinner} from "@heroui/spinner";
 
 interface UserProfile {
   name: string;
@@ -84,13 +83,13 @@ const ProfilePage = () => {
   if (!userData) {
     return (
       <div className="flex justify-center items-center h-screen">
-        <ClipLoader size={60} color={"#6a0dad"} loading={true} />
+        <Spinner size='lg' color="primary"/>
       </div>
     );
   }
 
   return (
-    <div className="w-full p-8 mt-10 rounded-xl h-3/4 bg-gray-100 flex flex-col gap-4">
+    <div className="w-full p-8 mt-10 rounded-xl h-5/6 bg-gray-100 flex flex-col gap-4">
     
       <div className="flex items-center space-x-4">
         <Image

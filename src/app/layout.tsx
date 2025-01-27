@@ -38,11 +38,10 @@ export default function RootLayout({
           <LeftSidebar />
 
           {/* Main Content */}
-          <main className="flex justify-center mx-auto max-w-5xl min-h-screen">
+          <main className="flex-grow mx-auto">
             {children}
           </main>
 
-          {/* Right Sidebar */}
           <RightSidebar />
         </div>
       </body>

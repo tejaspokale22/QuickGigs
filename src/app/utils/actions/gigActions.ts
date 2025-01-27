@@ -1,14 +1,20 @@
 import { firestore } from "../firebase";
 import { collection, addDoc, getDocs } from "firebase/firestore";
+import { Timestamp } from "firebase/firestore";
 
-// Type for gig data
+// Type for gig data with ID
 type GigData = {
   title: string;
   description: string;
-  amount: number;
+  skillsRequired: string[];
+  price: number;
+  deadline: Timestamp;
+  status: string;
+  clientId: string;
+  createdAt: Timestamp;
 };
 
-// Action to post a new gig to Firestore
+//Post a Gig
 export const postGig = async (gigData: GigData) => {
   try {
     const gigsCollectionRef = collection(firestore, "gigs");
@@ -24,15 +30,18 @@ export const postGig = async (gigData: GigData) => {
   }
 };
 
-// Action to fetch all gigs from Firestore
-export const fetchGigs = async () => {
+//Fetch all Gigs
+export const fetchGigs = async (): Promise<GigData[]> => {
   try {
     const gigsCollectionRef = collection(firestore, "gigs");
     const gigsSnapshot = await getDocs(gigsCollectionRef);
-    const gigsList = gigsSnapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
+    const gigsList = gigsSnapshot.docs.map((doc) => {
+      const data = doc.data() as Omit<GigData, "id">; // Ensure the data matches GigData type
+      return {
+        id: doc.id,
+        ...data,
+      };
+    });
     return gigsList;
   } catch (error) {
     console.error("Error fetching gigs:", error);

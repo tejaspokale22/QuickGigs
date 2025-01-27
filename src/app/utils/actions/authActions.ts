@@ -1,12 +1,14 @@
 import { firestore } from "@/app/utils/firebase";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, collection, getDocs } from "firebase/firestore";
 
-/**
- * Fetch user data from Firestore using the given UID.
- * @param uid - The UID of the user.
- * @returns The user document data or null if not found.
- * @throws Error if the data fetch fails.
- */
+type User = {
+  uid: string;
+  name: string;
+  email: string;
+  profilePicture?: string;
+};
+
+//Fetch a User
 export const fetchUser = async (uid: string) => {
   if (!uid) {
     throw new Error("User UID is required.");
@@ -19,5 +21,28 @@ export const fetchUser = async (uid: string) => {
     return userDoc.data();
   } else {
     throw new Error("User not found in the database.");
+  }
+};
+
+//Fetch all Users
+export const fetchUsers = async (): Promise<User[]> => {
+  try {
+    const usersCollection = collection(firestore, "users"); // Access the "users" collection
+    const usersSnapshot = await getDocs(usersCollection); // Fetch all documents
+
+    const usersList: User[] = usersSnapshot.docs.map((doc) => {
+      const data = doc.data(); // Firestore document data
+      return {
+        uid: data.uid,
+        name: data.name,
+        email: data.email,
+        profilePicture: data.profilePicture || undefined,
+      };
+    });
+
+    return usersList; // Return a valid User[]
+  } catch (error: any) {
+    console.error("Error fetching users:", error);
+    throw new Error(`Failed to fetch users: ${error.message}`);
   }
 };
