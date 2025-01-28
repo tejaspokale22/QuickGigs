@@ -36,10 +36,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-// import dotenv from "dotenv";
 var generative_ai_1 = require("@google/generative-ai");
-// Load environment variables from .env file
-// dotenv.config();
+// API Key for Gemini
 var apiKey = "AIzaSyD7XVTOfXnzU6s4DNOz1OA4u7E9bRhcafs";
 if (!apiKey) {
     throw new Error("GEMINI_API_KEY is missing from environment variables.");
@@ -57,23 +55,37 @@ var generationConfig = {
     maxOutputTokens: 8192,
     responseMimeType: "text/plain",
 };
+// Function to construct the dynamic prompt based on gig and freelancers data
+function constructPrompt(gig, freelancers) {
+    var gigDetails = "\n    Gig Title: ".concat(gig.title, "\n    Job Description: ").concat(gig.description, "\n    Skills Required: ").concat(gig.skillsRequired.join(", "), "\n  ");
+    var freelancerDetails = freelancers
+        .map(function (freelancer, index) {
+        return "\n      Freelancer ".concat(index + 1, " - **").concat(freelancer.name, "**:\n        - Skills: ").concat(freelancer.skills.join(", "), "\n        - Rating: ").concat(freelancer.rating, "\n        - Experience: ").concat(freelancer.experience, " years\n        - Bio: ").concat(freelancer.bio, "\n    ");
+    })
+        .join("\n");
+    return "\n    I have a job posting for a \"".concat(gig.title, "\". The gig requires the following:\n    ").concat(gigDetails, "\n\n    Here are the freelancers who have applied for this job:\n    ").concat(freelancerDetails, "\n\n    Please review the freelancers and tell me which one is the best fit for this job. Provide the freelancer's name and reason for your recommendation in an object format like this:\n    {\n      \"freelancerName\": \"Alice\",\n      \"reason\": \"Alice is the best fit because of her 4+ years of experience with React and JavaScript, and her high rating.\"\n    }\n  ");
+}
 // Async function to run the chat session
-function run() {
+function run(gig, freelancers) {
     return __awaiter(this, void 0, void 0, function () {
-        var chatSession, result, error_1;
+        var prompt_1, chatSession, result, responseText, cleanResponseText, responseObject, error_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     _a.trys.push([0, 2, , 3]);
+                    prompt_1 = constructPrompt(gig, freelancers);
                     chatSession = model.startChat({
                         generationConfig: generationConfig,
                         history: [],
                     });
-                    return [4 /*yield*/, chatSession.sendMessage("what is meaning of freelancer?")];
+                    return [4 /*yield*/, chatSession.sendMessage(prompt_1)];
                 case 1:
                     result = _a.sent();
-                    // Output the response
-                    console.log(result.response.text());
+                    responseText = result.response.text();
+                    cleanResponseText = responseText.replace(/```json|```/g, "").trim();
+                    responseObject = JSON.parse(cleanResponseText);
+                    // Output the object with freelancer name and reason
+                    console.log(responseObject);
                     return [3 /*break*/, 3];
                 case 2:
                     error_1 = _a.sent();
@@ -84,5 +96,28 @@ function run() {
         });
     });
 }
-// Run the function
-run();
+// Example gig data
+var gig = {
+    title: "Frontend Developer",
+    description: "Looking for an experienced Frontend Developer with expertise in React, CSS, and JavaScript.",
+    skillsRequired: ["React", "CSS", "JavaScript"],
+};
+// Example freelancers data
+var freelancers = [
+    {
+        name: "Alice",
+        skills: ["React", "JavaScript", "Node.js"],
+        rating: 4.9,
+        bio: "Experienced developer with 4+ years in frontend development.",
+        experience: 4,
+    },
+    {
+        name: "Bob",
+        skills: ["Vue", "CSS", "JavaScript"],
+        rating: 4.5,
+        bio: "Frontend developer with 2 years of experience in Vue.js and JavaScript.",
+        experience: 2,
+    },
+];
+// Run the function with dynamic input
+run(gig, freelancers);

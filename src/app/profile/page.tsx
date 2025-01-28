@@ -89,7 +89,7 @@ const ProfilePage = () => {
   }
 
   return (
-    <div className="w-full p-8 mt-10 rounded-xl h-5/6 bg-gray-100 flex flex-col gap-4">
+    <div className="w-full p-8 mt-10 rounded-xl h-5/6 bg-gray-100 flex flex-col gap-4 max-w-3xl mx-auto">
     
       <div className="flex items-center space-x-4">
         <Image
@@ -108,7 +108,7 @@ const ProfilePage = () => {
         </div>
       </div>
 
-      <div className="flex gap-10 items-center justify-center pt-8">
+      <div className="flex gap- items-center justify-start pt-8">
         <div className="flex items-center flex-col mb-4">
           {/* Contact Section */}
           <div className="flex items-center space-x-2">

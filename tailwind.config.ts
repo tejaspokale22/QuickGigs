@@ -65,7 +65,8 @@ export default {
   		},
   		animation: {
   			pulse: 'pulse var(--duration) ease-out infinite',
-  			rainbow: 'rainbow var(--speed, 2s) infinite linear'
+  			rainbow: 'rainbow var(--speed, 2s) infinite linear',
+  			rippling: 'rippling var(--duration) ease-out'
   		},
   		keyframes: {
   			pulse: {
@@ -82,6 +83,15 @@ export default {
   				},
   				'100%': {
   					'background-position': '200%'
+  				}
+  			},
+  			rippling: {
+  				'0%': {
+  					opacity: '1'
+  				},
+  				'100%': {
+  					transform: 'scale(2)',
+  					opacity: '0'
   				}
   			}
   		}
