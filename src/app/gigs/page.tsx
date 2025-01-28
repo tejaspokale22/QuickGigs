@@ -1,44 +1,52 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
 import { fetchGigs } from "../utils/actions/gigActions";
 import { fetchUsers } from "../utils/actions/authActions";
-import { format } from "date-fns";
-import { ArrowRightToLine } from "lucide-react";
-import { Timestamp } from "firebase/firestore";
+import { Check, ChevronRightIcon, XIcon } from "lucide-react";
 import Link from "next/link";
+import { Gig, User } from "../utils/types";
+import { formatDeadline } from "../utils/utilityFunctions";
+import { applyForGig } from "../utils/actions/gigActions";
+import { Button } from "@/components/ui/button";
+import {
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogFooter,
+  AlertDialogTitle,
+  AlertDialogDescription,
+} from "@/components/ui/alert-dialog";
 
-// Types
-type Gig = {
-  title: string;
-  description: string;
-  skillsRequired: string[];
-  price: number;
-  deadline: Timestamp;
-  status: string;
-  clientId: string;
-  createdAt: Timestamp;
-};
-
-type User = {
-  uid: string;
-  name: string;
-  email: string;
-  profilePicture?: string;
-};
-
-// Utility Functions
-const formatDeadline = (deadline: { seconds: number; nanoseconds: number } | null): string => {
-  if (!deadline || typeof deadline.seconds !== "number") {
-    return "No deadline";
-  }
-  const date = new Date(deadline.seconds * 1000);
-  return format(date, "dd MMM yyyy");
-};
-
-//Gig Card
+// Gig Card Component
 const GigCard = ({ gig, user }: { gig: Gig; user?: User }) => {
+  const [id, setId] = useState<string>("");
+  const [applied, setApplied] = useState<boolean>(false);
+  const [showDialog, setShowDialog] = useState<boolean>(false);
+
+  // Get the current user's ID from localStorage
+  useEffect(() => {
+    const userId = localStorage.getItem("uid") || "";
+    setId(userId);
+
+    // Check if the user has already applied for the gig
+    if (gig.appliedFreelancers?.includes(userId)) {
+      setApplied(true);
+    }
+  }, [gig.appliedFreelancers]);
+
+  // Handle Apply Button Click (Confirmation Dialog)
+  const handleApplyConfirm = async () => {
+    try {
+      await applyForGig(gig.id, id); // Apply for the gig with the user ID
+      setApplied(true); // Set the applied state to true
+      setShowDialog(false); // Close the dialog
+    } catch (error) {
+      console.error("Error applying for the gig:", error);
+    }
+  };
+
   return (
     <div className="border p-4 rounded bg-white flex flex-col border-gray-400 w-11/12">
       {/* User Information */}
@@ -73,19 +81,22 @@ const GigCard = ({ gig, user }: { gig: Gig; user?: User }) => {
                 <>
                   {gig.description.split(" ").slice(0, 12).join(" ")}...
                   <Link
-                    href={`/gig/${gig.title}`} // Replace this with the appropriate route for your "Read More" page
+                    href={`/gig/${gig.id}`}
                     className="text-blue-600 hover:underline text-base ml-1"
                   >
                     Read more
                   </Link>
                 </>
               ) : (
-                <>{gig.description}...<Link
-                href={`/gig/${gig.title}`} // Replace this with the appropriate route for your "Read More" page
-                className="text-blue-600 hover:underline text-base ml-1"
-              >
-                Read more
-              </Link></>
+                <>
+                  {gig.description}...
+                  <Link
+                    href={`/gig/${gig.id}`}
+                    className="text-blue-600 hover:underline text-base ml-1"
+                  >
+                    Read more
+                  </Link>
+                </>
               )}
             </span>
           </p>
@@ -102,20 +113,67 @@ const GigCard = ({ gig, user }: { gig: Gig; user?: User }) => {
         </div>
       </div>
 
-      {/* Action Buttons */}
+      {/* Deadline Information */}
       <div className="flex justify-between mt-6">
         <p className="font-bold text-sm flex items-end">
-          Deadline:<span className="ml-1 text-red-600">{formatDeadline(gig.deadline)}</span>
+          Deadline: <span className="ml-1 text-red-600">{formatDeadline(gig.deadline)}</span>
         </p>
-        <Button className="text-black border bg-green-300 hover:bg-green-400 rounded">
-          Apply <ArrowRightToLine />
-        </Button>
+
+        {/* Apply Button with Confirmation Dialog */}
+        {gig.clientId !== id && (
+          <>
+            <AlertDialog open={showDialog} onOpenChange={setShowDialog}>
+              <AlertDialogTrigger asChild>
+                <Button
+                  className="w-32 rounded bg-black text-white hover:bg-black text-base"
+                  disabled={applied}
+                >
+                  <span className="group inline-flex items-center">
+                    {applied ? (
+                      <>
+                        Applied
+                        <Check className="ml-2 size-6 transition-transform duration-300 group-hover:translate-x-0" />
+                      </>
+                    ) : (
+                      <>
+                        Apply
+                        <ChevronRightIcon
+                          strokeWidth={3}
+                          className="ml-1 size-4 transition-transform duration-300 group-hover:translate-x-1"
+                        />
+                      </>
+                    )}
+                  </span>
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent className="bg-white text-black">
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Confirm Application</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Are you sure you want to apply for this gig? This action cannot be undone.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <Button variant="outline" onClick={() => setShowDialog(false)}>
+                    Cancel
+                  </Button>
+                  <Button
+                    className="bg-black text-white hover:bg-black"
+                    onClick={handleApplyConfirm}
+                  >
+                    Yes, Apply
+                  </Button>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </>
+        )}
       </div>
     </div>
   );
 };
 
-
+// Page Component (Main View for Gigs)
 const Page = () => {
   const [gigs, setGigs] = useState<Gig[]>([]);
   const [users, setUsers] = useState<User[]>([]);
@@ -152,7 +210,7 @@ const Page = () => {
         <div className="grid grid-cols-1 justify-center gap-4 mx-auto">
           {gigs.map((gig) => {
             const user = users.find((user) => user.uid === gig.clientId);
-            return <GigCard key={gig.title} gig={gig} user={user} />;
+            return <GigCard key={gig.id} gig={gig} user={user} />;
           })}
         </div>
       )}

@@ -19,7 +19,7 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <NextTopLoader
-          color="#6A0DAD"
+          color="#000000"
           initialPosition={0.08}
           crawlSpeed={150}
           height={4}
@@ -38,7 +38,7 @@ export default function RootLayout({
           <LeftSidebar />
 
           {/* Main Content */}
-          <main className="flex-grow mx-auto">
+          <main className="flex-grow mx-auto max-w-5xl">
             {children}
           </main>
 

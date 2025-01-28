@@ -41,12 +41,12 @@ const RightSidebar: React.FC = () => {
       </div>
 
       {/* Feedback Section */}
-      <div className="mt-20 flex flex-col p-3 bg-purple-100 rounded">
+      <div className="mt-20 flex flex-col p-3 bg-gray-200 rounded">
         <h4 className="text-md font-semibold mb-2">We value your feedback!</h4>
         <p className="mb-4">
           Please share your thoughts with us to help improve our service.
         </p>
-        <button className="bg-purple-950 text-white rounded px-4 py-2 hover:bg-purple-900">
+        <button className="bg-black text-white rounded px-4 py-2 hover:bg-gray-800">
           Submit Feedback
         </button>
       </div>

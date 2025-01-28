@@ -118,7 +118,7 @@ const LeftSidebar: React.FC = () => {
                 <div
                   className={`font-medium w-full flex items-center text-left rounded text-base p-2 ${
                     activeItem === item.id
-                      ? "bg-purple-200 !hover:bg-purple-200"
+                      ? "bg-gray-300 !hover:bg-purple-200"
                       : "hover:bg-gray-200"
                   }`}
                   onClick={() => handleActiveItem(item.id)} // Set active item on click
@@ -136,10 +136,10 @@ const LeftSidebar: React.FC = () => {
       {user && (
         <Link href="/">
           <button
-            className="mt-4 font-semibold text-white bg-purple-950 hover:bg-purple-900 rounded text-base w-full flex p-2 items-center justify-center gap-2"
+            className="mt-4 font-semibold text-white bg-black hover:bg-gray-800 rounded text-base w-full flex p-2 items-center justify-center gap-2"
             onClick={handleOpenDialog}
           >
-            <Plus size={22} />
+            <Plus size={22} strokeWidth={3} />
             Post a Gig
           </button>
         </Link>

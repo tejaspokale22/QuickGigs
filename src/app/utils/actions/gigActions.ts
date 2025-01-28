@@ -1,21 +1,19 @@
 import { firestore } from "../firebase";
-import { collection, addDoc, getDocs } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDoc,
+  addDoc,
+  getDocs,
+  updateDoc,
+  arrayUnion,
+  query,
+  where,
+} from "firebase/firestore";
 import { Timestamp } from "firebase/firestore";
-
-// Type for gig data with ID
-type GigData = {
-  title: string;
-  description: string;
-  skillsRequired: string[];
-  price: number;
-  deadline: Timestamp;
-  status: string;
-  clientId: string;
-  createdAt: Timestamp;
-};
-
-//Post a Gig
-export const postGig = async (gigData: GigData) => {
+import { Gig } from "../types";
+// Post a Gig
+export const postGig = async (gigData: Omit<Gig, "id">) => {
   try {
     const gigsCollectionRef = collection(firestore, "gigs");
     const docRef = await addDoc(gigsCollectionRef, gigData);
@@ -30,13 +28,13 @@ export const postGig = async (gigData: GigData) => {
   }
 };
 
-//Fetch all Gigs
-export const fetchGigs = async (): Promise<GigData[]> => {
+// Fetch all Gigs
+export const fetchGigs = async (): Promise<Gig[]> => {
   try {
     const gigsCollectionRef = collection(firestore, "gigs");
     const gigsSnapshot = await getDocs(gigsCollectionRef);
     const gigsList = gigsSnapshot.docs.map((doc) => {
-      const data = doc.data() as Omit<GigData, "id">; // Ensure the data matches GigData type
+      const data = doc.data() as Omit<Gig, "id">;
       return {
         id: doc.id,
         ...data,
@@ -46,5 +44,81 @@ export const fetchGigs = async (): Promise<GigData[]> => {
   } catch (error) {
     console.error("Error fetching gigs:", error);
     throw new Error("Failed to fetch gigs");
+  }
+};
+
+// Fetch a Gig by ID
+export const fetchGigById = async (gigId: string): Promise<Gig | null> => {
+  try {
+    const gigDocRef = doc(firestore, "gigs", gigId);
+    const gigDoc = await getDoc(gigDocRef);
+
+    if (gigDoc.exists()) {
+      return { id: gigDoc.id, ...gigDoc.data() } as Gig;
+    } else {
+      console.warn("Gig not found.");
+      return null;
+    }
+  } catch (error) {
+    console.error("Error fetching gig by ID:", error);
+    throw new Error("Failed to fetch gig by ID");
+  }
+};
+
+export const fetchGigsByClientId = async (clientId: string): Promise<Gig[]> => {
+  if (!clientId) {
+    throw new Error("Client ID is required to fetch gigs.");
+  }
+
+  try {
+    // Reference the gigs collection
+    const gigsRef = collection(firestore, "gigs");
+
+    // Query gigs where clientId matches the given clientId
+    const q = query(gigsRef, where("clientId", "==", clientId));
+
+    // Fetch the documents
+    const querySnapshot = await getDocs(q);
+
+    // Map the documents into Gig objects
+    const gigs: Gig[] = querySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    })) as Gig[];
+
+    return gigs;
+  } catch (error) {
+    console.error("Error fetching gigs by client ID:", error);
+    throw new Error("Failed to fetch gigs. Please try again later.");
+  }
+};
+
+// Function to handle the application of a freelancer
+export const applyForGig = async (gigId: string, freelancerId: string) => {
+  try {
+    const gigRef = doc(firestore, "gigs", gigId);
+
+    // Check if freelancer already applied
+    const gigDoc = await getDoc(gigRef);
+    if (gigDoc.exists()) {
+      const gigData = gigDoc.data();
+      const appliedFreelancers = gigData?.appliedFreelancers || [];
+
+      // If freelancer ID is already in the array, prevent further update
+      if (appliedFreelancers.includes(freelancerId)) {
+        console.log("Freelancer has already applied.");
+        return;
+      }
+
+      // Update appliedFreelancers array atomically to avoid race conditions
+      await updateDoc(gigRef, {
+        appliedFreelancers: arrayUnion(freelancerId),
+      });
+      console.log("Freelancer applied successfully!");
+    } else {
+      console.log("Gig not found.");
+    }
+  } catch (error) {
+    console.error("Error applying for gig:", error);
   }
 };

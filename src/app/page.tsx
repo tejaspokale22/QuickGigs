@@ -8,7 +8,7 @@ export default function Home() {
       <section className="text-center mb-10">
         <h1 className="text-black text-4xl font-bold">
           Welcome to{" "}
-          <span className="logo-font text-purple-950">QuickGigs!</span>
+          <span className="logo-font text-black">QuickGigs!</span>
         </h1>
         <p className="text-gray-700 text-lg mt-4">
           Your platform for <span className="font-semibold">Quick Tasks</span>{" "}
@@ -28,7 +28,7 @@ export default function Home() {
             height={100}
             className="mx-auto"
           />
-          <h2 className="text-xl font-bold text-purple-900 text-center mt-4">
+          <h2 className="text-xl font-bold text-black text-center mt-4">
             Quick Tasks
           </h2>
           <p className="text-gray-600 mt-2 text-center">
@@ -46,7 +46,7 @@ export default function Home() {
             height={100}
             className="mx-auto"
           />
-          <h2 className="text-xl font-bold text-purple-900 text-center mt-4">
+          <h2 className="text-xl font-bold text-black text-center mt-4">
             Quick Pay
           </h2>
           <p className="text-gray-600 mt-2 text-center">
@@ -63,7 +63,7 @@ export default function Home() {
             height={100}
             className="mx-auto"
           />
-          <h2 className="text-xl font-bold text-purple-900 text-center mt-4">
+          <h2 className="text-xl font-bold text-black text-center mt-4">
             Freelancer Community
           </h2>
           <p className="text-gray-600 mt-2 text-center">
@@ -75,14 +75,14 @@ export default function Home() {
 
       {/* Call to Action Section */}
       <section className="mt-12 text-center">
-        <h2 className="text-2xl font-bold text-purple-950">
+        <h2 className="text-2xl font-bold text-black">
           Ready to Get Started?
         </h2>
         <p className="text-gray-700 mt-4">
           Sign up now and discover how QuickGigs can help you earn more in less
           time.Register Now!
         </p>
-        <button className="mt-6 bg-purple-950 text-white px-6 py-2 rounded shadow-md hover:bg-purple-900">
+        <button className="mt-6 bg-black text-white px-6 py-2 rounded shadow-md hover:bg-gray-800">
           Join Now
         </button>
       </section>

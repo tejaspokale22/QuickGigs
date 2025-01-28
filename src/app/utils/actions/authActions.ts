@@ -1,12 +1,6 @@
 import { firestore } from "@/app/utils/firebase";
 import { doc, getDoc, collection, getDocs } from "firebase/firestore";
-
-type User = {
-  uid: string;
-  name: string;
-  email: string;
-  profilePicture?: string;
-};
+import { User } from "../types";
 
 //Fetch a User
 export const fetchUser = async (uid: string) => {
