@@ -8,6 +8,7 @@ import CreateChatDialog from "@/components/chat/CreateChatDialog";
 import React from "react";
 import { Plus } from "lucide-react";
 import Image from 'next/image';
+import Link from "next/link";
 
 
 const MessagingPage = () => {
@@ -17,7 +18,6 @@ const MessagingPage = () => {
   const [participantsDetails, setParticipantsDetails] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  console.log(participantsDetails);
   
 
   const handleOpenDialog = () => {
@@ -78,22 +78,27 @@ const MessagingPage = () => {
       {chats.length === 0 ? (
         <p>No chats available.</p>
       ) : (
-        <div>
-          {participantsDetails.map((user, index) => (
-            <div key={index} className="flex items-center mb-4 bg-gray-200 p-2 rounded">
-              <Image
-                src={user.profilePicture || '/default-avatar.png'}
-                alt={user.name}
-                width={36}
-                height={36}
-                className="rounded-full mr-2"
-              />
-              <div>
-                <p className="font-semibold">{user.name}</p>
-              </div>
-            </div>
-          ))}
-        </div>
+        chats.map((chat) => (
+          <Link key={chat.id} href={`/chatroom/${chat.id}`}>
+            {chat.participants.map((participantId:any) => {
+              const user = participantsDetails.find(user => user.uid === participantId);
+              return user ? (
+                <div key={participantId} className="flex items-center mb-4 bg-gray-200 p-2 rounded cursor-pointer">
+                  <Image
+                    src={user.profilePicture || '/default-avatar.png'}
+                    alt={user.name}
+                    width={36}
+                    height={36}
+                    className="rounded-full mr-2"
+                  />
+                  <div>
+                    <p className="font-semibold">{user.name}</p>
+                  </div>
+                </div>
+              ) : null;
+            })}
+          </Link>
+        ))
       )}
     </div>
   );

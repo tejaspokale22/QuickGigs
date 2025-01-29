@@ -89,7 +89,6 @@ export async function findBestFreelancer(gig: any, freelancers: any[]) {
 
       return responseObject;
     } catch (jsonError) {
-      console.error("Received response is not valid JSON:", cleanResponseText);
       return {
         reason: "The AI model could not provide a valid response.",
       };

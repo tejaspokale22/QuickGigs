@@ -12,6 +12,7 @@ import {
   updateDoc,
   arrayUnion,
   query,
+  orderBy,
   where,
   Timestamp,
 } from "firebase/firestore";
@@ -102,5 +103,88 @@ export const createNewChat = async (email: string, currentUserId: string) => {
   } catch (error) {
     console.error("Error creating chat: ", error);
     throw new Error("Failed to create chat!");
+  }
+};
+
+//Fetch chat messages between two users
+export const fetchMessages = async (chatId: string) => {
+  try {
+    // Reference to the messages subcollection of the specific chat
+    const messagesRef = collection(firestore, "chats", chatId, "messages");
+
+    // Query to order messages by createdAt
+    const q = query(messagesRef, orderBy("createdAt", "asc"));
+
+    // Fetch the documents from the messages subcollection
+    const querySnapshot = await getDocs(q);
+
+    // Check if there are any documents in the querySnapshot
+    if (querySnapshot.empty) {
+      return [];
+    }
+
+    // Map through the documents to get the data
+    const messagesData = querySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+
+    console.log("Fetched messages: ", messagesData);
+
+    return messagesData;
+  } catch (error) {
+    console.error("Error fetching messages: ", error);
+    throw new Error("Failed to fetch messages");
+  }
+};
+
+//Send a Message
+export const sendMessage = async (
+  chatId: string,
+  senderId: string,
+  receiverId: string,
+  message: string
+) => {
+  try {
+    // Reference to the messages subcollection within the specific chat
+    const messagesRef = collection(firestore, "chats", chatId, "messages");
+
+    // Create a new message object
+    const newMessage = {
+      senderId,
+      receiverId,
+      message,
+      createdAt: Timestamp.now(),
+    };
+
+    // Add the message to Firestore
+    const docRef = await addDoc(messagesRef, newMessage);
+
+    // Return the newly created message with its ID
+    return { id: docRef.id, ...newMessage };
+  } catch (error) {
+    console.error("Error sending message: ", error);
+    throw new Error("Failed to send message");
+  }
+};
+
+export const fetchChatUsingId = async (chatId: string): Promise<Chat> => {
+  try {
+    const chatDocRef = doc(firestore, "chats", chatId);
+    const chatDocSnap = await getDoc(chatDocRef);
+
+    if (!chatDocSnap.exists()) {
+      throw new Error("Chat not found");
+    }
+
+    return {
+      id: chatDocSnap.id,
+      participants: chatDocSnap.data().participants,
+      createdAt: chatDocSnap.data().createdAt,
+      messages: chatDocSnap.data().messages || [],
+    } as Chat;
+  } catch (error) {
+    console.error("Error fetching chat: ", error);
+    throw new Error("Failed to fetch chat");
   }
 };
