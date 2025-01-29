@@ -10,16 +10,18 @@ import Gemini from "../../../../public/gemini.svg";
 import Link from "next/link";
 import { copyToClipboard } from "@/app/utils/utilityFunctions";
 import { Check } from "lucide-react";
+import { firestore } from "@/app/utils/firebase";
+import { onSnapshot, doc} from "firebase/firestore";
 
 export default function AppliedFreelancersPage() {
   const { slug } = useParams() as { slug: string };
   const [freelancers, setFreelancers] = useState<any[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [bestFreelancer, setBestFreelancer] = useState<any | null>(null);
   const [aiLoading, setAiLoading] = useState<boolean>(false);
   const [aiError, setAiError] = useState<string | null>(null);
-  const [clipboard,setClipboard] = useState<boolean>(false);
+  const [clipboard,setClipboard] = useState<boolean>(false);  
 
   //Clipboard functionality
   const handleClipboard = (text:string) => {
@@ -32,28 +34,44 @@ export default function AppliedFreelancersPage() {
 
   useEffect(() => {
     const fetchFreelancers = async () => {
+      setLoading(true);
+      setError(null);
+
       try {
-        setLoading(true);
-        setError(null);
 
-        const gig = await fetchGigById(slug);
-        if (!gig) throw new Error("Gig not found");
+        if (!slug) return;
 
-        const { appliedFreelancers = [] } = gig;
+  // Reference to the specific gig document
+  const gigRef = doc(firestore, "gigs", slug);
 
-        const freelancerDetails = await Promise.all(
-          appliedFreelancers.map((userId: string) => fetchUser(userId))
-        );
-        setFreelancers(freelancerDetails);
+  // Set up real-time listener for changes in the gig document
+  const unsubscribe = onSnapshot(gigRef, async (snapshot) => {
+    if (!snapshot.exists()) {
+      setError("Gig not found");
+      return;
+    }
+
+    const gigData = snapshot.data();
+    const { appliedFreelancers = [] } = gigData;
+
+    // Fetch details of newly applied freelancers
+    const freelancerDetails = await Promise.all(
+      appliedFreelancers.map((userId: string) => fetchUser(userId))
+    );
+
+    setFreelancers(freelancerDetails);
+    setLoading(false);
+  });
+  // Cleanup function to unsubscribe when component unmounts
+  return () => unsubscribe();
       } catch (err) {
         console.error(err);
         setError("Failed to fetch freelancers. Please try again later.");
-      } finally {
-        setLoading(false);
       }
     };
 
     fetchFreelancers();
+
   }, [slug]);
 
   const handleFindBestFreelancer = async () => {
@@ -94,8 +112,11 @@ export default function AppliedFreelancersPage() {
 
   return (
     <div className="p-6 max-w-4xl mx-auto">
-      <h1 className="text-2xl font-bold mb-6 text-center">Applied Freelancers</h1>
-
+      <h1 className="text-2xl font-bold mb-6 text-center">Applied Freelancers</h1>      
+      {freelancers.length === 0
+      ?(<p>No freelancers have applied for this gig.</p>)
+      : (
+      <>
       <div className="flex justify-start mb-6 items-center bg-gray-200 p-4 rounded">
         <span className="text-lg font-normal mr-1">Find best Freelancer for the Gig: </span>
         <button
@@ -132,10 +153,7 @@ export default function AppliedFreelancersPage() {
 
       {aiError && <p className="text-red-500 text-center">{aiError}</p>}
 
-      {freelancers.length === 0 ? (
-        <p className="text-center">No freelancers have applied for this gig.</p>
-      ) : (
-        <div className="overflow-x-auto border border-gray-300 rounded-md">
+          <div className="overflow-x-auto border border-gray-300 rounded-md">
           <table className="min-w-full table-auto divide-y divide-gray-200">
             <thead className="bg-gray-100">
               <tr>
@@ -194,7 +212,7 @@ export default function AppliedFreelancersPage() {
                   <td className="px-6 py-4 whitespace-nowrap border-b border-r border-gray-300">
                     <button
                       className="bg-black text-white w-32 p-2 text-sm rounded hover:bg-gray-800"
-                      onClick={() => handleApproveFreelancer(freelancer.id)}
+                      onClick={() => handleApproveFreelancer(freelancer.uid)}
                     >
                       Approve
                     </button>
@@ -204,7 +222,8 @@ export default function AppliedFreelancersPage() {
             </tbody>
           </table>
         </div>
-      )}
+        </>
+        )}
     </div>
   );
 

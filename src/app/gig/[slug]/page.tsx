@@ -2,11 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { fetchGigById } from "@/app/utils/actions/gigActions";
-import { Timestamp } from "firebase/firestore";
 import { useParams } from "next/navigation";
 import { Gig } from "@/app/utils/types";
-
-
 
 export default function GigDetailsPage() {
   const { slug } = useParams() as { slug: string }; // Ensure slug is typed

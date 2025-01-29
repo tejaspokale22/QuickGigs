@@ -139,7 +139,7 @@ const GigCard = ({ gig, user }: { gig: Gig; user?: User }) => {
                         Apply
                         <ChevronRightIcon
                           strokeWidth={3}
-                          className="ml-1 size-4 transition-transform duration-300 group-hover:translate-x-1"
+                          className="ml-2 size-4 transition-transform duration-300 group-hover:translate-x-1"
                         />
                       </>
                     )}
@@ -154,11 +154,11 @@ const GigCard = ({ gig, user }: { gig: Gig; user?: User }) => {
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                  <Button variant="outline" onClick={() => setShowDialog(false)}>
+                  <Button variant="outline" onClick={() => setShowDialog(false)} className="rounded">
                     Cancel
                   </Button>
                   <Button
-                    className="bg-black text-white hover:bg-black"
+                    className="bg-black text-white hover:bg-gray-800 rounded"
                     onClick={handleApplyConfirm}
                   >
                     Yes, Apply
