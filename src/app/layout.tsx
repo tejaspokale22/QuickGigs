@@ -42,7 +42,7 @@ export default function RootLayout({
             {children}
           </main>
 
-          <RightSidebar />
+          <RightSidebar />   
         </div>
       </body>
     </html>

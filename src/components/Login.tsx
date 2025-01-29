@@ -62,7 +62,7 @@ const Login: React.FC = () => {
 
   return (
     <div className="w-[500px] bg-white p-10 rounded-lg shadow-lg border border-gray-400">
-      <h2 className="text-2xl font-bold text-center mb-6 flex items-center justify-center gap-2">
+      <h2 className="text-2xl font-bold text-center mb-6 flex items-center justify-center gap-2 text-gray-700">
         Login to <Logo />
       </h2>
 
@@ -112,7 +112,7 @@ const Login: React.FC = () => {
         {/* Submit Button */}
         <Button
           type="submit"
-          className="w-full bg-purple-950 text-white py-3 rounded-md hover:bg-purple-900"
+          className="w-full bg-black text-white py-3 rounded-md hover:bg-gray-800"
         >
           Login
         </Button>
@@ -142,7 +142,7 @@ const Login: React.FC = () => {
         Don&apos;t have an account?{" "}
         <Link
           href="/register"
-          className="text-purple-950 hover:underline font-bold"
+          className="text-black hover:underline font-bold"
         >
           Register
         </Link>

@@ -3,28 +3,29 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { useForm } from "react-hook-form";
-import { fetchMessages, fetchChatUsingId, sendMessage } from "@/app/utils/actions/chatActions";
+import { fetchChatUsingId, sendMessage } from "@/app/utils/actions/chatActions";
+import { onSnapshot, query, collection, orderBy } from "firebase/firestore";
+import { firestore } from "@/app/utils/firebase";
 import { fetchUser } from "@/app/utils/actions/authActions";
 import { useParams } from "next/navigation";
 import { Send } from 'lucide-react';
-import { Chat } from "@/app/utils/types";  // Import the Chat type
+import { Chat,Message } from "@/app/utils/types"; 
 
 type FormData = {
   message: string;
 };
 
 const ChatRoom = () => {
-  const { slug } = useParams() as { slug: string }; // Chat ID from URL params
+
+  const { slug } = useParams() as { slug: string }; 
   const [chat, setChat] = useState<Chat | null>(null);
-  const [messages, setMessages] = useState<any[]>([]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [receiver, setReceiver] = useState<any | null>(null);
   const [loggedInUserId, setLoggedInUserId] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
-
-  // React Hook Form setup
   const { register, handleSubmit, reset } = useForm<FormData>();
-
+  
   // Fetch logged-in user ID from localStorage in useEffect
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -33,7 +34,7 @@ const ChatRoom = () => {
     }
   }, []);
 
-  useEffect(() => {
+  useEffect(() => {    
     const loadChat = async () => {
       if (!slug || !loggedInUserId) return; // Ensure both are available before fetching
 
@@ -41,10 +42,6 @@ const ChatRoom = () => {
         // Fetch chat details
         const fetchedChat = await fetchChatUsingId(slug);
         setChat(fetchedChat);
-
-        // Fetch messages
-        const fetchedMessages = await fetchMessages(slug);
-        setMessages(fetchedMessages);
 
         // Determine the receiver ID from participants array
         if (fetchedChat?.participants) {
@@ -55,6 +52,20 @@ const ChatRoom = () => {
             setReceiver(fetchedReceiver);
           }
         }
+
+        // Set up the Firestore real-time listener for messages
+        const messagesQuery = query(collection(firestore, `chats/${slug}/messages`), orderBy("createdAt"));
+        const unsubscribe = onSnapshot(messagesQuery, (snapshot) => {
+          let updatedMessages: any[] = [];
+          snapshot.forEach((doc) => {
+            updatedMessages.push({ ...doc.data(), id: doc.id });
+          });
+          setMessages(updatedMessages);
+        });
+
+        // Cleanup the listener when component unmounts or chat ID changes
+        return () => unsubscribe();
+
       } catch (error) {
         setError("Failed to load chat data.");
         console.error(error);
@@ -69,10 +80,10 @@ const ChatRoom = () => {
   // Handle message submission
   const onSubmit = async (data: FormData) => {
     if (!loggedInUserId || !receiver || !slug || !chat) return;
+    
     try {
-      const newMessage = await sendMessage(chat.id, loggedInUserId, receiver.uid, data.message);
-      setMessages((prevMessages) => [...prevMessages, newMessage]);
-      reset();
+      await sendMessage(chat.id, loggedInUserId, receiver.uid, data.message);
+      reset(); 
     } catch (error) {
       console.error("Message sending failed", error);
       setError("Failed to send message.");
@@ -90,7 +101,7 @@ const ChatRoom = () => {
   return (
     <div className="h-[650px] flex flex-col bg-gray-100">
       {/* Chat Header */}
-      <div className="flex items-center bg-gray-200 text-black p-3">
+      <div className="flex items-center bg-gray-200 text-black p-2">
         {receiver ? (
           <>
             <Image
@@ -110,14 +121,10 @@ const ChatRoom = () => {
       {/* Chat Messages */}
       <div className="flex-1 overflow-y-auto p-4">
         {messages.length > 0 ? (
-          messages.map((msg, index) => (
+          messages.map((msg: Message, index: number) => (
             <div
               key={index}
-              className={`mb-4 p-3 rounded-lg ${
-                msg.senderId === loggedInUserId
-                  ? "self-end text-right" // Align sender's message to the right
-                  : "self-start text-left" // Align receiver's message to the left
-              } bg-gray-200 rounded`}
+              className={`mb-4 p-3 rounded-lg ${msg.senderId === loggedInUserId ? "self-end text-right" : "self-start text-left"} bg-gray-200`}
             >
               <p>{msg.message}</p>
             </div>

@@ -51,7 +51,7 @@ const Header: React.FC = () => {
         ) : (
           <Link href="/login">
             <Button
-              className="bg-purple-950 text-white px-5 py-3 text-md shadow-md hover:bg-purple-900 rounded transition duration-75"
+              className="bg-black text-white px-5 py-3 text-md shadow-md hover:bg-gray-800 rounded transition duration-75"
               variant="default"
             >
               Login

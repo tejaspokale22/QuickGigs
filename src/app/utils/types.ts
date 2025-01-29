@@ -21,6 +21,7 @@ export type User = {
 };
 
 export type Message = {
+  id: string;
   senderId: string;
   receiverId: string;
   message: string;

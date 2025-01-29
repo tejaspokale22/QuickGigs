@@ -108,7 +108,7 @@ const Register: React.FC = () => {
 
   return (
     <div className="w-[500px] bg-white rounded-md shadow-lg p-8 border border-gray-400">
-      <h2 className="text-2xl font-bold text-center flex items-center justify-center gap-2">
+      <h2 className="text-2xl font-bold text-center flex items-center justify-center gap-2 text-gray-700">
         Register to <Logo />
       </h2>
 
@@ -169,7 +169,7 @@ const Register: React.FC = () => {
 
         <Button
           type="submit"
-          className="w-full bg-purple-900 text-white hover:bg-purple-800"
+          className="w-full bg-black text-white hover:bg-gray-800"
           disabled={loading}
         >
           {loading ? (
@@ -200,7 +200,7 @@ const Register: React.FC = () => {
         Already have an account?{" "}
         <Link
           href="/login"
-          className="text-purple-900 font-bold hover:underline"
+          className="text-black font-bold hover:underline"
         >
           Log In
         </Link>
