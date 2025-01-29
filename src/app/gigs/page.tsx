@@ -200,14 +200,14 @@ const Page = () => {
   }, []);
 
   return (
-    <div className="max-w-4xl flex flex-col items-center mx-auto">
+    <div className="max-w-5xl flex flex-col items-center mx-auto">
       <h1 className="text-2xl font-semibold text-gray-800 mb-4">Available Gigs</h1>
 
       {/* Loading State */}
       {loading ? (
         <p>Loading gigs...</p>
       ) : (
-        <div className="grid grid-cols-1 justify-center gap-4 mx-auto">
+        <div className="grid grid-cols-2 justify-center gap-1 mx-auto">
           {gigs.map((gig) => {
             const user = users.find((user) => user.uid === gig.clientId);
             return <GigCard key={gig.id} gig={gig} user={user} />;

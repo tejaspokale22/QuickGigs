@@ -24,6 +24,7 @@ const LeftSidebar: React.FC = () => {
     localStorage.getItem("isAuthenticated") === "true"
   );
   const [activeItem, setActiveItem] = useState<string>("home"); // Track active menu item
+  const [uid, setUid] = useState<string | null>(null); // State to hold uid
 
   //Dialog for GigForm
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -38,6 +39,11 @@ const LeftSidebar: React.FC = () => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setUser(!!user);
       localStorage.setItem("isAuthenticated", user ? "true" : "false");
+      if (user) {
+        setUid(user.uid); // Set uid from user object
+      } else {
+        setUid(null); // Clear uid if no user
+      }
     });
 
     return () => unsubscribe();
@@ -81,21 +87,21 @@ const LeftSidebar: React.FC = () => {
           {
             id: "messaging",
             label: "Messaging",
-            href: "/messaging",
-            icon: MessageSquareMore, // Messaging icon
+            href: `/messaging/${uid}`,
+            icon: MessageSquareMore, 
           },
           { id: "profile", label: "Profile", href: "/profile", icon: User },
           {
             id: "wallet",
             label: "Wallet",
             href: "/wallet",
-            icon: CreditCard, // You can use a wallet icon here
+            icon: CreditCard, 
           },
           {
             id: "notifications",
             label: "Notifications",
             href: "/notifications",
-            icon: Bell, // Notification icon
+            icon: Bell, 
           },
         ]
       : []),
@@ -144,8 +150,10 @@ const LeftSidebar: React.FC = () => {
           </button>
         </Link>
       )}
+
       {/* GigForm Dialog */}
       <GigForm isOpen={isDialogOpen} onClose={handleCloseDialog} />
+
     </aside>
   );
 };

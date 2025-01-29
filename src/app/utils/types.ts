@@ -19,3 +19,17 @@ export type User = {
   email: string;
   profilePicture?: string;
 };
+
+export type Message = {
+  senderId: string;
+  receiverId: string;
+  message: string;
+  createdAt: Timestamp;
+};
+
+export type Chat = {
+  id: string;
+  participants: string[];
+  createdAt: Timestamp;
+  messages: Message[];
+};
