@@ -5,7 +5,8 @@ import Link from "next/link";
 import { fetchGigsByClientId } from "@/app/utils/actions/gigActions";
 import { Gig } from "../utils/types";
 import { formatDeadline } from "../utils/utilityFunctions";
-import { RainbowButton } from "@/components/ui/rainbow-button";
+import { Button } from "@/components/ui/button";
+import { Eye } from "lucide-react";
 
 export default function PostedGigsPage() {
   const [gigs, setGigs] = useState<Gig[]>([]);
@@ -60,9 +61,9 @@ export default function PostedGigsPage() {
                 </p>
               </div>
               <Link href={`/applied-freelancers/${gig.id}`}>
-                <RainbowButton className="text-white w-40 p-1 text-base">
-                  View Freelancers
-                </RainbowButton>
+                <Button className="text-white w-40 p-1 text-sm bg-black hover:bg-gray-800 rounded">
+                  <Eye/> View Freelancers
+                </Button>
               </Link>
             </li>
           ))}

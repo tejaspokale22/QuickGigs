@@ -1,14 +1,15 @@
-"use client";
-
+"use client"
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { fetchGigById } from "@/app/utils/actions/gigActions";
 import { fetchUser } from "@/app/utils/actions/authActions";
 import Image from "next/image";
-import { Eye, CheckCircle, Mail } from "lucide-react";
+import { Eye, Mail, Copy } from "lucide-react";
 import { findBestFreelancer } from "@/app/utils/ai/findBestFreelancer";
 import Gemini from "../../../../public/gemini.svg";
 import Link from "next/link";
+import { copyToClipboard } from "@/app/utils/utilityFunctions";
+import { Check } from "lucide-react";
 
 export default function AppliedFreelancersPage() {
   const { slug } = useParams() as { slug: string };
@@ -18,8 +19,16 @@ export default function AppliedFreelancersPage() {
   const [bestFreelancer, setBestFreelancer] = useState<any | null>(null);
   const [aiLoading, setAiLoading] = useState<boolean>(false);
   const [aiError, setAiError] = useState<string | null>(null);
-  console.log(bestFreelancer);
-  
+  const [clipboard,setClipboard] = useState<boolean>(false);
+
+  //Clipboard functionality
+  const handleClipboard = (text:string) => {
+    setClipboard(true);
+    copyToClipboard(text);
+    setTimeout(()=>{
+      setClipboard(false);
+    },3000)
+  }
 
   useEffect(() => {
     const fetchFreelancers = async () => {
@@ -56,7 +65,6 @@ export default function AppliedFreelancersPage() {
       const gig = await fetchGigById(slug);
       if (!gig) throw new Error("Gig not found");
 
-      // Extract necessary details for the AI function
       const gigDetails = {
         title: gig.title,
         description: gig.description,
@@ -69,7 +77,7 @@ export default function AppliedFreelancersPage() {
         experience: freelancer.experience,
         rating: 1000,
         bio: freelancer.bio,
-        profilePicture:freelancer.profilePicture,
+        profilePicture: freelancer.profilePicture,
       }));
       const result = await findBestFreelancer(gigDetails, freelancersData);
       setBestFreelancer(result);
@@ -87,38 +95,38 @@ export default function AppliedFreelancersPage() {
   return (
     <div className="p-6 max-w-4xl mx-auto">
       <h1 className="text-2xl font-bold mb-6 text-center">Applied Freelancers</h1>
-      {/* AI Button */}
+
       <div className="flex justify-start mb-6 items-center bg-gray-200 p-4 rounded">
         <span className="text-lg font-normal mr-1">Find best Freelancer for the Gig: </span>
-          <button
+        <button
           className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800 flex items-center justify-center gap-1"
           onClick={handleFindBestFreelancer}
           disabled={aiLoading}
         >
-              <Image src={Gemini} alt="Gemini Icon" className="inline " width={20} height={20} /> 
-              {aiLoading ?'Analyzing...' :'Using AI'}
+          <Image src={Gemini} alt="Gemini Icon" className="inline" width={20} height={20} />
+          {aiLoading ? 'Analyzing...' : 'Using AI'}
         </button>
       </div>
 
-
-      {/* AI Result */}
       {bestFreelancer && (
         <div className="mb-6 p-4 border border-gray-300 rounded-lg bg-gray-100">
           <div className="flex items-center space-x-1">
             {bestFreelancer.name && <p className="font-bold">Best Freelancer:</p>}
-            {bestFreelancer.profilePicture && <Image
-              src={bestFreelancer.profilePicture}
-              alt={bestFreelancer.name}
-              className="rounded-full"
-              width={26}
-              height={22}
-            />
-}
-              <p className="text-lg font-medium">{bestFreelancer.name}</p>
+            {bestFreelancer.profilePicture && (
+              <Image
+                src={bestFreelancer.profilePicture}
+                alt={bestFreelancer.name}
+                className="rounded-full"
+                width={26}
+                height={22}
+              />
+            )}
+            <p className="text-lg font-medium">{bestFreelancer.name}</p>
           </div>
-            <div>
-              <span className="font-bold">Reason:</span><p className="text-gray-600">{bestFreelancer.reason}</p>
-            </div>
+          <div>
+            <span className="font-bold">Reason:</span>
+            <p className="text-gray-600">{bestFreelancer.reason}</p>
+          </div>
         </div>
       )}
 
@@ -161,9 +169,18 @@ export default function AppliedFreelancersPage() {
                     </div>
                   </td>
                   <td className="px-4 py-1 whitespace-nowrap border-b border-r border-gray-300">
-                    <span className="text-sm font-base">
-                      <Mail className="inline" width={20} /> {freelancer.email}
-                    </span>
+                    <div className="flex items-center space-x-2">
+                      <span className="text-sm font-base">
+                        <Mail className="inline" width={20} /> {freelancer.email}
+                      </span>
+                      <button
+                        onClick={()=>handleClipboard(freelancer.email)}
+                        className="text-gray-600 hover:text-gray-900"
+                        aria-label="Copy Email"
+                      >
+                        { clipboard ? (<Check width={16}/>) : (<Copy width={16}/>) }
+                      </button>
+                    </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap border-b border-r border-gray-300">
                     <Link href={`/view-profile/${freelancer.uid}`} passHref>
@@ -179,7 +196,7 @@ export default function AppliedFreelancersPage() {
                       className="bg-black text-white w-32 p-2 text-sm rounded hover:bg-gray-800"
                       onClick={() => handleApproveFreelancer(freelancer.id)}
                     >
-                    Approve
+                      Approve
                     </button>
                   </td>
                 </tr>
