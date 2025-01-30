@@ -55,6 +55,7 @@ export default function GigForm({ isOpen, onClose }: GigFormProps) {
         deadline: deadlineTimestamp,
         status: "pending",
         clientId: uid,
+        freelancerId:"",
         createdAt: Timestamp.now()
       });
 

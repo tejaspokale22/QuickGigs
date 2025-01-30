@@ -3,7 +3,7 @@ import { doc, getDoc, collection, getDocs } from "firebase/firestore";
 import { User } from "../types";
 
 //Fetch a User
-export const fetchUser = async (uid: string) => {
+export const fetchUser = async (uid: string): Promise<User> => {
   if (!uid) {
     throw new Error("User UID is required.");
   }
@@ -12,7 +12,7 @@ export const fetchUser = async (uid: string) => {
   const userDoc = await getDoc(userRef);
 
   if (userDoc.exists()) {
-    return userDoc.data();
+    return userDoc.data() as User;
   } else {
     throw new Error("User not found in the database.");
   }

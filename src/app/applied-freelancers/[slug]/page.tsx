@@ -12,8 +12,13 @@ import { copyToClipboard } from "@/app/utils/utilityFunctions";
 import { Check } from "lucide-react";
 import { firestore } from "@/app/utils/firebase";
 import { onSnapshot, doc} from "firebase/firestore";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import { updateGigFreelancer } from "@/app/utils/actions/gigActions";
+import { useRouter } from "next/navigation";
+
 
 export default function AppliedFreelancersPage() {
+
   const { slug } = useParams() as { slug: string };
   const [freelancers, setFreelancers] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -21,16 +26,32 @@ export default function AppliedFreelancersPage() {
   const [bestFreelancer, setBestFreelancer] = useState<any | null>(null);
   const [aiLoading, setAiLoading] = useState<boolean>(false);
   const [aiError, setAiError] = useState<string | null>(null);
-  const [clipboard,setClipboard] = useState<boolean>(false);  
+  const [clipboardStatus, setClipboardStatus] = useState<{ [key: string]: boolean }>({});
+  const [selectedFreelancer, setSelectedFreelancer] = useState<string | null>(null);
+  const router=useRouter();
 
-  //Clipboard functionality
-  const handleClipboard = (text:string) => {
-    setClipboard(true);
+  const handleClipboard = (text: string, freelancerId: string) => {
+    setClipboardStatus((prev) => ({ ...prev, [freelancerId]: true }));
     copyToClipboard(text);
-    setTimeout(()=>{
-      setClipboard(false);
-    },3000)
-  }
+  
+    setTimeout(() => {
+      setClipboardStatus((prev) => ({ ...prev, [freelancerId]: false }));
+    }, 3000);
+  };
+
+  const handleAssignGig = async () => {
+    if (!selectedFreelancer || !slug) return;
+  
+    try {
+      const response=await updateGigFreelancer(slug, selectedFreelancer);
+      if(response){
+        router.push("/posted-gigs")
+      }
+    } catch (error) {
+      console.error("Error assigning freelancer:", error);
+    }
+  };
+  
 
   useEffect(() => {
     const fetchFreelancers = async () => {
@@ -192,12 +213,12 @@ export default function AppliedFreelancersPage() {
                         <Mail className="inline" width={20} /> {freelancer.email}
                       </span>
                       <button
-                        onClick={()=>handleClipboard(freelancer.email)}
-                        className="text-gray-600 hover:text-gray-900"
-                        aria-label="Copy Email"
-                      >
-                        { clipboard ? (<Check width={16}/>) : (<Copy width={16}/>) }
-                      </button>
+                      onClick={() => handleClipboard(freelancer.email, freelancer.uid)}
+                      className="text-gray-600 hover:text-gray-900"
+                      aria-label="Copy Email"
+                    >
+                      {clipboardStatus[freelancer.id] ? <Check width={16} /> : <Copy width={16} />}
+                    </button>
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap border-b border-r border-gray-300">
@@ -209,13 +230,25 @@ export default function AppliedFreelancersPage() {
                       </button>
                     </Link>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap border-b border-r border-gray-300">
-                    <button
-                      className="bg-black text-white w-32 p-2 text-sm rounded hover:bg-gray-800"
-                      onClick={() => handleApproveFreelancer(freelancer.uid)}
-                    >
-                      Approve
-                    </button>
+
+                  <td className="px-6 py-4">
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <button className="bg-black text-white w-32 p-2 text-sm rounded hover:bg-gray-800" onClick={() => setSelectedFreelancer(freelancer.uid)}>
+                        Assign
+                      </button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent className="bg-white text-black">
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Please Confirm !</AlertDialogTitle>
+                        <AlertDialogDescription>Are you sure you want to assign this freelancer to the  gig?</AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel className="bg-white text-black rounded">Cancel</AlertDialogCancel>
+                        <AlertDialogAction className="bg-black text-white rounded hover:bg-gray-800" onClick={handleAssignGig}>Yes, Assign</AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
                   </td>
                 </tr>
               ))}

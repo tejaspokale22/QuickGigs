@@ -33,13 +33,16 @@ export const fetchGigs = async (): Promise<Gig[]> => {
   try {
     const gigsCollectionRef = collection(firestore, "gigs");
     const gigsSnapshot = await getDocs(gigsCollectionRef);
-    const gigsList = gigsSnapshot.docs.map((doc) => {
-      const data = doc.data() as Omit<Gig, "id">;
-      return {
-        id: doc.id,
-        ...data,
-      };
-    });
+    const gigsList = gigsSnapshot.docs
+      .map((doc) => {
+        const data = doc.data() as Omit<Gig, "id">;
+        return {
+          id: doc.id,
+          ...data,
+        };
+      })
+      .filter((gig) => gig.status === "pending"); // Filter gigs with status "pending"
+
     return gigsList;
   } catch (error) {
     console.error("Error fetching gigs:", error);
@@ -120,5 +123,88 @@ export const applyForGig = async (gigId: string, freelancerId: string) => {
     }
   } catch (error) {
     console.error("Error applying for gig:", error);
+  }
+};
+
+//Fetch Assigned Gigs
+export const getAssignedGigs = async (userId: string): Promise<Gig[]> => {
+  try {
+    console.log("Fetching gigs for userId:", userId); // Debugging
+
+    const gigsCollectionRef = collection(firestore, "gigs");
+    const gigsQuery = query(
+      gigsCollectionRef,
+      where("freelancerId", "==", userId)
+    );
+    const gigsSnapshot = await getDocs(gigsQuery);
+
+    console.log("Gigs snapshot size:", gigsSnapshot.size); // Check if data is fetched
+
+    if (gigsSnapshot.empty) {
+      console.log("No assigned gigs found.");
+      return [];
+    }
+
+    const gigs: Gig[] = gigsSnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    })) as Gig[];
+
+    console.log("Fetched gigs:", gigs);
+    return gigs;
+  } catch (error) {
+    console.error("Error fetching assigned gigs:", error);
+    throw new Error("Failed to fetch assigned gigs");
+  }
+};
+
+//Assign Gig to a Freelancer
+export const updateGigFreelancer = async (
+  gigId: string,
+  freelancerId: string
+): Promise<string> => {
+  try {
+    const gigRef = doc(firestore, "gigs", gigId);
+
+    await updateDoc(gigRef, {
+      freelancerId: freelancerId,
+    });
+
+    return "Freelancer assigned successfully!";
+  } catch (error) {
+    console.error("Error updating gig:", error);
+    throw new Error("Failed to assign freelancer.");
+  }
+};
+
+//Reject a Gig Request
+export const rejectGig = async (gigId: string): Promise<string> => {
+  try {
+    const gigRef = doc(firestore, "gigs", gigId);
+
+    await updateDoc(gigRef, {
+      freelancerId: "",
+    });
+
+    return "Gig has been successfully rejected.";
+  } catch (error) {
+    console.error("Error rejecting gig:", error);
+    throw new Error("Failed to reject gig.");
+  }
+};
+
+//Accept a Gig Request
+export const acceptGig = async (gigId: string): Promise<string> => {
+  try {
+    const gigRef = doc(firestore, "gigs", gigId);
+
+    await updateDoc(gigRef, {
+      status: "progress",
+    });
+
+    return "Gig has been successfully accepted.";
+  } catch (error) {
+    console.error("Error accepting gig:", error);
+    throw new Error("Failed to accept gig.");
   }
 };

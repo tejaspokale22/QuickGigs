@@ -63,7 +63,7 @@ const LeftSidebar: React.FC = () => {
           {
             id: "assigned-gigs",
             label: "Assigned Gigs",
-            href: "/assigned-gigs",
+            href: `/assigned-gigs/${uid}`,
             icon: CalendarCheck,
           },
           {

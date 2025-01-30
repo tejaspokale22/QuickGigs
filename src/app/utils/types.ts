@@ -9,6 +9,7 @@ export type Gig = {
   deadline: Timestamp;
   status: string;
   clientId: string;
+  freelancerId?: string;
   appliedFreelancers?: string[];
   createdAt: Timestamp;
 };

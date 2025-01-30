@@ -7,6 +7,8 @@ import { Gig } from "../utils/types";
 import { formatDeadline } from "../utils/utilityFunctions";
 import { Button } from "@/components/ui/button";
 import { Eye } from "lucide-react";
+import { collection, query, where, onSnapshot } from "firebase/firestore";
+import { firestore } from "@/app/utils/firebase";
 
 export default function PostedGigsPage() {
   const [gigs, setGigs] = useState<Gig[]>([]);
@@ -14,29 +16,40 @@ export default function PostedGigsPage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
+    const clientId = localStorage.getItem("uid");
+    if (!clientId) {
+      setError("User ID not found. Please log in.");
+      setLoading(false);
+      return;
+    }
 
-        // Retrieve the client ID (uid) from localStorage
-        const clientId = localStorage.getItem("uid");
-        if (!clientId) {
-          throw new Error("User ID not found. Please log in.");
-        }
+    setLoading(true);
 
-        const fetchedGigs = await fetchGigsByClientId(clientId);
+    // Reference the gigs collection with a query filtering by clientId
+    const gigsQuery = query(
+      collection(firestore, "gigs"),
+      where("clientId", "==", clientId) // Fetch only the gigs posted by the client
+    );
 
-        // Map and set the fetched gigs
-        setGigs(fetchedGigs);
-      } catch (err) {
-        console.error(err);
+    // Real-time listener
+    const unsubscribe = onSnapshot(
+      gigsQuery,
+      (snapshot) => {
+        const gigsData: Gig[] = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        })) as Gig[];
+        setGigs(gigsData);
+        setLoading(false);
+      },
+      (error) => {
+        console.error("Error fetching gigs:", error);
         setError("Failed to fetch posted gigs. Please try again later.");
-      } finally {
         setLoading(false);
       }
-    };
+    );
 
-    fetchData();
+    return () => unsubscribe(); // Cleanup listener on unmount
   }, []);
 
   if (loading) return <p className="text-center">Loading posted gigs...</p>;
@@ -60,11 +73,15 @@ export default function PostedGigsPage() {
                   <strong>Deadline:</strong> {formatDeadline(gig.deadline)}
                 </p>
               </div>
-              <Link href={`/applied-freelancers/${gig.id}`}>
-                <Button className="text-white w-40 p-1 text-sm bg-black hover:bg-gray-800 rounded">
-                  <Eye/> View Freelancers
-                </Button>
-              </Link>
+              {!gig.freelancerId ? (
+                <Link href={`/applied-freelancers/${gig.id}`}>
+                  <Button className="text-white w-40 p-1 text-sm bg-black hover:bg-gray-800 rounded">
+                    <Eye /> View Freelancers
+                  </Button>
+                </Link>
+              ) : (
+                <div>Waiting for Freelancer</div>
+              )}
             </li>
           ))}
         </ul>
