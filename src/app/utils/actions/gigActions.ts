@@ -208,3 +208,36 @@ export const acceptGig = async (gigId: string): Promise<string> => {
     throw new Error("Failed to accept gig.");
   }
 };
+
+//Mark the gig as completed
+export const markAsCompleted = async (gigId: string): Promise<string> => {
+  try {
+    const gigRef = doc(firestore, "gigs", gigId);
+
+    await updateDoc(gigRef, {
+      status: "completed",
+    });
+
+    return "Gig has been successfully completed.";
+  } catch (error) {
+    console.error("Error marking gig as completed:", error);
+    throw new Error("Failed to mark gig as completed.");
+  }
+};
+
+//Approve gig work
+export const approve = async (gigId: string): Promise<string> => {
+  try {
+    const gigRef = doc(firestore, "gigs", gigId);
+
+    await updateDoc(gigRef, {
+      workStatus: true,
+    });
+
+    return "Gig has been successfully approved.";
+  } catch (error) {
+    console.error("Error approving the gig:", error);
+    throw new Error("Failed to approve the gig.");
+  }
+};
+

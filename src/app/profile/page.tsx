@@ -60,7 +60,7 @@ const ProfilePage = () => {
           const userProfile: UserProfile = {
             name: user.name,
             email: user.email,
-            profilePicture: user.profilePicture,
+            profilePicture: user.profilePicture || "",
             contact: user.contact || '',
             location: user.location || '',
             bio: user.bio || '',

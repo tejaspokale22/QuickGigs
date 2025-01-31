@@ -11,6 +11,8 @@ export type Gig = {
   clientId: string;
   freelancerId?: string;
   appliedFreelancers?: string[];
+  paymentStatus: boolean;
+  workStatus: boolean;
   createdAt: Timestamp;
 };
 
@@ -18,7 +20,13 @@ export type User = {
   uid: string;
   name: string;
   email: string;
+  contact?: string;
+  location?: string;
   profilePicture?: string;
+  bio?: string;
+  skills?: string[];
+  experience?: string;
+  socials?: object;
 };
 
 export type Message = {
@@ -34,4 +42,13 @@ export type Chat = {
   participants: string[];
   createdAt: Timestamp;
   messages: Message[];
+};
+
+export type PaymentInfo = {
+  upiId?: string;
+  bankDetails?: {
+    accountHolder: string;
+    accountNo: string;
+    ifsc: string;
+  };
 };

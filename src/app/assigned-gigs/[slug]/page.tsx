@@ -13,6 +13,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { acceptGig } from "@/app/utils/actions/gigActions";
 import { rejectGig } from "@/app/utils/actions/gigActions";
 import { Button } from "@/components/ui/button";
+import { markAsCompleted } from "@/app/utils/actions/gigActions";
 
 const AssignedGigsPage = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -58,6 +59,20 @@ const AssignedGigsPage = () => {
       console.error("Error rejecting gig:", error);
     }
   };
+
+  //Mark as Completed
+  const handleCompleted = async () => {
+    if(!selectedGig) return;
+    try {
+      const response=await markAsCompleted(selectedGig);
+      if(response){
+        // alert("rejected");
+      }
+    } catch (error) {
+      console.error("Error marking as completed!", error);
+    }
+  };
+
 
   useEffect(() => {
     if (!slug) return;
@@ -228,12 +243,40 @@ const AssignedGigsPage = () => {
                 Disclaimer: Mark as completed only when you have finished the gig work and send it for approval to the client.
               </p>
               {
-                gig.status === "progress" &&
-                <Button className="text-white w-40 p-1 text-sm bg-black hover:bg-gray-800 rounded">
-                      <Bookmark />Mark as Completed
+                gig.status === "progress" &&(
+                  <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                  <Button className="text-white w-40 p-1 text-sm bg-black hover:bg-gray-800 rounded"
+                  onClick={() => setSelectedGig(gig.id)}
+                  >
+                      Mark as Completed
                     </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent className="bg-white text-black">
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Please Confirm!</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        Are you sure you have finished with the gig work?
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel className="bg-white text-black rounded">
+                        Cancel
+                      </AlertDialogCancel>
+                      <AlertDialogAction
+                        className="bg-black text-white rounded hover:bg-gray-800"
+                        onClick={handleCompleted}
+                      >
+                        Yes
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+                
+                )
               }
             </div>
+
           </li>
         ))}
       </ul>
@@ -242,3 +285,4 @@ const AssignedGigsPage = () => {
 };
 
 export default AssignedGigsPage;
+

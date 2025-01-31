@@ -1,5 +1,15 @@
 import { doc, setDoc } from "firebase/firestore";
 import { firestore } from "../firebase";
+import {
+  collection,
+  getDoc,
+  addDoc,
+  getDocs,
+  updateDoc,
+  arrayUnion,
+  query,
+  where,
+} from "firebase/firestore";
 
 interface BankDetails {
   name: string;
@@ -41,3 +51,39 @@ export async function saveBankDetails(
     throw new Error("Error saving bank details");
   }
 }
+
+// Get freelancer payment details
+export const getFreelancerPaymentDetails = async (freelancerId: string) => {
+  try {
+    // Query the payments collection where userId matches the freelancerId
+    const paymentsQuery = query(
+      collection(firestore, "payments"),
+      where("userId", "==", freelancerId)
+    );
+
+    const querySnapshot = await getDocs(paymentsQuery);
+    if (querySnapshot.empty) {
+      throw new Error("No payment details found for this freelancer.");
+    }
+
+    let paymentDetails = null;
+
+    querySnapshot.forEach((doc) => {
+      const data = doc.data();
+      if (data.upiId) {
+        paymentDetails = { type: "UPI", value: data.upiId };
+      } else if (data.bankDetails) {
+        paymentDetails = { type: "Bank", value: data.bankDetails };
+      }
+    });
+
+    if (!paymentDetails) {
+      throw new Error("No valid payment details found.");
+    }
+
+    return paymentDetails;
+  } catch (error) {
+    console.error("Error fetching freelancer payment details:", error);
+    throw new Error("Failed to retrieve payment details.");
+  }
+};
