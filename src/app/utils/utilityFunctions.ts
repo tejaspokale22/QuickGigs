@@ -19,3 +19,4 @@ export const copyToClipboard = async (text: string): Promise<void> => {
     console.error("Failed to copy text to clipboard:", error);
   }
 };
+

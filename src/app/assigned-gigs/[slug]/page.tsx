@@ -5,13 +5,14 @@ import { Gig, User } from "@/app/utils/types";
 import { useParams } from "next/navigation";
 import { formatDeadline } from "@/app/utils/utilityFunctions";
 import { firestore } from "@/app/utils/firebase";
-import { collection, query, where, onSnapshot, updateDoc, doc } from "firebase/firestore";
+import { collection, query, where, onSnapshot } from "firebase/firestore";
 import { fetchUser } from "@/app/utils/actions/authActions";
-import { Copy, Mail, Check, X } from "lucide-react"; // Importing the X icon
+import { Copy, Mail, Check, X, BookMarked, Bookmark } from "lucide-react"; // Importing the X icon
 import { copyToClipboard } from "@/app/utils/utilityFunctions";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { acceptGig } from "@/app/utils/actions/gigActions";
 import { rejectGig } from "@/app/utils/actions/gigActions";
+import { Button } from "@/components/ui/button";
 
 const AssignedGigsPage = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -218,11 +219,21 @@ const AssignedGigsPage = () => {
       </AlertDialogAction>
     </AlertDialogFooter>
   </AlertDialogContent>
-</AlertDialog>
-
-                
+</AlertDialog>  
               </div>
+              
             )}
+            <div className="flex gap-4 mt-2 justify-between items-center">
+              <p className="bg-gray-200 p-1 w-1/2 rounded">
+                Disclaimer: Mark as completed only when you have finished the gig work and send it for approval to the client.
+              </p>
+              {
+                gig.status === "progress" &&
+                <Button className="text-white w-40 p-1 text-sm bg-black hover:bg-gray-800 rounded">
+                      <Bookmark />Mark as Completed
+                    </Button>
+              }
+            </div>
           </li>
         ))}
       </ul>

@@ -12,7 +12,8 @@ import {
   Upload,
   FileText,
   Bell,
-  MessageSquareMore, // Import Notification icon from lucide-react
+  MessageSquareMore,
+  IndianRupee, // Import Notification icon from lucide-react
 } from "lucide-react"; // Import icons from lucide-react
 import { auth } from "@/app/utils/firebase"; // Import Firebase auth
 import { onAuthStateChanged } from "firebase/auth"; // Import Firebase's auth state listener
@@ -92,10 +93,10 @@ const LeftSidebar: React.FC = () => {
           },
           { id: "profile", label: "Profile", href: "/profile", icon: User },
           {
-            id: "wallet",
-            label: "Wallet",
-            href: "/wallet",
-            icon: CreditCard, 
+            id: "getpaid",
+            label: "Get Paid",
+            href: "/paymentdetails",
+            icon: IndianRupee, 
           },
           {
             id: "notifications",
