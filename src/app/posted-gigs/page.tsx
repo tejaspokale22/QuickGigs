@@ -196,7 +196,7 @@ export default function PostedGigsPage() {
                 </div>
               )}
 
-              {gig.status === 'completed' && !gig.workStatus && (
+              {gig.status === 'completed' && gig.workStatus===false && (
                 <div className="mt-4 flex justify-between items-center border-t pt-2 text-sm">
                   <div className="flex items-center">
                     <p className="text-black font-normal text-sm mr-2">
@@ -259,7 +259,7 @@ export default function PostedGigsPage() {
                   </div>
                 </div>
               )}
-              {gig.status === 'completed' && gig.workStatus && (
+              {gig.status === 'completed' && gig.workStatus===true && (
                 <div className="mt-4 flex justify-between items-center border-t pt-2 text-sm">
                   <div className="flex items-center">
                     <p className="text-black font-normal text-sm mr-2">
