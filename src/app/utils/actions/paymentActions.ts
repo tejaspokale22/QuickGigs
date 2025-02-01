@@ -63,7 +63,7 @@ export const getFreelancerPaymentDetails = async (freelancerId: string) => {
 
     const querySnapshot = await getDocs(paymentsQuery);
     if (querySnapshot.empty) {
-      throw new Error("No payment details found for this freelancer.");
+      return "No payment details found for this freelancer.";
     }
 
     let paymentDetails = null;
@@ -78,12 +78,28 @@ export const getFreelancerPaymentDetails = async (freelancerId: string) => {
     });
 
     if (!paymentDetails) {
-      throw new Error("No valid payment details found.");
+      return "No valid payment details found.";
     }
 
     return paymentDetails;
   } catch (error) {
     console.error("Error fetching freelancer payment details:", error);
     throw new Error("Failed to retrieve payment details.");
+  }
+};
+
+//Approve Payment Status
+export const approvePayment = async (gigId: string): Promise<string> => {
+  try {
+    const gigRef = doc(firestore, "gigs", gigId);
+
+    await updateDoc(gigRef, {
+      paymentStatus: true,
+    });
+
+    return "Payment has been successfully approved!.";
+  } catch (error) {
+    console.error("Error approving the payment:", error);
+    throw new Error("Failed to approve the payment.");
   }
 };

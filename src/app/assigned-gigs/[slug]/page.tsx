@@ -7,13 +7,14 @@ import { formatDeadline } from "@/app/utils/utilityFunctions";
 import { firestore } from "@/app/utils/firebase";
 import { collection, query, where, onSnapshot } from "firebase/firestore";
 import { fetchUser } from "@/app/utils/actions/authActions";
-import { Copy, Mail, Check, X, BookMarked, Bookmark } from "lucide-react"; // Importing the X icon
+import { Copy, Mail, Check, X } from "lucide-react"; // Importing the X icon
 import { copyToClipboard } from "@/app/utils/utilityFunctions";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { acceptGig } from "@/app/utils/actions/gigActions";
 import { rejectGig } from "@/app/utils/actions/gigActions";
 import { Button } from "@/components/ui/button";
 import { markAsCompleted } from "@/app/utils/actions/gigActions";
+import { approvePayment } from "@/app/utils/actions/paymentActions";
 
 const AssignedGigsPage = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -73,6 +74,18 @@ const AssignedGigsPage = () => {
     }
   };
 
+  //Approve Payment
+  const handleApprovePayment = async () => {
+    if(!selectedGig) return;
+    try {
+      const response=await approvePayment(selectedGig);
+      if(response){
+        // alert("rejected");
+      }
+    } catch (error) {
+      console.error("Error approving Payment!", error);
+    }
+  };
 
   useEffect(() => {
     if (!slug) return;
@@ -131,6 +144,7 @@ const AssignedGigsPage = () => {
       </h2>
       <ul className="space-y-6">
         {gigs.map((gig) => (
+          !(gig.status==="completed") &&
           <li key={gig.id} className="bg-white p-6 rounded border border-gray-300">
             {clients[gig.clientId] && (
               <div className="flex items-center gap-2 mb-4">
@@ -274,6 +288,37 @@ const AssignedGigsPage = () => {
                 </AlertDialog>
                 
                 )
+              }
+              {
+                gig.paymentStatus===true &&
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                  <Button className="text-white w-40 p-1 text-sm bg-black hover:bg-gray-800 rounded"
+                  onClick={() => setSelectedGig(gig.id)}
+                  >
+                      Approve Payout
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent className="bg-white text-black">
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Please Confirm!</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        Only approve if you have received the payment from the client!
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel className="bg-white text-black rounded">
+                        Cancel
+                      </AlertDialogCancel>
+                      <AlertDialogAction
+                        className="bg-black text-white rounded hover:bg-gray-800"
+                        onClick={handleApprovePayment}
+                      >
+                        Yes, Approve
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
               }
             </div>
 

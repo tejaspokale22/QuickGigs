@@ -82,7 +82,7 @@ const LeftSidebar: React.FC = () => {
           {
             id: "completed-gigs",
             label: "Completed Gigs",
-            href: "/completed-gigs",
+            href: `/completed-gigs/${uid}`,
             icon: CheckCircle,
           },
           {

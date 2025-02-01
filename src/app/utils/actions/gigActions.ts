@@ -240,4 +240,3 @@ export const approve = async (gigId: string): Promise<string> => {
     throw new Error("Failed to approve the gig.");
   }
 };
-
