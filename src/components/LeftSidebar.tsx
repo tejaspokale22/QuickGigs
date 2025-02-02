@@ -13,7 +13,8 @@ import {
   FileText,
   Bell,
   MessageSquareMore,
-  IndianRupee, // Import Notification icon from lucide-react
+  IndianRupee,
+  Search, // Import Notification icon from lucide-react
 } from 'lucide-react' // Import icons from lucide-react
 import { auth } from '@/app/utils/firebase' // Import Firebase auth
 import { onAuthStateChanged } from 'firebase/auth' // Import Firebase's auth state listener
@@ -27,14 +28,18 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarFooter
 } from '@/components/ui/sidebar'
 import Logo from './Logo'
 
 // Main LeftSidebar component
 const LeftSidebar: React.FC = () => {
-  const [user, setUser] = useState<boolean>(
-    localStorage.getItem('isAuthenticated') === 'true',
-  )
+  const [user, setUser] = useState<boolean>(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('isAuthenticated') === 'true';
+    }
+    return false;
+  });
   const [activeItem, setActiveItem] = useState<string>('home') // Track active menu item
   const [uid, setUid] = useState<string | null>(null) // State to hold uid
 
@@ -62,9 +67,9 @@ const LeftSidebar: React.FC = () => {
     { id: 'home', label: 'Home', href: '/', icon: House },
     {
       id: 'apply-gig',
-      label: 'Apply a Gig',
+      label: 'Find Gigs',
       href: '/gigs',
-      icon: ArrowsUpFromLine, // You can replace this with a logo
+      icon: Search, // You can replace this with a logo
     },
     ...(user
       ? [
@@ -121,7 +126,7 @@ const LeftSidebar: React.FC = () => {
   }
 
   return ( 
-    <Sidebar variant='sidebar' collapsible='offcanvas' side='left'>
+    <Sidebar variant='sidebar' collapsible='offcanvas' side='left' className='pt-16 border border-r border-gray-300'>
       <SidebarContent>
         <SidebarGroup>
           {/* <SidebarGroupLabel><Logo/></SidebarGroupLabel> */}
@@ -157,6 +162,7 @@ const LeftSidebar: React.FC = () => {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+      <SidebarFooter>Hello</SidebarFooter>
     </Sidebar>
   )
 }

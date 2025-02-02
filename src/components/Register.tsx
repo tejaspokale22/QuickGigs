@@ -108,6 +108,9 @@ const Register: React.FC = () => {
 
   return (
     <div className="w-[500px] bg-white rounded-md shadow-lg p-8 border border-gray-400">
+
+    
+
       <h2 className="text-2xl font-bold text-center flex items-center justify-center gap-2 text-gray-700">
         Register to <Logo />
       </h2>

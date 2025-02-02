@@ -200,8 +200,8 @@ const Page = () => {
   }, []);
 
   return (
-    <div className="max-w-5xl flex flex-col items-center mx-auto">
-      <h1 className="text-2xl font-semibold text-gray-800 mb-4">Available Gigs</h1>
+    <div className="w-full flex flex-col items-center mx-auto">
+      <h1 className="text-2xl font-semibold text-gray-800">Available Gigs</h1>
 
       {/* Loading State */}
       {loading ? (
