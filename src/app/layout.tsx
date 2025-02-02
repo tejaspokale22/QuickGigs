@@ -4,6 +4,7 @@ import { Header } from "@/components";
 import LeftSidebar from "@/components/LeftSidebar";
 import RightSidebar from "@/components/RightSidebar";
 import NextTopLoader from "nextjs-toploader";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 
 export const metadata: Metadata = {
   title: "QuickGigs",
@@ -18,32 +19,33 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <NextTopLoader
-          color="#000000"
-          initialPosition={0.08}
-          crawlSpeed={150}
-          height={4}
-          crawl={true}
-          showSpinner={false}
-          easing="ease-in-out"
-          speed={300}
-          zIndex={1600}
-          showAtBottom={false}
-        />
-        {/* Header */}
-        <Header />
+        <SidebarProvider>
+          <NextTopLoader
+            color="#000000"
+            initialPosition={0.08}
+            crawlSpeed={150}
+            height={4}
+            crawl={true}
+            showSpinner={false}
+            easing="ease-in-out"
+            speed={300}
+            zIndex={1600}
+            showAtBottom={false}
+          />
 
-        {/* Main Layout with Sidebars */}
-        <div className="flex h-screen pt-[50px]">
-          <LeftSidebar />
+          {/* Header */}
+          {/* <Header /> */}
 
-          {/* Main Content */}
-          <main className="flex-grow mx-auto max-w-5xl">
-            {children}
-          </main>
+              <LeftSidebar />
+              <SidebarTrigger className="text-black" />
 
-          <RightSidebar />   
-        </div>
+            {/* Main Content */}
+            {/* <main className="flex-grow mx-auto w-full">
+              {children}
+            </main> */}
+
+            {/* <RightSidebar /> */}
+        </SidebarProvider>
       </body>
     </html>
   );

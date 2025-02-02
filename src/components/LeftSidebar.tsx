@@ -1,6 +1,6 @@
-"use client";
-import React, { useEffect, useState } from "react";
-import Link from "next/link";
+'use client'
+import React, { useEffect, useState } from 'react'
+import Link from 'next/link'
 import {
   House,
   ArrowsUpFromLine,
@@ -14,149 +14,151 @@ import {
   Bell,
   MessageSquareMore,
   IndianRupee, // Import Notification icon from lucide-react
-} from "lucide-react"; // Import icons from lucide-react
-import { auth } from "@/app/utils/firebase"; // Import Firebase auth
-import { onAuthStateChanged } from "firebase/auth"; // Import Firebase's auth state listener
-import GigForm from "./GigForm";
+} from 'lucide-react' // Import icons from lucide-react
+import { auth } from '@/app/utils/firebase' // Import Firebase auth
+import { onAuthStateChanged } from 'firebase/auth' // Import Firebase's auth state listener
+import GigForm from './GigForm'
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+} from '@/components/ui/sidebar'
+import Logo from './Logo'
 
 // Main LeftSidebar component
 const LeftSidebar: React.FC = () => {
   const [user, setUser] = useState<boolean>(
-    localStorage.getItem("isAuthenticated") === "true"
-  );
-  const [activeItem, setActiveItem] = useState<string>("home"); // Track active menu item
-  const [uid, setUid] = useState<string | null>(null); // State to hold uid
+    localStorage.getItem('isAuthenticated') === 'true',
+  )
+  const [activeItem, setActiveItem] = useState<string>('home') // Track active menu item
+  const [uid, setUid] = useState<string | null>(null) // State to hold uid
 
-  //Dialog for GigForm
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const handleOpenDialog = () => {
-    setIsDialogOpen(true);
-  };
-  const handleCloseDialog = () => {
-    setIsDialogOpen(false);
-  };
+  // Dialog for GigForm
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const handleOpenDialog = () => setIsDialogOpen(true)
+  const handleCloseDialog = () => setIsDialogOpen(false)
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(!!user);
-      localStorage.setItem("isAuthenticated", user ? "true" : "false");
+      setUser(!!user)
+      localStorage.setItem('isAuthenticated', user ? 'true' : 'false')
       if (user) {
-        setUid(user.uid); // Set uid from user object
+        setUid(user.uid) // Set uid from user object
       } else {
-        setUid(null); // Clear uid if no user
+        setUid(null) // Clear uid if no user
       }
-    });
+    })
 
-    return () => unsubscribe();
-  }, []);
+    return () => unsubscribe()
+  }, [])
 
   // Define the menu items (conditionally add the items based on authentication)
   const menuItems = [
-    { id: "home", label: "Home", href: "/", icon: House },
+    { id: 'home', label: 'Home', href: '/', icon: House },
     {
-      id: "apply-gig",
-      label: "Apply a Gig",
-      href: "/gigs",
+      id: 'apply-gig',
+      label: 'Apply a Gig',
+      href: '/gigs',
       icon: ArrowsUpFromLine, // You can replace this with a logo
     },
     ...(user
       ? [
           {
-            id: "assigned-gigs",
-            label: "Assigned Gigs",
+            id: 'assigned-gigs',
+            label: 'Assigned Gigs',
             href: `/assigned-gigs/${uid}`,
             icon: CalendarCheck,
           },
           {
-            id: "posted-gigs",
-            label: "Posted Gigs",
-            href: "/posted-gigs",
+            id: 'posted-gigs',
+            label: 'Posted Gigs',
+            href: '/posted-gigs',
             icon: Upload,
           },
           {
-            id: "applied-gigs",
-            label: "Applied Gigs",
-            href: "/applied-gigs",
+            id: 'applied-gigs',
+            label: 'Applied Gigs',
+            href: '/applied-gigs',
             icon: FileText,
           },
           {
-            id: "completed-gigs",
-            label: "Completed Gigs",
+            id: 'completed-gigs',
+            label: 'Completed Gigs',
             href: `/completed-gigs/${uid}`,
             icon: CheckCircle,
           },
           {
-            id: "messaging",
-            label: "Messaging",
+            id: 'messaging',
+            label: 'Messaging',
             href: `/messaging/${uid}`,
-            icon: MessageSquareMore, 
+            icon: MessageSquareMore,
           },
-          { id: "profile", label: "Profile", href: "/profile", icon: User },
+          { id: 'profile', label: 'Profile', href: '/profile', icon: User },
           {
-            id: "getpaid",
-            label: "Get Paid",
-            href: "/paymentdetails",
-            icon: IndianRupee, 
+            id: 'getpaid',
+            label: 'Get Paid',
+            href: '/paymentdetails',
+            icon: IndianRupee,
           },
           {
-            id: "notifications",
-            label: "Notifications",
-            href: "/notifications",
-            icon: Bell, 
+            id: 'notifications',
+            label: 'Notifications',
+            href: '/notifications',
+            icon: Bell,
           },
         ]
       : []),
-  ];
+  ]
 
   // Handle setting active item
   const handleActiveItem = (id: string) => {
-    setActiveItem(id);
-  };
+    setActiveItem(id)
+  }
 
-  return (
-    <aside className="w-1/6 bg-white shadow-lg rounded-lg p-4 border-r border-gray-400 fixed top-[50px] h-[calc(100vh-50px)]">
-      <ul className="space-y-2">
-        {/* Render the menu items */}
-        {menuItems.map((item) => {
-          const Icon = item.icon; // Access the icon component dynamically
-          return (
-            <li key={item.id}>
-              <Link href={item.href}>
-                <div
-                  className={`font-medium w-full flex items-center text-left rounded text-base p-2 ${
-                    activeItem === item.id
-                      ? "bg-gray-300 !hover:bg-purple-200"
-                      : "hover:bg-gray-200"
-                  }`}
-                  onClick={() => handleActiveItem(item.id)} // Set active item on click
-                >
-                  <Icon size={20} className="mr-3" strokeWidth={2} />
-                  <span className="text-base">{item.label}</span>
-                </div>
-              </Link>
-            </li>
-          );
-        })}
-      </ul>
+  return ( 
+    <Sidebar variant='sidebar' collapsible='offcanvas' side='left'>
+      <SidebarContent>
+        <SidebarGroup>
+          {/* <SidebarGroupLabel><Logo/></SidebarGroupLabel> */}
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {menuItems.map((item) => {
+                const Icon = item.icon // Dynamically assign the icon
+                return (
+                  <SidebarMenuItem key={item.id}>
+                    <SidebarMenuButton
+                      asChild
+                      className={`rounded-lg ${
+                        activeItem === item.id
+                          ? 'bg-gray-300 cursor-pointer pointer-events-none'
+                          : 'hover:bg-gray-200 cursor-pointer'
+                      } p-4 rounded`}
+                    >
+                      <Link
+                        href={item.href}
+                        className="font-medium w-full flex items-center text-left rounded text-base"
+                        onClick={() => handleActiveItem(item.id)}
+                      >
+                        <Icon className=" mr-2"/>
+                        <span className="text-base text-black">
+                          {item.label}
+                        </span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                )
+              })}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+      </SidebarContent>
+    </Sidebar>
+  )
+}
 
-      {/* 'Post a Gig' button outside of the menu items */}
-      {user && (
-        <Link href="/">
-          <button
-            className="mt-4 font-semibold text-white bg-black hover:bg-gray-800 rounded text-base w-full flex p-2 items-center justify-center gap-2"
-            onClick={handleOpenDialog}
-          >
-            <Plus size={22} strokeWidth={3} />
-            Post a Gig
-          </button>
-        </Link>
-      )}
-
-      {/* GigForm Dialog */}
-      <GigForm isOpen={isDialogOpen} onClose={handleCloseDialog} />
-
-    </aside>
-  );
-};
-
-export default LeftSidebar;
+export default LeftSidebar
