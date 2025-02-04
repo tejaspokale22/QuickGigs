@@ -31,6 +31,7 @@ import {
   SidebarFooter
 } from '@/components/ui/sidebar'
 import Logo from './Logo'
+import { Button } from './ui/button'
 
 // Main LeftSidebar component
 const LeftSidebar: React.FC = () => {
@@ -162,7 +163,7 @@ const LeftSidebar: React.FC = () => {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter>Hello</SidebarFooter>
+      <SidebarFooter><Button className="bg-black text-white rounded hover:bg-gray-800"><Plus size={64}/>Post a Gig</Button></SidebarFooter>
     </Sidebar>
   )
 }
