@@ -48,7 +48,7 @@ const GigCard = ({ gig, user }: { gig: Gig; user?: User }) => {
   };
 
   return (
-    <div className="border p-4 rounded bg-white flex flex-col border-gray-400 w-11/12">
+    <div className="border p-4 rounded bg-white flex flex-col border-gray-300 w-[800px]">
       {/* User Information */}
       {user && (
         <div className="flex justify-between">
@@ -200,14 +200,14 @@ const Page = () => {
   }, []);
 
   return (
-    <div className="w-full flex flex-col items-center mx-auto">
+    <div className="w-[800px] flex flex-col items-center mx-auto pt-16">
       <h1 className="text-2xl font-semibold text-gray-800">Available Gigs</h1>
 
       {/* Loading State */}
       {loading ? (
         <p>Loading gigs...</p>
       ) : (
-        <div className="grid grid-cols-2 justify-center gap-1 mx-auto">
+        <div className="grid grid-cols-1 justify-center gap-1 mx-auto">
           {gigs.map((gig) => {
             const user = users.find((user) => user.uid === gig.clientId);
             return <GigCard key={gig.id} gig={gig} user={user} />;

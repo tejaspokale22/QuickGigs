@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import Logo from "./Logo";
 import loginBg from "../../public/loginbg.jpg";
+import { Lock, LockKeyholeIcon, Mail } from "lucide-react";
 
 interface LoginFormInputs {
   email: string;
@@ -26,7 +27,6 @@ const Login: React.FC = () => {
     register,
     handleSubmit,
     formState: { errors },
-    setFocus,
   } = useForm<LoginFormInputs>();
   const router = useRouter();
 
@@ -58,27 +58,27 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="flex h-[100%] w-full ">
-      {/* Left: Background Image */}
-      <div className="hidden md:flex w-[60%] relative">
-  <Image
-    src={loginBg}
-    alt="Login Background"
-    layout="fill"
-    objectFit="cover"
-    className="rounded-r-lg"
-  />
-</div>
+    <div className="flex h-screen w-screen">
+      {/* Left Side - Background Image */}
+      <div className="w-1/2">
+        <Image
+          src={loginBg}
+          alt="Login Background"
+          // layout="fill"
+          // objectFit="contain"
+          className="h-screen w-full"
+        />
+      </div>
 
-      {/* Right: Login Form */}
-      <div className="w-full md:w-1/2 flex items-center justify-center p-10 bg-white">
-        <div className="w-full max-w-md p-10 bg-white rounded-lg shadow-lg border border-gray-300">
-          <h2 className="text-2xl font-bold text-center mb-6 flex items-center justify-center gap-2 text-gray-700">
-            Login to <Logo />
+      {/* Right Side - Login Form */}
+      <div className="w-1/2 flex items-center justify-center p-6 bg-white">
+        <div className="w-3/4 p-8 bg-white rounded border border-gray-400">
+          <h2 className="text-2xl font-bold text-center mb-10 flex items-center justify-center gap-2 text-black">
+            Login to your acccount
           </h2>
 
           {/* Form */}
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 w-full">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div>
               <Input
                 type="email"
@@ -90,7 +90,7 @@ const Login: React.FC = () => {
                     message: "Please enter a valid email address",
                   },
                 })}
-                className="w-full p-4 border border-gray-400 rounded-md focus:border-2 focus:border-black"
+                className="w-full p-4 border border-gray-400 rounded focus:border-2 focus:border-black"
               />
               {errors.email && (
                 <p className="mt-1 text-sm text-red-500">{errors.email.message}</p>
@@ -108,15 +108,15 @@ const Login: React.FC = () => {
                     message: "Password must be at least 6 characters long",
                   },
                 })}
-                onFocus={() => setFocus("password")}
-                className="w-full p-3 border border-gray-400 rounded-md focus:border-2 focus:border-black"
+                className="w-full p-3 border border-gray-400 rounded focus:border-2 focus:border-black"
               />
               {errors.password && (
                 <p className="mt-1 text-sm text-red-500">{errors.password.message}</p>
               )}
             </div>
 
-            <Button type="submit" className="w-full bg-black text-white py-3 rounded-md hover:bg-gray-800">
+            <Button type="submit" className="w-full bg-black text-white py-3 rounded hover:bg-gray-800">
+              <LockKeyholeIcon/>
               Login
             </Button>
           </form>
@@ -136,7 +136,7 @@ const Login: React.FC = () => {
 
           <p className="text-center mt-4">
             Don&apos;t have an account? 
-            <Link href="/register" className="text-black hover:underline font-bold">
+            <Link href="/register" className="text-black hover:underline font-bold ml-1">
               Register
             </Link>
           </p>

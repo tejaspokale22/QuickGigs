@@ -32,6 +32,7 @@ import {
 } from '@/components/ui/sidebar'
 import Logo from './Logo'
 import { Button } from './ui/button'
+import { set } from 'date-fns'
 
 // Main LeftSidebar component
 const LeftSidebar: React.FC = () => {
@@ -43,12 +44,12 @@ const LeftSidebar: React.FC = () => {
   });
   const [activeItem, setActiveItem] = useState<string>('home') // Track active menu item
   const [uid, setUid] = useState<string | null>(null) // State to hold uid
-
+  
   // Dialog for GigForm
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const handleOpenDialog = () => setIsDialogOpen(true)
   const handleCloseDialog = () => setIsDialogOpen(false)
-
+  
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setUser(!!user)
@@ -163,7 +164,16 @@ const LeftSidebar: React.FC = () => {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter><Button className="bg-black text-white rounded hover:bg-gray-800"><Plus size={64}/>Post a Gig</Button></SidebarFooter>
+      <SidebarFooter>
+        <Button 
+        className="bg-black text-white rounded hover:bg-gray-800"
+        onClick={handleOpenDialog}
+        ><Plus size={64}
+        />
+        Post a Gig
+        </Button>
+        </SidebarFooter>
+        <GigForm isOpen={isDialogOpen} onClose={handleCloseDialog}/>
     </Sidebar>
   )
 }

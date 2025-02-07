@@ -6,12 +6,11 @@ import { useParams } from "next/navigation";
 import { Gig } from "@/app/utils/types";
 
 export default function GigDetailsPage() {
-  const { slug } = useParams() as { slug: string }; // Ensure slug is typed
+  const { slug } = useParams() as { slug: string };
   const [gig, setGig] = useState<Gig | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Fetch gig details on mount or when slug changes
   useEffect(() => {
     if (!slug) {
       setError("Invalid slug. Cannot fetch gig details.");
@@ -40,7 +39,6 @@ export default function GigDetailsPage() {
     fetchGig();
   }, [slug]);
 
-  // Render loading, error, or gig details
   return (
     <div className="p-6 max-w-4xl mx-auto">
       <h1 className="text-2xl font-bold mb-4">Gig Details</h1>
@@ -56,7 +54,6 @@ type GigDetailsProps = {
   gig: Gig;
 };
 
-// Extracted reusable component for displaying gig details
 function GigDetails({ gig }: GigDetailsProps) {
   return (
     <div className="bg-white shadow-lg rounded-lg p-6">
@@ -65,21 +62,27 @@ function GigDetails({ gig }: GigDetailsProps) {
       <DetailRow label="Description" value={gig.description} />
       <DetailRow label="Skills Required" value={gig.skillsRequired.join(", ")} />
       <DetailRow label="Price" value={`$${gig.price}`} />
-      <DetailRow
-        label="Deadline"
-        value={gig.deadline.toDate().toLocaleString()}
-      />
+      <DetailRow label="Deadline" value={gig.deadline.toDate().toLocaleString()} />
       <DetailRow label="Status" value={gig.status} />
       <DetailRow label="Client ID" value={gig.clientId} />
-      <DetailRow
-        label="Created At"
-        value={gig.createdAt.toDate().toLocaleString()}
-      />
+      <DetailRow label="Created At" value={gig.createdAt.toDate().toLocaleString()} />
+
+      {/* 🔹 Attachments Section */}
+      {gig.attachments && gig.attachments.length > 0 && (
+        <div className="mt-4">
+          <h2 className="text-xl font-semibold mb-2">Attachments</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {gig.attachments.map((attachment, index) => (
+              <AttachmentPreview key={index} attachment={attachment} />
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
 
-// Reusable component for displaying a label-value pair
+// Reusable component for label-value pair
 type DetailRowProps = {
   label: string;
   value: string;
@@ -90,5 +93,36 @@ function DetailRow({ label, value }: DetailRowProps) {
     <p className="mb-2">
       <strong>{label}:</strong> {value}
     </p>
+  );
+}
+
+// 🔹 Component to Preview Attachments
+type AttachmentProps = {
+  attachment: { fileUrl: string; fileName: string; fileType: string };
+};
+
+function AttachmentPreview({ attachment }: AttachmentProps) {
+  const isImage = attachment.fileType.startsWith("image");
+
+  return (
+    <div className="p-3 border rounded-lg shadow-sm">
+      {isImage ? (
+        <img
+          src={attachment.fileUrl}
+          alt={attachment.fileName}
+          className="w-full h-40 object-cover rounded-md"
+        />
+      ) : (
+        <p className="truncate">{attachment.fileName}</p>
+      )}
+      <a
+        href={attachment.fileUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-blue-600 hover:underline block mt-1"
+      >
+        View / Download
+      </a>
+    </div>
   );
 }

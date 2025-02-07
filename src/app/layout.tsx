@@ -1,10 +1,8 @@
 import type { Metadata } from 'next'
 import './globals.css'
-import { Header } from '@/components'
-import LeftSidebar from '@/components/LeftSidebar'
-import RightSidebar from '@/components/RightSidebar'
 import NextTopLoader from 'nextjs-toploader'
 import { SidebarProvider } from '@/components/ui/sidebar'
+import LayoutWrapper from '@/components/LayoutWrapper' // Import the client component
 
 export const metadata: Metadata = {
   title: 'QuickGigs',
@@ -32,12 +30,8 @@ export default function RootLayout({
             zIndex={1600}
             showAtBottom={false}
           />
-
-          <Header />
-          <LeftSidebar />
-          <main className="mx-auto w-full pt-10">{children}</main>
-
-          {/* <RightSidebar /> */}
+          {/* Wrap the main layout inside LayoutWrapper */}
+          <LayoutWrapper>{children}</LayoutWrapper>
         </SidebarProvider>
       </body>
     </html>
