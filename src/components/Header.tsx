@@ -9,6 +9,8 @@ import { onAuthStateChanged } from 'firebase/auth'
 import { SidebarTrigger } from '@/components/ui/sidebar'
 import { useSidebar } from '@/components/ui/sidebar'
 import { AlignJustify, ChevronRight } from 'lucide-react'
+import logoImg from "../../public/logoImg.png"
+import Image from 'next/image'
 
 const Header: React.FC = () => {
   // Initialize authentication state from localStorage
@@ -37,13 +39,16 @@ const Header: React.FC = () => {
   return (
     <header className="fixed top-0 left-0 w-full flex items-center justify-between p-[7px] bg-white border-b border-gray-300 z-50">
       {/* Logo Section */}
-      <div className="flex items-center justify-center ml-6 gap-1">
+      <div className="flex items-center justify-center ml-6 gap-2">
         <AlignJustify
           className="rounded-full hover:bg-gray-300 p-2 cursor-pointer text-black"
           onClick={toggleSidebar}
           size={40}
         />
+        <div className='flex items-center justify-center gap-1'>
+        <Image src={logoImg} width={36} height={1} alt="logo image"/>
         <Logo />
+        </div>
       </div>
 
       {/* Navigation Section */}
