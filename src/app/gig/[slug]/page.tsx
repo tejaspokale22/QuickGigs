@@ -40,11 +40,11 @@ export default function GigDetailsPage() {
   }, [slug]);
 
   return (
-    <div className="p-6 max-w-4xl mx-auto">
-      <h1 className="text-2xl font-bold mb-4">Gig Details</h1>
+    <div className="pt-20 max-w-4xl mx-auto">
+      <h1 className="text-3xl font-bold mb-6 text-gray-800">Gig Details</h1>
 
-      {loading && <p>Loading gig details...</p>}
-      {error && <p className="text-red-500">Error: {error}</p>}
+      {loading && <p className="text-gray-600">Loading gig details...</p>}
+      {error && <p className="text-red-500">{error}</p>}
       {gig && <GigDetails gig={gig} />}
     </div>
   );
@@ -56,21 +56,37 @@ type GigDetailsProps = {
 
 function GigDetails({ gig }: GigDetailsProps) {
   return (
-    <div className="bg-white shadow-lg rounded-lg p-6">
-      <DetailRow label="ID" value={gig.id} />
-      <DetailRow label="Title" value={gig.title} />
-      <DetailRow label="Description" value={gig.description} />
-      <DetailRow label="Skills Required" value={gig.skillsRequired.join(", ")} />
-      <DetailRow label="Price" value={`$${gig.price}`} />
-      <DetailRow label="Deadline" value={gig.deadline.toDate().toLocaleString()} />
-      <DetailRow label="Status" value={gig.status} />
-      <DetailRow label="Client ID" value={gig.clientId} />
-      <DetailRow label="Created At" value={gig.createdAt.toDate().toLocaleString()} />
+    <div className="bg-white shadow-lg rounded-lg p-10 border border-gray-200">
+      {/* ✅ Title Section */}
+      <h2 className="text-2xl font-bold text-gray-900 mb-2">{gig.title}</h2>
+      <p className="text-gray-600 mb-4">{gig.description}</p>
 
-      {/* 🔹 Attachments Section */}
+      {/* ✅ Gig Information */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <DetailRow label="Posted Date" value={gig.createdAt.toDate().toLocaleDateString()} />
+        <DetailRow label="Deadline" value={gig.deadline.toDate().toLocaleString()} />
+        <DetailRow label="Payout" value={`$${gig.price}`} />
+      </div>
+
+      {/* ✅ Skills Section */}
+      <div className="mb-6">
+        <h3 className="text-lg font-semibold text-gray-800">Skills Required</h3>
+        <div className="flex flex-wrap gap-2 mt-2">
+          {gig.skillsRequired.map((skill, index) => (
+            <span
+              key={index}
+              className="px-3 py-1 bg-blue-100 text-blue-700 text-sm font-medium rounded-full"
+            >
+              {skill}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      {/* ✅ Attachments Section */}
       {gig.attachments && gig.attachments.length > 0 && (
-        <div className="mt-4">
-          <h2 className="text-xl font-semibold mb-2">Attachments</h2>
+        <div className="mt-6">
+          <h3 className="text-lg font-semibold text-gray-800 mb-2">Attachments</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {gig.attachments.map((attachment, index) => (
               <AttachmentPreview key={index} attachment={attachment} />
@@ -82,7 +98,7 @@ function GigDetails({ gig }: GigDetailsProps) {
   );
 }
 
-// Reusable component for label-value pair
+// ✅ Reusable component for label-value pair
 type DetailRowProps = {
   label: string;
   value: string;
@@ -90,13 +106,14 @@ type DetailRowProps = {
 
 function DetailRow({ label, value }: DetailRowProps) {
   return (
-    <p className="mb-2">
-      <strong>{label}:</strong> {value}
-    </p>
+    <div className="flex justify-between">
+      <span className="text-gray-600 font-medium">{label}:</span>
+      <span className="text-gray-900">{value}</span>
+    </div>
   );
 }
 
-// 🔹 Component to Preview Attachments
+// ✅ Component to Preview Attachments
 type AttachmentProps = {
   attachment: { fileUrl: string; fileName: string; fileType: string };
 };
@@ -105,7 +122,7 @@ function AttachmentPreview({ attachment }: AttachmentProps) {
   const isImage = attachment.fileType.startsWith("image");
 
   return (
-    <div className="p-3 border rounded-lg shadow-sm">
+    <div className="p-3 border rounded-lg shadow-sm bg-gray-50">
       {isImage ? (
         <img
           src={attachment.fileUrl}
@@ -113,7 +130,7 @@ function AttachmentPreview({ attachment }: AttachmentProps) {
           className="w-full h-40 object-cover rounded-md"
         />
       ) : (
-        <p className="truncate">{attachment.fileName}</p>
+        <p className="truncate text-gray-700">{attachment.fileName}</p>
       )}
       <a
         href={attachment.fileUrl}
@@ -126,3 +143,4 @@ function AttachmentPreview({ attachment }: AttachmentProps) {
     </div>
   );
 }
+

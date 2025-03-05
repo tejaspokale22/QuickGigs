@@ -110,7 +110,7 @@ const LeftSidebar: React.FC = () => {
             id: 'getpaid',
             label: 'Get Paid',
             href: '/paymentdetails',
-            icon: IndianRupee,
+            icon: CreditCard,
           },
           {
             id: 'notifications',

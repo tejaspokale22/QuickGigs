@@ -18,6 +18,9 @@ import {
   AlertDialogTitle,
   AlertDialogDescription,
 } from "@/components/ui/alert-dialog";
+import { firestore } from "@/app/utils/firebase";
+import { onSnapshot, collection} from "firebase/firestore";
+import { getDaysAgo } from "../utils/utilityFunctions";
 
 // Gig Card Component
 const GigCard = ({ gig, user }: { gig: Gig; user?: User }) => {
@@ -48,31 +51,32 @@ const GigCard = ({ gig, user }: { gig: Gig; user?: User }) => {
   };
 
   return (
-    <div className="border p-4 rounded bg-white flex flex-col border-gray-300 w-[800px]">
+    <div className="border p-4 rounded bg-white flex flex-col border-gray-300 w-3/4">
       {/* User Information */}
       {user && (
-        <div className="flex justify-between">
-          <div className="flex items-center mb-4">
-            <img
-              src={user.profilePicture || "/default-avatar.png"}
-              alt={user.name}
-              className="w-12 h-12 rounded-full mr-2"
-            />
-            <div>
-              <p className="text-lg font-semibold text-gray-800">{user.name}</p>
-              <p className="text-sm text-gray-500">{user.email}</p>
-            </div>
-          </div>
-          <div className="text-black">
-            <span className="text-base font-semibold mr-1">Payout:</span>
-            <span className="text-lg">₹</span>{gig.price}
+        <div className="flex justify-between w-full">
+        <div className="flex items-center mb-4">
+          <img
+            src={user.profilePicture || "/default-avatar.png"}
+            alt={user.name}
+            className="w-10 h-10 rounded-full mr-2"
+          />
+          <div>
+            <p className="text-lg font-semibold text-gray-800">{user.name}</p>
+            <p className="text-xs text-gray-500">{user.email}</p>
           </div>
         </div>
+      
+        {/* Days Ago Section */}
+        <div className="text-sm text-gray-500">
+          {getDaysAgo(gig.createdAt)}
+        </div>
+      </div>
       )}
 
       {/* Gig Information */}
       <div className="flex justify-between">
-        <div className="space-y-6">
+        <div className="space-y-4">
           <h2 className="text-xl font-bold text-gray-800 mb-1">{gig.title}</h2>
           <p className="text-lg font-semibold text-black mb-1">
             Details:{" "}
@@ -82,9 +86,9 @@ const GigCard = ({ gig, user }: { gig: Gig; user?: User }) => {
                   {gig.description.split(" ").slice(0, 12).join(" ")}...
                   <Link
                     href={`/gig/${gig.id}`}
-                    className="text-blue-600 hover:underline text-base ml-1"
+                    className="text-blue-500 hover:underline text-base font-normal"
                   >
-                    Read more
+                    read more
                   </Link>
                 </>
               ) : (
@@ -92,9 +96,9 @@ const GigCard = ({ gig, user }: { gig: Gig; user?: User }) => {
                   {gig.description}...
                   <Link
                     href={`/gig/${gig.id}`}
-                    className="text-blue-600 hover:underline text-base ml-1"
+                    className="text-blue-500 hover:underline text-base font-normal ml-1"
                   >
-                    Read more
+                    read more
                   </Link>
                 </>
               )}
@@ -113,10 +117,15 @@ const GigCard = ({ gig, user }: { gig: Gig; user?: User }) => {
         </div>
       </div>
 
+      <div className="text-black mt-2">
+            <span className="text-meditum font-semibold">Payout</span>
+            <span className="text-lg">-₹</span>{gig.price}
+          </div>
+
       {/* Deadline Information */}
-      <div className="flex justify-between mt-6">
+      <div className="flex justify-between mt-2">
         <p className="font-bold text-sm flex items-end">
-          Deadline: <span className="ml-1 text-red-600">{formatDeadline(gig.deadline)}</span>
+          Deadline-<span className="text-red-600">{formatDeadline(gig.deadline)}</span>
         </p>
 
         {/* Apply Button with Confirmation Dialog */}
@@ -139,7 +148,7 @@ const GigCard = ({ gig, user }: { gig: Gig; user?: User }) => {
                         Apply
                         <ChevronRightIcon
                           strokeWidth={3}
-                          className="ml-2 size-4 transition-transform duration-300 group-hover:translate-x-1"
+                          className="ml-1 size-4 transition-transform duration-300 group-hover:translate-x-1"
                         />
                       </>
                     )}
@@ -179,42 +188,52 @@ const Page = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
-  // Fetch Gigs and Users on Component Mount
+  const fetchData = async () => {
+    console.log("running");
+    setLoading(true);
+    try {
+      const gigsData: Gig[] = await fetchGigs();
+      
+      // Sort gigs by createdAt (latest first)
+      const sortedGigs = gigsData.sort((a, b) => b.createdAt - a.createdAt);
+  
+      setGigs(sortedGigs);
+  
+      const usersData: User[] = await fetchUsers();
+      setUsers(usersData);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const gigsData: Gig[] = await fetchGigs();
-        setGigs(gigsData);
-
-        const usersData: User[] = await fetchUsers();
-        setUsers(usersData);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
+    fetchData(); // Initial fetch
+  
+    // Firestore real-time listener
+    const gigsRef = collection(firestore, "gigs");
+    const unsubscribe = onSnapshot(gigsRef, () => {
+      fetchData(); // Fetch data whenever the collection changes
+    });
+  
+    return () => unsubscribe(); // Cleanup listener on unmount
   }, []);
 
   return (
-    <div className="w-[800px] flex flex-col items-center mx-auto pt-16">
-      <h1 className="text-2xl font-semibold text-gray-800">Available Gigs</h1>
-
-      {/* Loading State */}
-      {loading ? (
-        <p>Loading gigs...</p>
-      ) : (
-        <div className="grid grid-cols-1 justify-center gap-1 mx-auto">
-          {gigs.map((gig) => {
-            const user = users.find((user) => user.uid === gig.clientId);
-            return <GigCard key={gig.id} gig={gig} user={user} />;
-          })}
-        </div>
-      )}
+    <div className="w-full flex flex-col items-center mx-auto p-16 h-auto">
+  {/* Loading State */}
+  {loading ? (
+    <p>Loading gigs...</p>
+  ) : (
+    <div className="grid grid-cols-1 gap-6 w-full h-auto p-2 place-items-center">
+      {gigs.map((gig) => {
+        const user = users.find((user) => user.uid === gig.clientId);
+        return <GigCard key={gig.id} gig={gig} user={user} />;
+      })}
     </div>
+  )}
+</div>
   );
 };
 

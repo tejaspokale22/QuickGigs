@@ -52,6 +52,7 @@ const Register: React.FC = () => {
       }
       
       localStorage.setItem("isAuthenticated", JSON.stringify(true));
+      localStorage.setItem("uid", user.uid);
       router.push("/");
     } catch (error) {
       console.error("Google login error:", error);

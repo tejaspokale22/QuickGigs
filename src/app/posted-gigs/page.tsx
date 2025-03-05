@@ -8,7 +8,7 @@ import { fetchUser } from '@/app/utils/actions/authActions'
 import { Gig, User } from '../utils/types'
 import { formatDeadline } from '../utils/utilityFunctions'
 import { Button } from '@/components/ui/button'
-import { CheckCircle, Eye, IndianRupee } from 'lucide-react'
+import { CheckCircle, CreditCard, Eye, IndianRupee } from 'lucide-react'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -131,7 +131,7 @@ export default function PostedGigsPage() {
                     className="bg-black text-white rounded hover:bg-gray-800"
                     onClick={() => setPaymentInfoDialogOpen(true)}
                   >
-                    <IndianRupee />
+                    <CreditCard />
                     Pay Now
                   </Button>
                 )}

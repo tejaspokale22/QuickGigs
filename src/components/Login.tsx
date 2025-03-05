@@ -37,6 +37,7 @@ const Login: React.FC = () => {
       const user = result.user;
       console.log("Google user:", user);
       localStorage.setItem("isAuthenticated", JSON.stringify(true));
+      localStorage.setItem("uid", user.uid);
       router.push("/");
     } catch (error) {
       console.error("Google login error:", error);
