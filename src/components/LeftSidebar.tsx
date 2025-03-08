@@ -28,7 +28,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarFooter
+  SidebarFooter,
 } from '@/components/ui/sidebar'
 import Logo from './Logo'
 import { Button } from './ui/button'
@@ -38,18 +38,18 @@ import { set } from 'date-fns'
 const LeftSidebar: React.FC = () => {
   const [user, setUser] = useState<boolean>(() => {
     if (typeof window !== 'undefined') {
-      return localStorage.getItem('isAuthenticated') === 'true';
+      return localStorage.getItem('isAuthenticated') === 'true'
     }
-    return false;
-  });
+    return false
+  })
   const [activeItem, setActiveItem] = useState<string>('home') // Track active menu item
   const [uid, setUid] = useState<string | null>(null) // State to hold uid
-  
+
   // Dialog for GigForm
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const handleOpenDialog = () => setIsDialogOpen(true)
   const handleCloseDialog = () => setIsDialogOpen(false)
-  
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setUser(!!user)
@@ -127,8 +127,13 @@ const LeftSidebar: React.FC = () => {
     setActiveItem(id)
   }
 
-  return ( 
-    <Sidebar variant='sidebar' collapsible='offcanvas' side='left' className='pt-16 border border-r border-gray-300'>
+  return (
+    <Sidebar
+      variant="sidebar"
+      collapsible="offcanvas"
+      side="left"
+      className="pt-16 border border-r border-gray-300"
+    >
       <SidebarContent>
         <SidebarGroup>
           {/* <SidebarGroupLabel><Logo/></SidebarGroupLabel> */}
@@ -151,7 +156,7 @@ const LeftSidebar: React.FC = () => {
                         className="font-medium w-full flex items-center text-left rounded text-base"
                         onClick={() => handleActiveItem(item.id)}
                       >
-                        <Icon className=" mr-2"/>
+                        <Icon className=" mr-2" />
                         <span className="text-base text-black">
                           {item.label}
                         </span>
@@ -165,15 +170,15 @@ const LeftSidebar: React.FC = () => {
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
-        <Button 
-        className="bg-black text-white rounded hover:bg-gray-800"
-        onClick={handleOpenDialog}
-        ><Plus size={64}
-        />
-        Post a Gig
+        <Button
+          className="bg-black text-white rounded hover:bg-gray-800"
+          onClick={handleOpenDialog}
+        >
+          <Plus size={64} />
+          Post a Gig
         </Button>
-        </SidebarFooter>
-        <GigForm isOpen={isDialogOpen} onClose={handleCloseDialog}/>
+      </SidebarFooter>
+      <GigForm isOpen={isDialogOpen} onClose={handleCloseDialog} />
     </Sidebar>
   )
 }

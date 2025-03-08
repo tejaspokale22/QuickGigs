@@ -4,7 +4,7 @@ const Logo: React.FC = () => {
   return (
     <Link
       href="/"
-      className="flex items-center text-[20px] font-bold tracking-normal text-gray-900 logo-font"
+      className="flex items-center text-[29px] font-bold tracking-normal text-black-700 logo-font"
     >
       QuickGigs
     </Link>

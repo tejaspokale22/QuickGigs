@@ -15,7 +15,7 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
       {/* Show Header and Sidebars only if not on login/register pages */}
       {!hideLayout && <Header />}
       <div className="flex">
-        {!hideLayout && <LeftSidebar />}
+        {/* {!hideLayout && <LeftSidebar />}  */}
         <main className="mx-auto w-full h-full">{children}</main>
       </div>
     </div>

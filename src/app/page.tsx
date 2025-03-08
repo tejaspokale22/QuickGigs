@@ -1,104 +1,521 @@
+'use client'
 import Image from "next/image";
-import Google from "../../public/google-icon.svg";
+import Link from "next/link";
+import { 
+  Github, 
+  Linkedin, 
+  Twitter, 
+  Instagram,
+  CheckCircle2,
+  ArrowRight,
+  Trophy,
+  Medal,
+  Star
+} from 'lucide-react';
+import hero from '../../public/hero.jpg'
 
 export default function Home() {
   const features = [
     {
-      title: "Quick Tasks",
-      description: "Browse and pick from a wide range of quick and easy tasks that perfectly match your skills and schedule.",
-      image: "/globe.svg",
+      title: "Student-Friendly Gigs",
+      description: "Find flexible projects that fit perfectly around your class schedule. From content writing to web development, discover opportunities that complement your studies.",
+      icon: (
+        <svg className="w-10 h-10" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 14L8 10H16L12 14Z" fill="currentColor"/>
+          <path d="M4 6H20M4 12H20M4 18H20" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+        </svg>
+      )
     },
     {
-      title: "Quick Pay",
-      description: "Complete tasks and get paid instantly through our secure payment system. No delays, no hassle.",
-      image: Google,
+      title: "Build Your Portfolio",
+      description: "Start your professional journey while still in college. Each project adds to your portfolio, giving you real-world experience that employers value.",
+      icon: (
+        <svg className="w-10 h-10" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M20 12V22H4V12" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+          <path d="M22 7H2V12H22V7Z" stroke="currentColor" strokeWidth="2"/>
+          <path d="M12 22V7" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+          <path d="M12 7H16.5C17.8807 7 19 5.88071 19 4.5C19 3.11929 17.8807 2 16.5 2C15.1193 2 14 3.11929 14 4.5V5" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+          <path d="M12 7H7.5C6.11929 7 5 5.88071 5 4.5C5 3.11929 6.11929 2 7.5 2C8.88071 2 10 3.11929 10 4.5V5" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+        </svg>
+      )
     },
     {
-      title: "Freelancer Community",
-      description: "Join a thriving community of micro-freelancers, build your reputation, and unlock better opportunities.",
-      image: Google,
+      title: "Quick & Secure Payments",
+      description: "Focus on your studies without payment worries. Get paid promptly through our secure payment system, perfect for managing your student expenses.",
+      icon: (
+        <svg className="w-10 h-10" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M19 5H5C3.89543 5 3 5.89543 3 7V17C3 18.1046 3.89543 19 5 19H19C20.1046 19 21 18.1046 21 17V7C21 5.89543 20.1046 5 19 5Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+          <path d="M3 10H21" stroke="currentColor" strokeWidth="2"/>
+          <path d="M7 15H7.01" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+          <path d="M11 15H13" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+        </svg>
+      )
     },
   ];
 
-  return (
-    <div className="min-h-screen bg-gradient-to-b from-white to-blue-50">
-      {/* Hero Section */}
-      <section className="pt-32 px-6 max-w-6xl mx-auto text-center relative overflow-hidden">
-        <div className="relative z-10">
-          <h1 className="text-black text-6xl font-extrabold leading-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-blue-800">
-            Welcome to <span className="text-blue-600">QuickGigs!</span>
-          </h1>
-          <div className="text-gray-700 text-xl mt-6 max-w-3xl mx-auto leading-relaxed">
-            Your platform for <span className="font-semibold text-blue-600">Quick Tasks</span>
-            {" "}and <span className="font-semibold text-blue-600">Quick Pay</span>. Start earning
-            today by completing small gigs effortlessly!
-          </div>
-          <div className="mt-8 flex gap-4 justify-center">
-            <button className="bg-blue-600 text-white px-8 py-3 rounded-lg text-lg font-semibold shadow-lg hover:bg-blue-700 transition-all hover:scale-105 hover:shadow-xl">
-              Get Started
-            </button>
-            <button className="bg-white text-blue-600 border-2 border-blue-600 px-8 py-3 rounded-lg text-lg font-semibold shadow-md hover:bg-blue-50 transition-all">
-              Learn More
-            </button>
-          </div>
-        </div>
+  const testimonials = [
+    {
+      quote: "QuickGigs helped me earn while maintaining my academic focus. The flexible projects perfectly fit my schedule.",
+      author: "Sarah Chen",
+      role: "Computer Science Junior",
+      university: "Stanford University"
+    },
+    {
+      quote: "I've built an impressive portfolio through QuickGigs projects. It gave me an edge in my internship applications.",
+      author: "James Wilson",
+      role: "Design Student",
+      university: "NYU"
+    }
+  ];
 
-        {/* Decorative Elements */}
-        <div className="absolute top-0 right-0 -z-10 opacity-10">
-          <div className="w-96 h-96 bg-blue-400 rounded-full blur-3xl"></div>
-        </div>
-        <div className="absolute bottom-0 left-0 -z-10 opacity-10">
-          <div className="w-96 h-96 bg-blue-300 rounded-full blur-3xl"></div>
+  const categories = [
+    {
+      title: "Web Development",
+      description: "Frontend, Backend, Full-Stack projects",
+      count: "2.5k+ jobs",
+      icon: "🌐"
+    },
+    {
+      title: "Content Writing",
+      description: "Blogs, Articles, Academic Writing",
+      count: "1.8k+ jobs",
+      icon: "✍️"
+    },
+    {
+      title: "Design",
+      description: "UI/UX, Graphic Design, Illustrations",
+      count: "1.2k+ jobs",
+      icon: "🎨"
+    },
+    {
+      title: "Digital Marketing",
+      description: "Social Media, SEO, Content Marketing",
+      count: "900+ jobs",
+      icon: "📱"
+    }
+  ];
+
+  const benefits = [
+    "Flexible work hours that fit your class schedule",
+    "Real projects from actual companies",
+    "Build a professional portfolio while studying",
+    "Earn competitive rates for your skills",
+    "Network with industry professionals",
+    "Gain practical experience in your field",
+    "Access to mentorship and guidance",
+    "Choose projects that match your interests"
+  ];
+
+  const leaderboard = [
+    {
+      rank: 1,
+      name: "Priya Sharma",
+      university: "IIT Delhi",
+      avatar: "https://randomuser.me/api/portraits/men/1.jpg",
+      gigsCompleted: 48,
+      earnings: "₹1,20,000",
+      rating: 4.9,
+      badge: "Elite"
+    },
+    {
+      rank: 2,
+      name: "Rahul Patel",
+      university: "BITS Pilani",
+      avatar: "https://randomuser.me/api/portraits/men/2.jpg",
+      gigsCompleted: 42,
+      earnings: "₹95,000",
+      rating: 4.8,
+      badge: "Pro"
+    },
+    {
+      rank: 3,
+      name: "Aisha Khan",
+      university: "VIT Vellore",
+      avatar: "https://randomuser.me/api/portraits/women/3.jpg",
+      gigsCompleted: 39,
+      earnings: "₹88,000",
+      rating: 4.9,
+      badge: "Pro"
+    },
+    {
+      rank: 4,
+      name: "Dev Kapoor",
+      university: "IIIT Hyderabad",
+      avatar: "https://randomuser.me/api/portraits/men/4.jpg",
+      gigsCompleted: 35,
+      earnings: "₹82,000",
+      rating: 4.7,
+      badge: "Rising Star"
+    },
+    {
+      rank: 5,
+      name: "Neha Gupta",
+      university: "NIT Trichy",
+      avatar: "https://randomuser.me/api/portraits/women/5.jpg",
+      gigsCompleted: 32,
+      earnings: "₹75,000",
+      rating: 4.8,
+      badge: "Rising Star"
+    }
+  ];
+
+  return (
+    <div className="min-h-screen bg-white">
+      {/* Hero Section */}
+      <section className="pt-[96px] px-6 max-w-7xl mx-auto relative">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <div className="space-y-8">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-black leading-tight">
+              Launch Your Career <br/>
+              <span className="text-gray-400">While Still in College</span>
+            </h1>
+            <p className="text-lg text-gray-600 max-w-xl">
+              QuickGigs connects ambitious college students with flexible freelance opportunities. 
+              Build your portfolio, earn money, and gain real-world experience without compromising your studies.
+            </p>
+            <div className="flex gap-4">
+              <button className="bg-black text-white px-8 py-4 rounded-lg text-lg font-medium hover:bg-gray-900 transition-all flex items-center gap-2 group">
+                Start Freelancing
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </button>
+              <button className="border-2 border-black px-8 py-4 rounded-lg text-lg font-medium hover:bg-gray-50 transition-all">
+                Post a Project
+              </button>
+            </div>
+            <div className="flex items-center gap-4 text-sm text-gray-600">
+              <div className="flex -space-x-2">
+                {[1, 2, 3, 4].map((i) => (
+                  <div key={i} className="w-8 h-8 rounded-full border-2 border-white bg-gray-200"></div>
+                ))}
+              </div>
+              <p>Join <span className="font-semibold text-black">5,000+</span> students already earning</p>
+            </div>
+          </div>
+          <div className="relative h-[600px] hidden lg:block">
+            <div className="absolute inset-0 bg-gradient-to-tr from-gray-100 to-gray-200 rounded-2xl overflow-hidden">
+              <Image
+                src={hero}
+                alt="Students collaborating"
+                fill
+                className="object-cover opacity-100"
+                priority
+              />
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* Features Section */}
-      <section className="mt-32 px-6 max-w-6xl mx-auto">
-        <h2 className="text-3xl font-bold text-center mb-16">
-          Why Choose QuickGigs?
+      {/* Stats Section */}
+      <section className="mt-32 px-6">
+        <div className="max-w-7xl mx-auto border-y border-gray-200 py-12">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+            <div className="text-center">
+              <div className="text-4xl font-bold text-black">5000+</div>
+              <div className="text-gray-600 mt-2">Student Freelancers</div>
+            </div>
+            <div className="text-center">
+              <div className="text-4xl font-bold text-black">10k+</div>
+              <div className="text-gray-600 mt-2">Projects Completed</div>
+            </div>
+            <div className="text-center">
+              <div className="text-4xl font-bold text-black">500+</div>
+              <div className="text-gray-600 mt-2">Universities</div>
+            </div>
+            <div className="text-center">
+              <div className="text-4xl font-bold text-black">₹2M+</div>
+              <div className="text-gray-600 mt-2">Paid to Students</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Popular Categories */}
+      <section className="mt-32 px-6 max-w-7xl mx-auto">
+        <h2 className="text-3xl font-bold text-center mb-6">
+          Popular Categories
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-          {features.map((feature, index) => (
-            <div
-              key={index}
-              className="bg-white rounded-xl p-8 shadow-lg border border-gray-100 text-center transform transition-all hover:shadow-xl hover:-translate-y-1"
-            >
-              <div className="relative w-20 h-20 mx-auto mb-6">
-                <Image
-                  src={feature.image}
-                  alt={feature.title}
-                  fill
-                  className="object-contain"
-                />
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-4">{feature.title}</h3>
-              <p className="text-gray-600 leading-relaxed">{feature.description}</p>
+        <p className="text-gray-600 text-center mb-16 max-w-2xl mx-auto">
+          Explore diverse opportunities across various fields. Find projects that match your skills and interests.
+        </p>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          {categories.map((category, index) => (
+            <div key={index} className="bg-gray-50 rounded-xl p-6 border border-gray-100 hover:border-gray-300 transition-all">
+              <div className="text-4xl mb-4">{category.icon}</div>
+              <h3 className="text-xl font-bold mb-2">{category.title}</h3>
+              <p className="text-gray-600 mb-4">{category.description}</p>
+              <p className="text-sm font-medium text-gray-500">{category.count}</p>
             </div>
           ))}
         </div>
       </section>
 
-      {/* Call to Action Section */}
-      <section className="mt-32 mb-20 px-6">
-        <div className="max-w-4xl mx-auto bg-gradient-to-r from-blue-600 to-blue-800 rounded-2xl p-12 text-center text-white relative overflow-hidden">
-          <div className="relative z-10">
-            <h2 className="text-4xl font-bold mb-6">Ready to Get Started?</h2>
-            <p className="text-lg text-blue-100 mb-8 max-w-2xl mx-auto">
-              Sign up now and discover how QuickGigs can help you earn more in less
-              time. Join thousands of freelancers boosting their income today!
-            </p>
-            <button className="bg-white text-blue-600 px-8 py-3 rounded-lg text-lg font-semibold shadow-lg hover:bg-blue-50 transition-all hover:scale-105">
-              Join Now
-            </button>
-          </div>
-          
-          {/* Decorative Background */}
-          <div className="absolute top-0 right-0 w-full h-full">
-            <div className="absolute top-0 right-0 w-96 h-96 bg-blue-500 rounded-full opacity-20 blur-3xl transform translate-x-1/2 -translate-y-1/2"></div>
-            <div className="absolute bottom-0 left-0 w-96 h-96 bg-blue-400 rounded-full opacity-20 blur-3xl transform -translate-x-1/2 translate-y-1/2"></div>
+      {/* Benefits Section */}
+      <section className="mt-32 px-6 max-w-7xl mx-auto">
+        <div className="bg-gray-50 rounded-2xl p-12">
+          <h2 className="text-3xl font-bold mb-6">
+            Why Students Choose QuickGigs
+          </h2>
+          <p className="text-gray-600 mb-12 max-w-2xl">
+            We understand the unique challenges of balancing academics with professional growth. 
+            That's why we've designed our platform specifically for college students.
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {benefits.map((benefit, index) => (
+              <div key={index} className="flex items-center gap-4">
+                <div className="w-8 h-8 bg-black rounded-full flex items-center justify-center flex-shrink-0">
+                  <CheckCircle2 className="w-5 h-5 text-white" />
+                </div>
+                <p className="text-lg">{benefit}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
+
+      {/* Features Section */}
+      <section className="mt-32 px-6 max-w-7xl mx-auto">
+        <h2 className="text-3xl font-bold text-center mb-16">
+          Designed for Student Success
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+          {features.map((feature, index) => (
+            <div
+              key={index}
+              className="bg-gray-50 rounded-xl p-8 border border-gray-100 group hover:bg-black hover:text-white transition-all duration-300"
+            >
+              <div className="text-gray-900 group-hover:text-white mb-6">
+                {feature.icon}
+              </div>
+              <h3 className="text-xl font-bold mb-4">{feature.title}</h3>
+              <p className="text-gray-600 group-hover:text-gray-300 leading-relaxed">
+                {feature.description}
+              </p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Testimonials */}
+      <section className="mt-32 px-6 max-w-7xl mx-auto">
+        <h2 className="text-3xl font-bold text-center mb-16">
+          From Our Student Community
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {testimonials.map((testimonial, index) => (
+            <div key={index} className="bg-gray-50 p-8 rounded-xl border border-gray-100">
+              <p className="text-lg text-gray-600 mb-6">"{testimonial.quote}"</p>
+              <div>
+                <div className="font-bold text-black">{testimonial.author}</div>
+                <div className="text-gray-500 text-sm">{testimonial.role}</div>
+                <div className="text-gray-500 text-sm">{testimonial.university}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="mt-32 mb-20 px-6">
+        <div className="max-w-4xl mx-auto bg-black rounded-2xl p-12 text-center text-white relative overflow-hidden">
+          <div className="relative z-10">
+            <h2 className="text-4xl font-bold mb-6">Start Your Freelance Journey Today</h2>
+            <p className="text-lg text-gray-300 mb-8 max-w-2xl mx-auto">
+              Join thousands of college students who are building their careers, 
+              earning money, and gaining valuable experience through QuickGigs.
+            </p>
+            <button className="bg-white text-black px-8 py-4 rounded-lg text-lg font-medium hover:bg-gray-100 transition-all">
+              Create Your Account
+            </button>
+          </div>
+          
+          {/* Decorative Pattern */}
+          <div className="absolute inset-0 opacity-10">
+            <div className="absolute inset-0" style={{
+              backgroundImage: "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2V6h4V4H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\")",
+              backgroundSize: '30px 30px'
+            }}></div>
+          </div>
+        </div>
+      </section>
+
+      {/* New Leaderboard Section */}
+      <section className="mt-32 px-6 max-w-7xl mx-auto">
+        <div className="text-center mb-16">
+          <h2 className="text-3xl font-bold mb-6">
+            Student Achievers
+          </h2>
+          <p className="text-gray-600 max-w-2xl mx-auto">
+            Meet our top performing students who are excelling in their freelance journey while pursuing their studies.
+          </p>
+        </div>
+
+        {/* Leaderboard Table */}
+        <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Rank</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Student</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">University</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Gigs Completed</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Earnings</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Rating</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Badge</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-200">
+                {leaderboard.map((student) => (
+                  <tr key={student.rank} className="hover:bg-gray-50 transition-colors">
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-2">
+                        {student.rank === 1 ? (
+                          <Trophy className="w-5 h-5 text-yellow-400" />
+                        ) : student.rank === 2 ? (
+                          <Medal className="w-5 h-5 text-gray-400" />
+                        ) : student.rank === 3 ? (
+                          <Medal className="w-5 h-5 text-amber-600" />
+                        ) : (
+                          <span className="text-gray-500">{student.rank}</span>
+                        )}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full bg-gray-200 overflow-hidden relative">
+                          <Image
+                            src={student.avatar}
+                            alt={student.name}
+                            fill
+                            className="object-cover"
+                          />
+                        </div>
+                        <span className="font-medium">{student.name}</span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 text-gray-600">{student.university}</td>
+                    <td className="px-6 py-4 font-medium">{student.gigsCompleted}</td>
+                    <td className="px-6 py-4 font-medium">{student.earnings}</td>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-1">
+                        <Star className="w-4 h-4 text-yellow-400 fill-current" />
+                        <span>{student.rating}</span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className={`px-3 py-1 rounded-full text-sm font-medium
+                        ${student.badge === 'Elite' ? 'bg-purple-100 text-purple-700' : 
+                          student.badge === 'Pro' ? 'bg-blue-100 text-blue-700' :
+                          'bg-green-100 text-green-700'}`}>
+                        {student.badge}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {/* Achievement Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
+          <div className="bg-gradient-to-br from-purple-50 to-purple-100 p-6 rounded-xl border border-purple-200">
+            <Trophy className="w-8 h-8 text-purple-600 mb-4" />
+            <h3 className="font-bold text-xl mb-2">Elite Badge</h3>
+            <p className="text-gray-600">Complete 40+ gigs with an average rating above 4.8 to earn the prestigious Elite badge.</p>
+          </div>
+          <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-xl border border-blue-200">
+            <Medal className="w-8 h-8 text-blue-600 mb-4" />
+            <h3 className="font-bold text-xl mb-2">Pro Badge</h3>
+            <p className="text-gray-600">Complete 30+ gigs with an average rating above 4.5 to earn the Pro badge.</p>
+          </div>
+          <div className="bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-xl border border-green-200">
+            <Star className="w-8 h-8 text-green-600 mb-4" />
+            <h3 className="font-bold text-xl mb-2">Rising Star</h3>
+            <p className="text-gray-600">Complete 20+ gigs with an average rating above 4.0 to earn the Rising Star badge.</p>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="bg-black text-white py-20 mt-12">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+            <div>
+              <h3 className="text-xl font-bold mb-4">QuickGigs</h3>
+              <p className="text-gray-400 mb-6">
+                Empowering college students to kickstart their careers through meaningful freelance opportunities.
+              </p>
+              <div className="flex gap-4">
+                <Link href="#" className="text-gray-400 hover:text-white transition-colors">
+                  <Twitter className="w-5 h-5" />
+                </Link>
+                <Link href="#" className="text-gray-400 hover:text-white transition-colors">
+                  <Linkedin className="w-5 h-5" />
+                </Link>
+                <Link href="#" className="text-gray-400 hover:text-white transition-colors">
+                  <Instagram className="w-5 h-5" />
+                </Link>
+                <Link href="#" className="text-gray-400 hover:text-white transition-colors">
+                  <Github className="w-5 h-5" />
+                </Link>
+              </div>
+            </div>
+            
+            <div>
+              <h4 className="font-semibold mb-4">For Students</h4>
+              <ul className="space-y-3">
+                <li><Link href="#" className="text-gray-400 hover:text-white transition-colors">Browse Projects</Link></li>
+                <li><Link href="#" className="text-gray-400 hover:text-white transition-colors">How It Works</Link></li>
+                <li><Link href="#" className="text-gray-400 hover:text-white transition-colors">Success Stories</Link></li>
+                <li><Link href="#" className="text-gray-400 hover:text-white transition-colors">Student Resources</Link></li>
+                <li><Link href="#" className="text-gray-400 hover:text-white transition-colors">Learning Center</Link></li>
+              </ul>
+            </div>
+
+            <div>
+              <h4 className="font-semibold mb-4">For Clients</h4>
+              <ul className="space-y-3">
+                <li><Link href="#" className="text-gray-400 hover:text-white transition-colors">Post a Project</Link></li>
+                <li><Link href="#" className="text-gray-400 hover:text-white transition-colors">Find Talent</Link></li>
+                <li><Link href="#" className="text-gray-400 hover:text-white transition-colors">Enterprise Solutions</Link></li>
+                <li><Link href="#" className="text-gray-400 hover:text-white transition-colors">Success Stories</Link></li>
+                <li><Link href="#" className="text-gray-400 hover:text-white transition-colors">Client Reviews</Link></li>
+              </ul>
+            </div>
+
+            <div>
+              <h4 className="font-semibold mb-4">Support</h4>
+              <ul className="space-y-3">
+                <li><Link href="#" className="text-gray-400 hover:text-white transition-colors">Help Center</Link></li>
+                <li><Link href="#" className="text-gray-400 hover:text-white transition-colors">Trust & Safety</Link></li>
+                <li><Link href="#" className="text-gray-400 hover:text-white transition-colors">Terms of Service</Link></li>
+                <li><Link href="#" className="text-gray-400 hover:text-white transition-colors">Privacy Policy</Link></li>
+                <li><Link href="#" className="text-gray-400 hover:text-white transition-colors">Contact Us</Link></li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="mt-20 pt-8 border-t border-gray-800 text-center text-gray-400">
+            <p>© 2025 QuickGigs. All rights reserved.</p>
+          </div>
+        </div>
+      </footer>
+
+      {/* Add these styles to your global CSS or in a style tag */}
+      <style jsx>{`
+        @keyframes float {
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(-10px); }
+        }
+        .animate-float {
+          animation: float 3s ease-in-out infinite;
+        }
+        .animate-float-delayed {
+          animation: float 3s ease-in-out infinite;
+          animation-delay: 1.5s;
+        }
+      `}</style>
     </div>
   );
 }

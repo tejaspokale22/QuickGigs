@@ -1,31 +1,31 @@
-@import url('https://fonts.googleapis.com/css2?family=Afacad+Flux&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Rubik:ital,wght@0,300..900;1,300..900&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Kanit:wght@100..900&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Custom class for Archivo Black font */
-.logo-font {
-  font-family: 'Archivo Black', serif;
-  font-weight: 900;
-}
-
-/* Apply Rubik font globally */
 body {
   font-family: 'Rubik', serif;
 }
-/* body {
-  font-family: 'inter-var', -apple-system, BlinkMacSystemFont, 'Segoe UI',
-    Helvetica, 'Apple Color Emoji', Arial, sans-serif, 'Segoe UI Emoji',
-    'Segoe UI Symbol';
-} */
 
-/* Example of applying Afacad Flux to a specific class */
-/* .afacad-font {
-  font-family: 'Afacad Flux', serif;
-  font-weight: 800;
-} */
+/* custom scrollbar  */
+
+/* Scrollbar Width */
+::-webkit-scrollbar {
+  width: 7px; /* Width of the scrollbar */
+}
+
+/* Scrollbar Track */
+::-webkit-scrollbar-track {
+  background: black; /* Black track */
+}
+
+/* Scrollbar Thumb (draggable part) */
+::-webkit-scrollbar-thumb {
+  background-color: rgb(119, 119, 119); /* Dark gray thumb for visibility */
+}
+
+/* Scrollbar Thumb on Hover */
+::-webkit-scrollbar-thumb:hover {
+  background-color: #555; /* Slightly lighter on hover */
+}

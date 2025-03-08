@@ -1,10 +1,13 @@
-import type { NextConfig } from "next";
+import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
   images: {
-    domains: ["lh3.googleusercontent.com"], // Add the allowed external domains here
+    remotePatterns: [
+      { hostname: 'lh3.googleusercontent.com' },
+      { hostname: 'randomuser.me' }
+    ],
   },
   // Add any other configuration options below
-};
+}
 
-export default nextConfig;
+export default nextConfig
