@@ -3,28 +3,15 @@
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Button } from './ui/button'
 import Logo from './Logo'
 import { auth, signOut } from '@/app/utils/firebase'
-import { onAuthStateChanged, User } from 'firebase/auth'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
-import { LogOut, UserCircle, LayoutDashboard } from 'lucide-react'
+import { onAuthStateChanged } from 'firebase/auth'
 import logoImg from '../../public/logoImg.png'
+import ProfileDropdown from './ProfileDropdown'
 
 const Header = () => {
   // Initialize from localStorage to prevent flicker
-  const [user, setUser] = useState<User | null>(() => {
+  const [user, setUser] = useState(() => {
     const savedUser = localStorage.getItem('userData')
     return savedUser ? JSON.parse(savedUser) : null
   })
@@ -58,11 +45,11 @@ const Header = () => {
   }
 
   return (
-    <header className="fixed top-0 left-0 right-0 w-full flex items-center justify-between p-2 bg-white border-b border-gray-300 z-50">
+    <header className="fixed top-0 left-0 right-0 w-full flex items-center justify-between p-3 bg-white z-50">
       {/* Logo Section */}
-      <div className="flex items-center ml-6 gap-1">
+      <div className="flex items-center ml-2 gap-1">
         <div className="flex items-center gap-1">
-          <Image src={logoImg} width={39} height={39} alt="logo" priority />
+          <Image src={logoImg} width={30} height={39} alt="logo" priority />
           <Logo />
         </div>
       </div>
@@ -70,71 +57,18 @@ const Header = () => {
       {/* Navigation Section */}
       <nav className="mr-2 flex items-center gap-3">
         {user ? (
-          <TooltipProvider>
-            <Tooltip>
-              <DropdownMenu>
-                <TooltipTrigger asChild>
-                  <DropdownMenuTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      className="h-10 w-10 rounded-full p-0 hover:bg-gray-100"
-                    >
-                      {user.photoURL ? (
-                        <Image
-                          src={user.photoURL}
-                          alt="Profile"
-                          width={37}
-                          height={32}
-                          className="rounded-full"
-                        />
-                      ) : (
-                        <UserCircle className="h-8 w-8" />
-                      )}
-                    </Button>
-                  </DropdownMenuTrigger>
-                </TooltipTrigger>
-                <TooltipContent
-                  className="bg-black text-white px-3 py-1 text-sm"
-                  sideOffset={5}
-                >
-                  {user.displayName || user.email}
-                </TooltipContent>
-                <DropdownMenuContent
-                  align="end"
-                  className="w-48 bg-white bg-opacity-80 backdrop-blur-sm border border-gray-200"
-                >
-                  <DropdownMenuItem asChild>
-                    <Link
-                      href="/dashboard"
-                      className="flex items-center gap-2 cursor-pointer hover:bg-gray-100"
-                    >
-                      <LayoutDashboard className="h-4 w-4" />
-                      <span>Dashboard</span>
-                    </Link>
-                  </DropdownMenuItem>
-
-                  <DropdownMenuItem
-                    onClick={handleLogout}
-                    className="flex items-center gap-2 text-red-600 cursor-pointer hover:bg-red-100"
-                  >
-                    <LogOut className="h-4 w-4" />
-                    <span>Sign out</span>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </Tooltip>
-          </TooltipProvider>
+          <ProfileDropdown user={user} handleLogout={handleLogout} />
         ) : (
           <div className="flex items-center gap-2">
             <Link
               href="/login"
-              className="bg-white text-black px-3 py-2 text-sm font-medium hover:bg-gray-100 rounded-md transition"
+              className="bg-white text-black px-3 py-1 text-base font-normal hover:bg-gray-200 rounded"
             >
               Log in
             </Link>
             <Link
               href="/register"
-              className="bg-black text-white px-3 py-2 text-sm font-medium hover:bg-gray-800 rounded-md transition"
+              className="bg-black text-white px-3 py-1 text-base font-normal hover:bg-gray-800 rounded"
             >
               Register
             </Link>
