@@ -10,9 +10,11 @@ import {
   ArrowRight,
   Trophy,
   Medal,
-  Star
+  Star,
+  Send
 } from 'lucide-react';
-import hero from '../../public/hero.jpg'
+import hero from '../../public/hero.jpg';
+// import heroine from '../../public/heroine.jpg';
 
 export default function Home() {
   const features = [
@@ -162,23 +164,24 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-white">
       {/* Hero Section */}
-      <section className="pt-[96px] px-6 max-w-7xl mx-auto relative">
+      <section className="pt-[96px] px-6 max-w-[1400px] mx-auto relative bg-gray-200 rounded-2xl">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className="space-y-8">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-black leading-tight">
-              Launch Your Career <br/>
-              <span className="text-gray-400">While Still in College</span>
+              Start Monetizing <br/>
+              <span className="text-black">while still in College</span>
             </h1>
             <p className="text-lg text-gray-600 max-w-xl">
               QuickGigs connects ambitious college students with flexible freelance opportunities. 
               Build your portfolio, earn money, and gain real-world experience without compromising your studies.
             </p>
             <div className="flex gap-4">
-              <button className="bg-black text-white px-8 py-4 rounded-lg text-lg font-medium hover:bg-gray-900 transition-all flex items-center gap-2 group">
-                Start Freelancing
+              <button className="bg-black text-white px-8 py-2 rounded text-lg font-medium hover:bg-gray-900 transition-all flex items-center gap-2 group">
+                Get Started
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </button>
-              <button className="border-2 border-black px-8 py-4 rounded-lg text-lg font-medium hover:bg-gray-50 transition-all">
+              <button className="border-2 border-black px-8 py-2 rounded text-lg font-medium hover:bg-gray-200 transition-all flex gap-3 items-center justify-center">
+                <span><Send/></span>
                 Post a Project
               </button>
             </div>
@@ -206,31 +209,21 @@ export default function Home() {
       </section>
 
       {/* Stats Section */}
-      <section className="mt-32 px-6">
-        <div className="max-w-7xl mx-auto border-y border-gray-200 py-12">
+      <section className="mt-32 px-6 bg-gray-200 py-12 rounded-2xl">
+        <div className="max-w-7xl mx-auto border-y border-gray-300 py-12">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            <div className="text-center">
-              <div className="text-4xl font-bold text-black">5000+</div>
-              <div className="text-gray-600 mt-2">Student Freelancers</div>
-            </div>
-            <div className="text-center">
-              <div className="text-4xl font-bold text-black">10k+</div>
-              <div className="text-gray-600 mt-2">Projects Completed</div>
-            </div>
-            <div className="text-center">
-              <div className="text-4xl font-bold text-black">500+</div>
-              <div className="text-gray-600 mt-2">Universities</div>
-            </div>
-            <div className="text-center">
-              <div className="text-4xl font-bold text-black">₹2M+</div>
-              <div className="text-gray-600 mt-2">Paid to Students</div>
-            </div>
+            {['5000+ Student Freelancers', '10k+ Projects', '500+ Universities', '₹2M+ Paid'].map((stat, index) => (
+              <div className="text-center">
+                <div className="text-4xl font-bold text-black">{stat.split(' ')[0]}</div>
+                <div className="text-gray-600 mt-2">{stat.split(' ')[1]}</div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
       {/* Popular Categories */}
-      <section className="mt-32 px-6 max-w-7xl mx-auto">
+      <section className="mt-32 px-6 max-w-7xl mx-auto bg-gray-200 p-12 rounded-2xl">
         <h2 className="text-3xl font-bold text-center mb-6">
           Popular Categories
         </h2>
@@ -239,7 +232,7 @@ export default function Home() {
         </p>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {categories.map((category, index) => (
-            <div key={index} className="bg-gray-50 rounded-xl p-6 border border-gray-100 hover:border-gray-300 transition-all">
+            <div className="bg-gray-50 rounded-xl p-6 border border-gray-100 hover:border-gray-300 transition-all">
               <div className="text-4xl mb-4">{category.icon}</div>
               <h3 className="text-xl font-bold mb-2">{category.title}</h3>
               <p className="text-gray-600 mb-4">{category.description}</p>
@@ -251,7 +244,7 @@ export default function Home() {
 
       {/* Benefits Section */}
       <section className="mt-32 px-6 max-w-7xl mx-auto">
-        <div className="bg-gray-50 rounded-2xl p-12">
+        <div className="bg-gray-200 rounded-2xl p-12">
           <h2 className="text-3xl font-bold mb-6">
             Why Students Choose QuickGigs
           </h2>
@@ -259,30 +252,25 @@ export default function Home() {
             We understand the unique challenges of balancing academics with professional growth. 
             That's why we've designed our platform specifically for college students.
           </p>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {benefits.map((benefit, index) => (
-              <div key={index} className="flex items-center gap-4">
-                <div className="w-8 h-8 bg-black rounded-full flex items-center justify-center flex-shrink-0">
-                  <CheckCircle2 className="w-5 h-5 text-white" />
-                </div>
-                <p className="text-lg">{benefit}</p>
+          {benefits.map((benefit, index) => (
+            <div className="flex items-center gap-4 space-y-2">
+              <div className="w-8 h-8 bg-black rounded-full flex items-center justify-center flex-shrink-0">
+                <CheckCircle2 className="w-5 h-5 text-white" />
               </div>
-            ))}
-          </div>
+              <p className="text-lg">{benefit}</p>
+            </div>
+          ))}
         </div>
       </section>
 
       {/* Features Section */}
-      <section className="mt-32 px-6 max-w-7xl mx-auto">
+      <section className="mt-32 px-6 max-w-7xl mx-auto bg-gray-200 p-12 rounded-2xl">
         <h2 className="text-3xl font-bold text-center mb-16">
           Designed for Student Success
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
           {features.map((feature, index) => (
-            <div
-              key={index}
-              className="bg-gray-50 rounded-xl p-8 border border-gray-100 group hover:bg-black hover:text-white transition-all duration-300"
-            >
+            <div className="bg-gray-50 rounded-xl p-8 border border-gray-100 group hover:bg-black hover:text-white transition-all duration-300">
               <div className="text-gray-900 group-hover:text-white mb-6">
                 {feature.icon}
               </div>
@@ -296,13 +284,13 @@ export default function Home() {
       </section>
 
       {/* Testimonials */}
-      <section className="mt-32 px-6 max-w-7xl mx-auto">
+      <section className="mt-32 px-6 max-w-7xl mx-auto bg-gray-200 p-12 rounded-2xl">
         <h2 className="text-3xl font-bold text-center mb-16">
           From Our Student Community
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {testimonials.map((testimonial, index) => (
-            <div key={index} className="bg-gray-50 p-8 rounded-xl border border-gray-100">
+            <div className="bg-gray-50 p-8 rounded-xl border border-gray-100">
               <p className="text-lg text-gray-600 mb-6">"{testimonial.quote}"</p>
               <div>
                 <div className="font-bold text-black">{testimonial.author}</div>
@@ -316,7 +304,7 @@ export default function Home() {
 
       {/* CTA Section */}
       <section className="mt-32 mb-20 px-6">
-        <div className="max-w-4xl mx-auto bg-black rounded-2xl p-12 text-center text-white relative overflow-hidden">
+        <div className="max-w-4xl mx-auto bg-gray-200 rounded-2xl p-12 text-center text-white relative overflow-hidden">
           <div className="relative z-10">
             <h2 className="text-4xl font-bold mb-6">Start Your Freelance Journey Today</h2>
             <p className="text-lg text-gray-300 mb-8 max-w-2xl mx-auto">
@@ -339,7 +327,7 @@ export default function Home() {
       </section>
 
       {/* New Leaderboard Section */}
-      <section className="mt-32 px-6 max-w-7xl mx-auto">
+      <section className="mt-32 px-6 max-w-7xl mx-auto bg-gray-200 p-12 rounded-2xl">
         <div className="text-center mb-16">
           <h2 className="text-3xl font-bold mb-6">
             Student Achievers
@@ -501,21 +489,6 @@ export default function Home() {
           </div>
         </div>
       </footer>
-
-      {/* Add these styles to your global CSS or in a style tag */}
-      <style jsx>{`
-        @keyframes float {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-10px); }
-        }
-        .animate-float {
-          animation: float 3s ease-in-out infinite;
-        }
-        .animate-float-delayed {
-          animation: float 3s ease-in-out infinite;
-          animation-delay: 1.5s;
-        }
-      `}</style>
     </div>
   );
 }

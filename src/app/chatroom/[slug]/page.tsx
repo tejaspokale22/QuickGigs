@@ -10,6 +10,7 @@ import { fetchUser } from "@/app/utils/actions/authActions";
 import { useParams } from "next/navigation";
 import { Send } from 'lucide-react';
 import { Chat,Message } from "@/app/utils/types"; 
+import  Spinner  from "@/components/ui/spinner"
 
 type FormData = {
   message: string;
@@ -91,63 +92,106 @@ const ChatRoom = () => {
   };
 
   if (loading) {
-    return <p className="text-center">Loading messages...</p>;
+    return (
+      <div className="flex justify-center items-center min-h-screen bg-gray-50">
+        <div className="text-center">
+          <Spinner />
+        </div>
+      </div>
+    );
   }
 
   if (error) {
-    return <p className="text-center text-red-500">{error}</p>;
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <p className="text-red-500 font-medium">{error}</p>
+      </div>
+    );
   }
 
   return (
-    <div className="h-[650px] flex flex-col bg-gray-100">
+    <div className="py-10 max-w-4xl mx-auto my-8 h-[80vh] rounded-2xl overflow-hidden border border-gray-200 shadow-lg bg-white">
       {/* Chat Header */}
-      <div className="flex items-center bg-gray-200 text-black p-2">
-        {receiver ? (
-          <>
-            <Image
-              src={receiver.profilePicture}
-              alt={receiver.name}
-              width={40}
-              height={40}
-              className="rounded-full mr-3"
-            />
-            <span className="text-xl font-semibold">{receiver.name}</span>
-          </>
-        ) : (
-          <span className="text-xl font-semibold">Loading...</span>
-        )}
+      <div className="flex items-center justify-between bg-white px-6 py-4 border-b border-gray-200">
+        <div className="flex items-center space-x-4">
+          {receiver ? (
+            <>
+              <div className="relative">
+                <Image
+                  src={receiver.profilePicture}
+                  alt={receiver.name}
+                  width={48}
+                  height={48}
+                  className="rounded-full object-cover ring-2 ring-gray-100"
+                />
+                <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></div>
+              </div>
+              <div>
+                <h2 className="text-lg font-semibold text-gray-900">{receiver.name}</h2>
+                <p className="text-sm text-gray-500">Online</p>
+              </div>
+            </>
+          ) : (
+            <div className="animate-pulse flex items-center space-x-4">
+              <div className="w-12 h-12 bg-gray-200 rounded-full"></div>
+              <div className="space-y-2">
+                <div className="h-4 w-24 bg-gray-200 rounded"></div>
+                <div className="h-3 w-16 bg-gray-200 rounded"></div>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Chat Messages */}
-      <div className="flex-1 overflow-y-auto p-4">
-        {messages.length > 0 ? (
-          messages.map((msg: Message, index: number) => (
-            <div
-              key={index}
-              className={`mb-4 p-3 rounded-lg ${msg.senderId === loggedInUserId ? "self-end text-right" : "self-start text-left"} bg-gray-200`}
-            >
-              <p>{msg.message}</p>
+      <div className="flex-1 overflow-y-auto p-6 h-[calc(80vh-160px)] bg-gray-50">
+        <div className="space-y-4">
+          {messages.length > 0 ? (
+            messages.map((msg: Message, index: number) => (
+              <div
+                key={index}
+                className={`flex ${msg.senderId === loggedInUserId ? "justify-end" : "justify-start"}`}
+              >
+                <div
+                  className={`max-w-[70%] rounded-2xl px-4 py-2 ${
+                    msg.senderId === loggedInUserId
+                      ? "bg-black text-white rounded-br-none"
+                      : "bg-gray-200 text-gray-900 rounded-bl-none"
+                  }`}
+                >
+                  <p className="text-sm">{msg.message}</p>
+                  <p className="text-[10px] mt-1 opacity-70">
+                    {msg.createdAt?.toDate().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                  </p>
+                </div>
+              </div>
+            ))
+          ) : (
+            <div className="flex items-center justify-center h-full">
+              <p className="text-gray-500 text-sm">No messages yet. Start the conversation!</p>
             </div>
-          ))
-        ) : (
-          <p className="text-center text-gray-500">No messages yet</p>
-        )}
+          )}
+        </div>
       </div>
 
       {/* Message Input */}
-      <div className="p-4 bg-white border-t border-gray-300">
-        <form onSubmit={handleSubmit(onSubmit)} className="flex items-center">
+      <div className="p-4 bg-white border-t border-gray-200">
+        <form onSubmit={handleSubmit(onSubmit)} className="flex items-center gap-4">
           <input
             {...register("message", { required: true })}
             type="text"
             placeholder="Type your message..."
-            className="flex-1 p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="flex-1 px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl 
+              focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent
+              placeholder:text-gray-400 text-sm"
           />
           <button
             type="submit"
-            className="ml-4 px-6 py-2 bg-black text-white rounded hover:bg-gray-700 flex items-center justify-center"
+            className="px-6 py-3 bg-black text-white rounded-xl hover:bg-gray-900 
+              transition-colors duration-200 flex items-center gap-2 text-sm font-medium"
           >
-            <Send className="w-5 h-5 mr-2" /> Send
+            Send
+            <Send className="w-4 h-4" />
           </button>
         </form>
       </div>

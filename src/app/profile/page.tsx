@@ -14,8 +14,19 @@ import Instagram from '../../../public/instagram.svg'
 import Github from '../../../public/github.svg'
 import X from '../../../public/X.svg'
 import Image from 'next/image'
-import { Phone, MapPin, User, Star, Link2, Briefcase, Mail } from 'lucide-react'
-import { Spinner } from '@heroui/spinner'
+import { doc, onSnapshot } from 'firebase/firestore'
+import { firestore } from '@/app/utils/firebase'
+import {
+  Phone,
+  MapPin,
+  User,
+  Star,
+  Link2,
+  Briefcase,
+  Mail,
+  Edit,
+} from 'lucide-react'
+import Spinner from '@/components/ui/spinner'
 
 interface UserProfile {
   name: string
@@ -43,7 +54,6 @@ const ProfilePage = () => {
   const [skillsDialogOpen, setSkillsDialogOpen] = useState(false)
   const [socialsDialogOpen, setSocialsDialogOpen] = useState(false)
   const [experienceDialogOpen, setExperienceDialogOpen] = useState(false)
-  const [useClipLoader, setUseClipLoader] = useState(true)
 
   useEffect(() => {
     const uid = localStorage.getItem('uid')
@@ -52,233 +62,260 @@ const ProfilePage = () => {
       return
     }
 
-    const fetchUserData = async () => {
+    const fetchUserData = (uid: string) => {
       try {
-        const user = await fetchUser(uid)
-        console.log(user)
-        if (user) {
-          const userProfile: UserProfile = {
-            name: user.name,
-            email: user.email,
-            profilePicture: user.profilePicture || '',
-            contact: user.contact || '',
-            location: user.location || '',
-            bio: user.bio || '',
-            skills: user.skills || [],
-            socials: user.socials || {
-              github: '',
-              twitter: '',
-              linkedin: '',
-              instagram: '',
-              website: '',
-            },
-            experience: user.experience || '',
+        const userRef = doc(firestore, 'users', uid)
+
+        return onSnapshot(userRef, (docSnap) => {
+          if (docSnap.exists()) {
+            const user = docSnap.data()
+            const userProfile: UserProfile = {
+              name: user.name,
+              email: user.email,
+              profilePicture: user.profilePicture || '',
+              contact: user.contact || '',
+              location: user.location || '',
+              bio: user.bio || '',
+              skills: user.skills || [],
+              socials: user.socials || {
+                github: '',
+                twitter: '',
+                linkedin: '',
+                instagram: '',
+                website: '',
+              },
+              experience: user.experience || '',
+            }
+            setUserData(userProfile)
+          } else {
+            console.error('User not found')
           }
-          setUserData(userProfile)
-        } else {
-          console.error('User not found')
-        }
+        })
       } catch (error) {
         console.error('Error fetching user data:', error)
       }
     }
-
-    fetchUserData()
+    const unsubscribe = fetchUserData(uid)
+    return () => unsubscribe && unsubscribe() // Cleanup listener on unmount
   }, [])
 
   if (!userData) {
     return (
-      <div className="flex justify-center items-center h-screen">
-        <Spinner size="lg" color="primary" />
+      <div className="flex justify-center items-center min-h-screen bg-gray-50">
+        <div className="text-center">
+          <Spinner />
+        </div>
       </div>
     )
   }
 
   return (
-    <div className="w-full p-8 mt-10 rounded-xl h-5/6 bg-gray-100 flex flex-col gap-4 max-w-3xl mx-auto">
-      <div className="flex items-center space-x-4">
-        <Image
-          src={userData.profilePicture}
-          alt="Profile Picture"
-          className="rounded-full object-contain"
-          width={80}
-          height={1}
-        />
-        <div>
-          <h1 className="text-2xl font-bold">{userData.name}</h1>
-          <p className="text-blue-600 flex items-center">
-            <Mail className="w-4 h-4 mr-1" />
-            {userData.email}
-          </p>
-        </div>
-      </div>
-
-      <div className="flex gap- items-center justify-start pt-8">
-        <div className="flex items-center flex-col mb-4">
-          {/* Contact Section */}
-          <div className="flex items-center space-x-2">
-            <Phone className="w-5 h-5" strokeWidth={2} />
-            <h2 className="text-xl font-semibold">Contact</h2>
-          </div>
-          {!userData.contact && (
-            <button
-              onClick={() => setContactDialogOpen(true)}
-              className="text-blue-500"
-            >
-              Add Contact
-            </button>
-          )}
-          <p>+91 {userData.contact || 'Not provided'}</p>
-        </div>
-
-        <div className="flex items-center flex-col mb-4">
-          {/* Location Section */}
-          <div className="flex items-center space-x-2">
-            <MapPin className="w-5 h-5" strokeWidth={2} />
-            <h2 className="text-xl font-semibold">Location</h2>
-          </div>
-          {!userData.location && (
-            <button
-              onClick={() => setLocationDialogOpen(true)}
-              className="text-blue-500"
-            >
-              Add Location
-            </button>
-          )}
-          <p>{userData.location || 'Not provided'}</p>
-        </div>
-
-        <div className="flex items-center flex-col mb-4">
-          {/* Socials Section */}
-          <div className="flex items-center space-x-2">
-            <Link2 className="w-5 h-5" strokeWidth={2} />
-            <h2 className="text-xl font-semibold">Socials</h2>
-          </div>
-          {!userData.socials?.github &&
-            !userData.socials?.twitter &&
-            !userData.socials?.linkedin &&
-            !userData.socials?.instagram &&
-            !userData.socials?.website && (
+    <div className="min-h-screen bg-gray-50 pt-24 pb-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-4xl mx-auto">
+        {/* Profile Header */}
+        <div className="bg-gray-100 rounded-2xl shadow-sm p-8 mb-6">
+          <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
+            <div className="relative">
+              <Image
+                src={userData.profilePicture}
+                alt="Profile Picture"
+                className="rounded-full object-cover"
+                width={120}
+                height={120}
+              />
               <button
-                onClick={() => setSocialsDialogOpen(true)}
-                className="text-blue-500"
+                className="absolute bottom-0 right-0 bg-black text-white p-2 rounded-full hover:bg-gray-800 transition-colors"
+                title="Edit profile picture"
               >
-                Add Socials
+                <Edit className="w-4 h-4" />
               </button>
-            )}
-          <div className="mt-2 flex space-x-4">
-            {/* Social Links */}
-            {userData.socials?.website && (
-              <Link
-                href={userData.socials.website}
-                target="_blank"
-                className="text-gray-600 hover:text-gray-900"
-              >
-                <Image src={Website} alt="Website" width={24} height={24} />
-              </Link>
-            )}
-            {userData.socials?.linkedin && (
-              <Link
-                href={userData.socials.linkedin}
-                target="_blank"
-                className="text-gray-600 hover:text-gray-900"
-              >
-                <Image src={Linkedin} alt="LinkedIn" width={24} height={24} />
-              </Link>
-            )}
-            {userData.socials?.github && (
-              <Link
-                href={userData.socials.github}
-                target="_blank"
-                className="text-gray-600 hover:text-gray-900"
-              >
-                <Image src={Github} alt="Github" width={24} height={24} />
-              </Link>
-            )}
-            {userData.socials?.instagram && (
-              <Link
-                href={userData.socials.instagram}
-                target="_blank"
-                className="text-gray-600 hover:text-gray-900"
-              >
-                <Image src={Instagram} alt="Instagram" width={24} height={24} />
-              </Link>
-            )}
-            {userData.socials?.twitter && (
-              <Link
-                href={userData.socials.twitter}
-                target="_blank"
-                className="text-gray-600 hover:text-gray-900"
-              >
-                <Image src={X} alt="Twitter" width={24} height={24} />
-              </Link>
-            )}
+            </div>
+            <div className="text-center sm:text-left flex-1">
+              <h1 className="text-3xl font-bold text-gray-900">
+                {userData.name}
+              </h1>
+              <p className="text-gray-600 flex items-center justify-center sm:justify-start gap-2 mt-2">
+                <Mail className="w-4 h-4" />
+                {userData.email}
+              </p>
+              <div className="mt-4 flex flex-wrap gap-3 justify-center sm:justify-start">
+                {userData.skills?.map((skill, index) => (
+                  <span
+                    key={index}
+                    className={`px-2 py-1 flex items-center justify-center rounded-full text-sm font-medium transition-all hover:scale-105 bg-blue-100 border border-blue-900`}
+                  >
+                    {skill}
+                  </span>
+                ))}
+                <button
+                  onClick={() => setSkillsDialogOpen(true)}
+                  className="px-3 py-1.5 border border-gray-300 text-gray-600 rounded-full text-sm 
+                    hover:bg-gray-50 hover:border-gray-400 transition-all font-medium"
+                >
+                  + Add Skills
+                </button>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* About Me Section */}
-      <div className="mt-2">
-        <div className="flex items-center space-x-2">
-          <User className="w-5 h-5" strokeWidth={2} />
-          <h2 className="text-xl font-semibold">About Me</h2>
-        </div>
-        {!userData.bio && (
-          <button
-            onClick={() => setBioDialogOpen(true)}
-            className="text-blue-500"
-          >
-            Add Bio
-          </button>
-        )}
-        <p className="mt-1">{userData.bio || 'Not provided'}</p>
-      </div>
+        {/* Main Content Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {/* Left Column */}
+          <div className="md:col-span-1 space-y-6">
+            {/* Contact Info Card */}
+            <div className="bg-gray-100 rounded-xl shadow-sm p-6">
+              <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                <Phone className="w-5 h-5 text-gray-500" />
+                Contact Information
+              </h2>
+              <div className="space-y-4">
+                <div>
+                  <p className="text-sm text-gray-500">Phone</p>
+                  <div className="flex items-center justify-between">
+                    <p className="text-gray-900">
+                      +91 {userData.contact || 'Not provided'}
+                    </p>
+                    <button
+                      onClick={() => setContactDialogOpen(true)}
+                      className="text-blue-600 hover:text-blue-700 text-sm"
+                    >
+                      {userData.contact ? 'Edit' : 'Add'}
+                    </button>
+                  </div>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500">Location</p>
+                  <div className="flex items-center justify-between">
+                    <p className="text-gray-900">
+                      {userData.location || 'Not provided'}
+                    </p>
+                    <button
+                      onClick={() => setLocationDialogOpen(true)}
+                      className="text-blue-600 hover:text-blue-700 text-sm"
+                    >
+                      {userData.location ? 'Edit' : 'Add'}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
 
-      {/* Skills Section */}
-      <div className="mt-6">
-        <div className="flex items-center space-x-2">
-          <Star className="w-5 h-5" strokeWidth={2} />
-          <h2 className="text-xl font-semibold">Skills</h2>
-        </div>
-        {userData.skills && userData.skills.length === 0 && (
-          <button
-            onClick={() => setSkillsDialogOpen(true)}
-            className="text-blue-500"
-          >
-            Add Skills
-          </button>
-        )}
-        <ul className="mt-3 space-y-2 space-x-3">
-          {(userData.skills || []).map((skill, index) => (
-            <li
-              key={index}
-              className="text-black bg-gray-300 p-2 inline rounded"
-            >
-              {skill}
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      {/* Experience Section */}
-      <div className="mt-6">
-        <div className="flex justify-between items-center">
-          <div className="flex items-center space-x-2">
-            <Briefcase className="w-5 h-5" strokeWidth={2} />
-            <h2 className="text-xl font-semibold">Experience</h2>
+            {/* Social Links Card */}
+            <div className="bg-gray-100 rounded-xl shadow-sm p-4">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-lg font-semibold flex items-center gap-2">
+                  <Link2 className="w-5 h-5 text-gray-500" />
+                  Socials
+                </h2>
+                <button
+                  onClick={() => setSocialsDialogOpen(true)}
+                  className="text-blue-600 hover:text-blue-700 text-sm"
+                >
+                  Edit
+                </button>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {userData.socials?.website && (
+                  <Link
+                    href={userData.socials.website}
+                    target="_blank"
+                    className="p-2 transition-transform transform hover:scale-110"
+                  >
+                    <Image src={Website} alt="Website" width={24} height={24} />
+                  </Link>
+                )}
+                {userData.socials?.linkedin && (
+                  <Link
+                    href={userData.socials.linkedin}
+                    target="_blank"
+                    className="p-2 transition-transform transform hover:scale-110"
+                  >
+                    <Image
+                      src={Linkedin}
+                      alt="LinkedIn"
+                      width={24}
+                      height={24}
+                    />
+                  </Link>
+                )}
+                {userData.socials?.github && (
+                  <Link
+                    href={userData.socials.github}
+                    target="_blank"
+                    className="p-2 transition-transform transform hover:scale-110"
+                  >
+                    <Image src={Github} alt="Github" width={24} height={24} />
+                  </Link>
+                )}
+                {userData.socials?.instagram && (
+                  <Link
+                    href={userData.socials.instagram}
+                    target="_blank"
+                    className="p-2 transition-transform transform hover:scale-110"
+                  >
+                    <Image
+                      src={Instagram}
+                      alt="Instagram"
+                      width={24}
+                      height={24}
+                    />
+                  </Link>
+                )}
+                {userData.socials?.twitter && (
+                  <Link
+                    href={userData.socials.twitter}
+                    target="_blank"
+                    className="p-2 transition-transform transform hover:scale-110"
+                  >
+                    <Image src={X} alt="Twitter" width={24} height={24} />
+                  </Link>
+                )}
+              </div>
+            </div>
           </div>
-          {!userData.experience && (
-            <button
-              onClick={() => setExperienceDialogOpen(true)}
-              className="text-blue-500"
-            >
-              Add Experience
-            </button>
-          )}
+
+          {/* Right Column */}
+          <div className="md:col-span-2 space-y-6">
+            {/* About Section */}
+            <div className="bg-gray-100 rounded-xl shadow-sm p-6">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-lg font-semibold flex items-center gap-2">
+                  <User className="w-5 h-5 text-gray-500" />
+                  About
+                </h2>
+                <button
+                  onClick={() => setBioDialogOpen(true)}
+                  className="text-blue-600 hover:text-blue-700 text-sm"
+                >
+                  {userData.bio ? 'Edit' : 'Add'}
+                </button>
+              </div>
+              <p className="text-gray-600 whitespace-pre-wrap">
+                {userData.bio || 'Tell others about yourself...'}
+              </p>
+            </div>
+
+            {/* Experience Section */}
+            <div className="bg-gray-100 rounded-xl shadow-sm p-6">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-lg font-semibold flex items-center gap-2">
+                  <Briefcase className="w-5 h-5 text-gray-500" />
+                  Experience
+                </h2>
+                <button
+                  onClick={() => setExperienceDialogOpen(true)}
+                  className="text-blue-600 hover:text-blue-700 text-sm"
+                >
+                  {userData.experience ? 'Edit' : 'Add'}
+                </button>
+              </div>
+              <p className="text-gray-600 whitespace-pre-wrap">
+                {userData.experience || 'Share your work experience...'}
+              </p>
+            </div>
+          </div>
         </div>
-        <p className="mt-1 text-black rounded">
-          {userData.experience || 'No experience provided.'}
-        </p>
       </div>
 
       {/* Dialogs */}

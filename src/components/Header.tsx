@@ -45,7 +45,7 @@ const Header = () => {
   }
 
   return (
-    <header className="fixed top-0 left-0 right-0 w-full flex items-center justify-between p-3 bg-white z-50">
+    <header className="fixed top-0 left-0 right-0 w-full flex items-center justify-between p-3 bg-white z-50 border-b border-gray-200">
       {/* Logo Section */}
       <div className="flex items-center ml-2 gap-1">
         <div className="flex items-center gap-1">
