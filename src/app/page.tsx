@@ -164,7 +164,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-white">
       {/* Hero Section */}
-      <section className="pt-[96px] px-6 max-w-[1400px] mx-auto relative bg-gray-200 rounded-2xl">
+      <section className="pt-[96px] px-6 max-w-[1400px] mx-auto relative bg-white rounded-2xl">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className="space-y-8">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-black leading-tight">
@@ -176,11 +176,11 @@ export default function Home() {
               Build your portfolio, earn money, and gain real-world experience without compromising your studies.
             </p>
             <div className="flex gap-4">
-              <button className="bg-black text-white px-8 py-2 rounded text-lg font-medium hover:bg-gray-900 transition-all flex items-center gap-2 group">
+              <button className="bg-black text-white px-8 py-1 rounded text-lg font-medium hover:bg-gray-900 transition-all flex items-center gap-2 group">
                 Get Started
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </button>
-              <button className="border-2 border-black px-8 py-2 rounded text-lg font-medium hover:bg-gray-200 transition-all flex gap-3 items-center justify-center">
+              <button className="border-2 border-black px-6 py-1 rounded text-lg font-medium hover:bg-gray-200 transition-all flex gap-3 items-center justify-center">
                 <span><Send/></span>
                 Post a Project
               </button>
@@ -213,7 +213,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto border-y border-gray-300 py-12">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {['5000+ Student Freelancers', '10k+ Projects', '500+ Universities', '₹2M+ Paid'].map((stat, index) => (
-              <div className="text-center">
+              <div className="text-center" key={index}>
                 <div className="text-4xl font-bold text-black">{stat.split(' ')[0]}</div>
                 <div className="text-gray-600 mt-2">{stat.split(' ')[1]}</div>
               </div>
