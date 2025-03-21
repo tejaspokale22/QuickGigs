@@ -3,76 +3,52 @@ import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
 import {
   House,
-  ArrowsUpFromLine,
-  User,
-  CheckCircle,
+  Search,
   CalendarCheck,
-  Plus,
-  CreditCard,
   Upload,
   FileText,
-  Bell,
+  CheckCircle,
   MessageSquareMore,
-  IndianRupee,
-  Search, // Import Notification icon from lucide-react
-} from 'lucide-react' // Import icons from lucide-react
-import { auth } from '@/app/utils/firebase' // Import Firebase auth
-import { onAuthStateChanged } from 'firebase/auth' // Import Firebase's auth state listener
+  User,
+  CreditCard,
+  Bell,
+  Plus,
+  Menu,
+  X,
+} from 'lucide-react'
+import { auth } from '@/app/utils/firebase'
+import { onAuthStateChanged } from 'firebase/auth'
 import GigForm from './GigForm'
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarGroupLabel,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarFooter,
-} from '@/components/ui/sidebar'
-import Logo from './Logo'
-import { Button } from './ui/button'
-import { set } from 'date-fns'
 
-// Main LeftSidebar component
-const LeftSidebar: React.FC = () => {
+const LeftSidebar = () => {
   const [user, setUser] = useState<boolean>(() => {
     if (typeof window !== 'undefined') {
       return localStorage.getItem('isAuthenticated') === 'true'
     }
     return false
   })
-  const [activeItem, setActiveItem] = useState<string>('home') // Track active menu item
-  const [uid, setUid] = useState<string | null>(null) // State to hold uid
-
-  // Dialog for GigForm
+  const [activeItem, setActiveItem] = useState<string>('home')
+  const [uid, setUid] = useState<string | null>(null)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
-  const handleOpenDialog = () => setIsDialogOpen(true)
-  const handleCloseDialog = () => setIsDialogOpen(false)
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setUser(!!user)
       localStorage.setItem('isAuthenticated', user ? 'true' : 'false')
       if (user) {
-        setUid(user.uid) // Set uid from user object
+        setUid(user.uid)
       } else {
-        setUid(null) // Clear uid if no user
+        setUid(null)
       }
     })
 
     return () => unsubscribe()
   }, [])
 
-  // Define the menu items (conditionally add the items based on authentication)
   const menuItems = [
     { id: 'home', label: 'Home', href: '/', icon: House },
-    {
-      id: 'apply-gig',
-      label: 'Find Gigs',
-      href: '/gigs',
-      icon: Search, // You can replace this with a logo
-    },
+    { id: 'find-gigs', label: 'Find Gigs', href: '/gigs', icon: Search },
     ...(user
       ? [
           {
@@ -105,7 +81,12 @@ const LeftSidebar: React.FC = () => {
             href: `/messaging/${uid}`,
             icon: MessageSquareMore,
           },
-          { id: 'profile', label: 'Profile', href: '/profile', icon: User },
+          {
+            id: 'profile',
+            label: 'Profile',
+            href: '/profile',
+            icon: User,
+          },
           {
             id: 'getpaid',
             label: 'Get Paid',
@@ -122,64 +103,94 @@ const LeftSidebar: React.FC = () => {
       : []),
   ]
 
-  // Handle setting active item
-  const handleActiveItem = (id: string) => {
-    setActiveItem(id)
-  }
-
   return (
-    <Sidebar
-      variant="sidebar"
-      collapsible="offcanvas"
-      side="left"
-      className="pt-16 border border-r border-gray-300"
-    >
-      <SidebarContent>
-        <SidebarGroup>
-          {/* <SidebarGroupLabel><Logo/></SidebarGroupLabel> */}
-          <SidebarGroupContent>
-            <SidebarMenu>
+    <>
+      {/* Mobile Menu Button */}
+      <button
+        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+        className="fixed top-4 left-4 z-50 p-2 rounded-lg bg-gray-100 lg:hidden"
+      >
+        {isMobileMenuOpen ? (
+          <X className="h-6 w-6" />
+        ) : (
+          <Menu className="h-6 w-6" />
+        )}
+      </button>
+
+      {/* Sidebar */}
+      <aside
+        className={`fixed top-0 left-0 h-screen bg-white border-r border-gray-200 
+          transition-all duration-300 ease-in-out z-40 pt-16
+          ${
+            isMobileMenuOpen
+              ? 'w-64 translate-x-0'
+              : 'w-64 -translate-x-full lg:translate-x-0'
+          }
+        `}
+      >
+        <div className="flex flex-col h-full">
+          {/* Sidebar Content */}
+          <div className="flex-1 overflow-y-auto py-4 px-3">
+            <nav className="space-y-1">
               {menuItems.map((item) => {
-                const Icon = item.icon // Dynamically assign the icon
+                const Icon = item.icon
                 return (
-                  <SidebarMenuItem key={item.id}>
-                    <SidebarMenuButton
-                      asChild
-                      className={`rounded-lg ${
+                  <Link
+                    key={item.id}
+                    href={item.href}
+                    onClick={() => {
+                      setActiveItem(item.id)
+                      setIsMobileMenuOpen(false)
+                    }}
+                    className={`flex items-center gap-3 px-4 py-3 text-gray-700 rounded-xl
+                      transition-all duration-200 group
+                      ${
                         activeItem === item.id
-                          ? 'bg-gray-300 cursor-pointer pointer-events-none'
-                          : 'hover:bg-gray-200 cursor-pointer'
-                      } p-4 rounded`}
-                    >
-                      <Link
-                        href={item.href}
-                        className="font-medium w-full flex items-center text-left rounded text-base"
-                        onClick={() => handleActiveItem(item.id)}
-                      >
-                        <Icon className=" mr-2" />
-                        <span className="text-base text-black">
-                          {item.label}
-                        </span>
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
+                          ? 'bg-gray-100 text-black font-medium'
+                          : 'hover:bg-gray-50'
+                      }`}
+                  >
+                    <Icon
+                      className={`h-5 w-5 ${
+                        activeItem === item.id
+                          ? 'text-black'
+                          : 'text-gray-500 group-hover:text-gray-700'
+                      }`}
+                    />
+                    <span className="text-sm font-medium">{item.label}</span>
+                  </Link>
                 )
               })}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-      </SidebarContent>
-      <SidebarFooter>
-        <Button
-          className="bg-black text-white rounded hover:bg-gray-800"
-          onClick={handleOpenDialog}
-        >
-          <Plus size={64} />
-          Post a Gig
-        </Button>
-      </SidebarFooter>
-      <GigForm isOpen={isDialogOpen} onClose={handleCloseDialog} />
-    </Sidebar>
+            </nav>
+          </div>
+
+          {/* Post Gig Button */}
+          {user && (
+            <div className="p-4 border-t border-gray-200">
+              <button
+                onClick={() => setIsDialogOpen(true)}
+                className="w-full flex items-center justify-center gap-2 px-4 py-2.5 
+                  bg-black text-white rounded-xl hover:bg-gray-900 
+                  transition-colors duration-200"
+              >
+                <Plus className="h-5 w-5" />
+                <span className="font-medium">Post a Gig</span>
+              </button>
+            </div>
+          )}
+        </div>
+      </aside>
+
+      {/* Mobile Backdrop */}
+      {isMobileMenuOpen && (
+        <div
+          className="fixed inset-0 bg-black/20 backdrop-blur-sm z-30 lg:hidden"
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
+      )}
+
+      <GigForm isOpen={isDialogOpen} onClose={() => setIsDialogOpen(false)} />
+    </>
   )
 }
 

@@ -35,8 +35,8 @@ const ProfileDropdown = ({ user, handleLogout }: ProfileDropdownProps) => {
       {/* Trigger Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-gray-200
-          transition-all duration-200 group"
+        className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-gray-100
+          transition-all duration-200 group hover:bg-gray-200"
       >
         <div className="h-8 w-8 relative flex items-center justify-center">
           {user.photoURL ? (

@@ -45,7 +45,7 @@ const Header = () => {
   }
 
   return (
-    <header className="fixed top-0 left-0 right-0 w-full flex items-center justify-between p-3 bg-white z-50 border-b border-gray-300">
+    <header className="fixed top-0 left-0 right-0 w-full flex items-center justify-between p-3 bg-white z-50 border-b border-gray-200">
       {/* Logo Section */}
       <div className="flex items-center ml-2 gap-1">
         <div className="flex items-center gap-1">
@@ -55,9 +55,25 @@ const Header = () => {
       </div>
 
       {/* Navigation Section */}
-      <nav className="mr-2 flex items-center gap-3">
+      <nav className="mr-2 flex items-center gap-2">
+        <div>
+        <Link
+              href="/"
+              className="px-3 py-1.5 text-sm font-medium transition-all flex items-center gap-2 pr-1 justify-center rounded"
+            >
+              <span className='text-gray-700 hover:text-black text-base'>Home</span>
+            </Link>
+        </div>
         {user ? (
-          <ProfileDropdown user={user} handleLogout={handleLogout} />
+          <>
+            <Link
+              href="/gigs"
+              className="px-3 py-1.5 text-sm font-medium transition-all flex items-center gap-2 pr-2 justify-center rounded"
+            >
+              <span className='text-gray-700 hover:text-black text-base'>Find Gigs</span>
+            </Link>
+            <ProfileDropdown user={user} handleLogout={handleLogout} />
+          </>
         ) : (
           <div className="flex items-center gap-2">
             <Link

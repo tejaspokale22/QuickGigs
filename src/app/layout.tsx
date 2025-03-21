@@ -1,7 +1,6 @@
 import type { Metadata } from 'next'
 import './globals.css'
 import NextTopLoader from 'nextjs-toploader'
-import { SidebarProvider } from '@/components/ui/sidebar'
 import LayoutWrapper from '@/components/LayoutWrapper' // Import the client component
 
 export const metadata: Metadata = {
@@ -20,7 +19,6 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <SidebarProvider>
           <NextTopLoader
             color="#000000"
             initialPosition={0.08}
@@ -35,7 +33,6 @@ export default function RootLayout({
           />
           {/* Wrap the main layout inside LayoutWrapper */}
           <LayoutWrapper>{children}</LayoutWrapper>
-        </SidebarProvider>
       </body>
     </html>
   )
