@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { fetchGigById } from "@/app/utils/actions/gigActions";
 import { useParams } from "next/navigation";
 import { Gig } from "@/app/utils/types";
+import Spinner from "@/components/ui/spinner";
 
 export default function GigDetailsPage() {
   const { slug } = useParams() as { slug: string };
@@ -41,11 +42,15 @@ export default function GigDetailsPage() {
 
   return (
     <div className="pt-20 max-w-4xl mx-auto">
-      <h1 className="text-3xl font-bold mb-6 text-gray-800">Gig Details</h1>
-
-      {loading && <p className="text-gray-600">Loading gig details...</p>}
-      {error && <p className="text-red-500">{error}</p>}
-      {gig && <GigDetails gig={gig} />}
+      {loading ? (
+        <div className="h-[60vh] flex items-center justify-center">
+          <Spinner />
+        </div>
+      ) : error ? (
+        <p className="text-red-500">{error}</p>
+      ) : gig ? (
+        <GigDetails gig={gig} />
+      ) : null}
     </div>
   );
 }

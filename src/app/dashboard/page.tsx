@@ -7,6 +7,7 @@ import { auth } from '@/app/utils/firebase'
 import { onAuthStateChanged } from 'firebase/auth'
 import { motion } from 'framer-motion'
 import { Loader2 } from 'lucide-react'
+import Spinner from '@/components/ui/spinner'
 
 const DashboardPage = () => {
   const router = useRouter()
@@ -56,8 +57,7 @@ const DashboardPage = () => {
           transition={{ duration: 0.3 }}
           className="flex flex-col items-center gap-4"
         >
-          <Loader2 className="w-8 h-8 text-black animate-spin" />
-          <p className="text-gray-600 font-medium">Loading your dashboard...</p>
+          <Spinner />
         </motion.div>
       </div>
     )

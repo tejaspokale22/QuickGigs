@@ -2,16 +2,12 @@
 import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
 import {
-  House,
-  Search,
   CalendarCheck,
   Upload,
   FileText,
   CheckCircle,
   MessageSquareMore,
-  User,
   CreditCard,
-  Bell,
   Plus,
   Menu,
   X,
@@ -47,8 +43,6 @@ const LeftSidebar = () => {
   }, [])
 
   const menuItems = [
-    { id: 'home', label: 'Home', href: '/', icon: House },
-    { id: 'find-gigs', label: 'Find Gigs', href: '/gigs', icon: Search },
     ...(user
       ? [
           {
@@ -82,22 +76,10 @@ const LeftSidebar = () => {
             icon: MessageSquareMore,
           },
           {
-            id: 'profile',
-            label: 'Profile',
-            href: '/profile',
-            icon: User,
-          },
-          {
             id: 'getpaid',
-            label: 'Get Paid',
+            label: 'Wallet',
             href: '/paymentdetails',
             icon: CreditCard,
-          },
-          {
-            id: 'notifications',
-            label: 'Notifications',
-            href: '/notifications',
-            icon: Bell,
           },
         ]
       : []),
@@ -142,19 +124,19 @@ const LeftSidebar = () => {
                       setActiveItem(item.id)
                       setIsMobileMenuOpen(false)
                     }}
-                    className={`flex items-center gap-3 px-4 py-3 text-gray-700 rounded-xl
+                    className={`flex items-center gap-3 px-4 py-3 rounded-xl
                       transition-all duration-200 group
                       ${
                         activeItem === item.id
-                          ? 'bg-gray-100 text-black font-medium'
-                          : 'hover:bg-gray-50'
+                          ? 'bg-gray-200 text-black font-medium'
+                          : 'text-gray-700 hover:bg-gray-100 hover:text-black'
                       }`}
                   >
                     <Icon
                       className={`h-5 w-5 ${
                         activeItem === item.id
                           ? 'text-black'
-                          : 'text-gray-500 group-hover:text-gray-700'
+                          : 'text-gray-500 group-hover:text-black'
                       }`}
                     />
                     <span className="text-sm font-medium">{item.label}</span>
@@ -170,7 +152,7 @@ const LeftSidebar = () => {
               <button
                 onClick={() => setIsDialogOpen(true)}
                 className="w-full flex items-center justify-center gap-2 px-4 py-2.5 
-                  bg-black text-white rounded-xl hover:bg-gray-900 
+                  bg-black text-white rounded-xl hover:bg-gray-800 
                   transition-colors duration-200"
               >
                 <Plus className="h-5 w-5" />

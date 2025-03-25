@@ -241,11 +241,11 @@ export default function Home() {
                 Get Started
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </button>
-              <button className="border-2 border-black px-6 py-1 rounded text-lg font-medium hover:bg-gray-200 transition-all flex gap-3 items-center justify-center">
+              <button className="border-2 border-black px-6 py-1 rounded text-md font-medium hover:bg-gray-200 transition-all flex gap-3 items-center justify-center">
                 <span>
-                  <Send />
+                  <Send className='w-5 h-5' />
                 </span>
-                Post a Project
+                Post a Gig
               </button>
             </div>
             <div className="flex items-center gap-4 text-sm text-gray-600">

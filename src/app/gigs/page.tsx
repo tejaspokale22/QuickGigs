@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { fetchGigs } from "../utils/actions/gigActions";
 import { fetchUsers } from "../utils/actions/authActions";
-import { Check, ChevronRightIcon, Search, Briefcase, Filter, Clock, DollarSign } from "lucide-react";
+import { Check, ChevronRightIcon, Search, Briefcase, Filter, Clock, DollarSign, IndianRupee } from "lucide-react";
 import Link from "next/link";
 import { Gig, User } from "../utils/types";
 import { formatDeadline, getDaysAgo } from "../utils/utilityFunctions";
@@ -46,7 +46,7 @@ const GigCard = ({ gig, user }: { gig: Gig; user?: User }) => {
   };
 
   return (
-    <div className="w-full max-w-4xl border rounded-lg bg-white shadow-sm hover:shadow-md transition-shadow duration-200">
+    <div className="w-full max-w-4xl border rounded bg-white shadow-sm hover:shadow-md transition-shadow duration-200">
       <div className="p-6 space-y-4">
         {/* Header: User Info + Posted Date */}
         {user && (
@@ -75,15 +75,7 @@ const GigCard = ({ gig, user }: { gig: Gig; user?: User }) => {
           {/* Description */}
           <div className="text-gray-700">
             {gig.description.length > 150 ? (
-              <>
-                {gig.description.slice(0, 150)}...
-                <Link
-                  href={`/gig/${gig.id}`}
-                  className="text-blue-600 hover:text-blue-800 font-medium ml-1"
-                >
-                  read more
-                </Link>
-              </>
+              <>{gig.description.slice(0, 150)}...</>
             ) : (
               <>{gig.description}</>
             )}
@@ -119,15 +111,22 @@ const GigCard = ({ gig, user }: { gig: Gig; user?: User }) => {
           </div>
         </div>
 
-        {/* Apply Button */}
-        {gig.clientId !== id && (
-          <div className="pt-4 flex justify-end">
+        {/* Action Buttons */}
+        <div className="pt-4 flex justify-end gap-3">
+          <Link href={`/gig/${gig.id}`}>
+            <Button
+              className="bg-gray-100 hover:bg-gray-200 text-gray-900 rounded"
+            >
+              View Details
+            </Button>
+          </Link>
+          {gig.clientId !== id && (
             <AlertDialog open={showDialog} onOpenChange={setShowDialog}>
               <AlertDialogTrigger asChild>
                 <Button
                   className={`w-32 rounded ${
                     applied
-                      ? "bg-green-600 hover:bg-green-700"
+                      ? "bg-gray-600 hover:bg-gray-700"
                       : "bg-black hover:bg-gray-800"
                   } text-white text-base transition-colors duration-200`}
                   disabled={applied}
@@ -158,21 +157,21 @@ const GigCard = ({ gig, user }: { gig: Gig; user?: User }) => {
                   <Button
                     variant="outline"
                     onClick={() => setShowDialog(false)}
-                    className="rounded-lg"
+                    className="rounded hover:bg-gray-200"
                   >
                     Cancel
                   </Button>
                   <Button
                     onClick={handleApplyConfirm}
-                    className="bg-black hover:bg-gray-800 text-white rounded-lg"
+                    className="bg-black hover:bg-gray-800 text-white rounded"
                   >
                     Confirm
                   </Button>
                 </AlertDialogFooter>
               </AlertDialogContent>
             </AlertDialog>
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </div>
   );
@@ -180,7 +179,7 @@ const GigCard = ({ gig, user }: { gig: Gig; user?: User }) => {
 
 // Loading Skeleton Component
 const GigSkeleton = () => (
-  <div className="w-full max-w-3xl border rounded-lg bg-white shadow-sm p-6 space-y-4 animate-pulse">
+  <div className="w-full max-w-4xl border rounded-lg bg-white shadow-sm p-6 space-y-4 animate-pulse">
     <div className="flex justify-between items-start">
       <div className="flex items-center space-x-3">
         <div className="w-12 h-12 bg-gray-200 rounded-full" />
@@ -263,87 +262,74 @@ const Page = () => {
   });
 
   return (
-    <div className="min-h-screen bg-white pt-24">
-      {/* Hero Section */}
-      <div className="bg-gradient-to-r from-gray-900 to-black text-white py-20">
+    <div className="min-h-screen bg-gray-50 pt-20">
+      {/* Compact Header with Search */}
+      <div className="bg-black py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-3xl mb-12">
-            <h1 className="text-5xl font-bold mb-6 leading-tight">
-              Discover Your Next
-              <br />
-              Professional Opportunity
-            </h1>
-            <p className="text-gray-300 text-lg leading-relaxed">
-              Connect with industry-leading clients and work on innovative projects.
-              Find opportunities that match your expertise and career goals.
-            </p>
-          </div>
-            
-          {/* Search Bar */}
-          <div className="relative max-w-2xl mb-12">
-            <Search className="absolute left-4 top-3.5 h-5 w-5 text-gray-400" />
-            <input
-              type="text"
-              placeholder="Search by skills, title, or keywords..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-12 pr-4 py-3.5 rounded-xl bg-white/10 
-                border border-white/20 text-white placeholder:text-gray-400
-                focus:outline-none focus:ring-2 focus:ring-white/30
-                text-base backdrop-blur-sm"
-            />
-          </div>
-
-          {/* Quick Stats */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-3xl">
-            {[
-              { icon: Briefcase, value: `${gigs.length}+`, label: 'Active Opportunities' },
-              { icon: Clock, value: '24/7', label: 'Quick Response Time' },
-              { icon: DollarSign, value: 'Secure', label: 'Payment Protection' }
-            ].map((stat, index) => {
-              const Icon = stat.icon
-              return (
-                <div key={index} className="flex items-center gap-4">
-                  <div className="p-3 bg-white/10 rounded-lg backdrop-blur-sm">
-                    <Icon className="h-6 w-6" />
-                  </div>
-                  <div>
-                    <p className="text-2xl font-bold">{stat.value}</p>
-                    <p className="text-gray-300 text-sm">{stat.label}</p>
-                  </div>
+          {/* Header Content */}
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+            <div className="max-w-2xl space-y-4">
+              <div>
+                <h1 className="text-3xl font-bold text-white">Find Gigs</h1>
+                <p className="text-gray-300 mt-2">Discover opportunities that match your skills and expertise</p>
+              </div>
+              <div className="flex items-center gap-4 text-gray-300 text-sm">
+                <div className="flex items-center gap-2">
+                  <Briefcase className="w-4 h-4" />
+                  <span>{gigs.length} Active Gigs</span>
                 </div>
-              )
-            })}
+                <div className="flex items-center gap-2">
+                  <Clock className="w-4 h-4" />
+                  <span>Updated live</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <IndianRupee className="w-4 h-4" />
+                  <span>Secure Payments</span>
+                </div>
+              </div>
+            </div>
+            
+            {/* Search Section */}
+            <div className="flex-shrink-0 w-full md:w-auto space-y-4">
+              <div className="relative">
+                <Search className="text-white/70 absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 z-10" />
+                <input
+                  type="text"
+                  placeholder="Search by skills, title, or keywords..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full md:w-[350px] pl-10 pr-4 py-3 rounded-lg bg-white/10 
+                    border border-white/20 text-white placeholder:text-gray-400
+                    focus:outline-none focus:ring-2 focus:ring-white/30
+                    focus:border-transparent backdrop-blur-sm"
+                />
+              </div>
+
+              {/* Quick Filters */}
+              <div className="flex flex-wrap gap-2">
+                {['All Gigs', 'Web Dev', 'Mobile', 'UI/UX', 'Writing'].map((filter) => (
+                  <button
+                    key={filter}
+                    className="px-4 py-1.5 rounded-full text-sm font-medium
+                      bg-white/10 text-white border border-white/20 
+                      hover:bg-white/20 transition-colors backdrop-blur-sm"
+                  >
+                    {filter}
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* Category Tags */}
-        <div className="mb-10">
-          <h2 className="text-xl font-semibold text-gray-900 mb-6">Browse Popular Categories</h2>
-          <div className="flex flex-wrap gap-3">
-            {['Web Development', 'Mobile Apps', 'UI/UX Design', 'Content Writing', 
-              'Digital Marketing', 'Data Science'].map((category) => (
-              <button
-                key={category}
-                className="px-5 py-2.5 bg-gray-50 rounded-full
-                  text-sm font-medium text-gray-700 hover:bg-gray-100 
-                  transition-all duration-200 border border-gray-200
-                  hover:border-gray-300 hover:shadow-sm"
-              >
-                {category}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div className="flex gap-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="flex gap-6">
           {/* Filters Sidebar */}
-          <div className="w-72 flex-shrink-0">
-            <div className="sticky top-24 bg-white rounded-2xl border border-gray-200 
+          <div className="hidden md:block w-64 flex-shrink-0">
+            <div className="sticky top-24 bg-white rounded border border-gray-200 
               shadow-sm divide-y divide-gray-100">
-              <div className="p-6">
+              <div className="p-4">
                 <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
                   <Filter className="h-5 w-5" />
                   Filters
@@ -352,11 +338,11 @@ const Page = () => {
                 {/* Skills Filter */}
                 <div className="space-y-4">
                   <h3 className="font-medium text-gray-900">Skills</h3>
-                  <div className="max-h-48 overflow-y-auto pr-2 space-y-1">
+                  <div className="max-h-48 overflow-y-auto space-y-2">
                     {allSkills.map(skill => (
                       <label key={skill} 
-                        className="flex items-center gap-2 p-2 rounded-lg
-                          hover:bg-gray-50 cursor-pointer transition-colors duration-150"
+                        className="flex items-center gap-2 p-2 rounded
+                          hover:bg-gray-50 cursor-pointer"
                       >
                         <input
                           type="checkbox"
@@ -368,7 +354,7 @@ const Page = () => {
                                 : [...prev, skill]
                             )
                           }}
-                          className="rounded border-gray-300 text-black focus:ring-gray-400"
+                          className="rounded border-gray-300 text-black focus:ring-black"
                         />
                         <span className="text-sm text-gray-600">{skill}</span>
                       </label>
@@ -378,7 +364,7 @@ const Page = () => {
               </div>
 
               {/* Price Range Filter */}
-              <div className="p-6">
+              <div className="p-4">
                 <h3 className="font-medium text-gray-900 mb-4">Budget Range</h3>
                 <input
                   type="range"
@@ -394,49 +380,36 @@ const Page = () => {
                   <span>₹{priceRange[1].toLocaleString()}</span>
                 </div>
               </div>
-
-              {/* Support Section */}
-              <div className="p-6 bg-gray-50 rounded-b-2xl">
-                <p className="text-sm text-gray-600">
-                  Need help finding the right opportunity? 
-                  <Link href="/help" className="text-blue-600 hover:text-blue-700 font-medium ml-1">
-                    Contact Support
-                  </Link>
-                </p>
-              </div>
             </div>
           </div>
 
           {/* Main Content */}
           <div className="flex-1">
             {/* Results Header */}
-            <div className="flex justify-between items-center mb-8 pb-4 border-b border-gray-200">
+            <div className="flex justify-between items-center mb-4">
               <p className="text-gray-600">
                 <span className="font-medium text-gray-900">{filteredGigs.length}</span> opportunities found
               </p>
-              <div className="flex items-center gap-3">
-                <span className="text-sm text-gray-600">Sort by:</span>
-                <select 
-                  className="text-sm border rounded-lg px-4 py-2 bg-white
-                    text-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-200"
-                  title="Sort options"
-                >
-                  <option>Latest First</option>
-                  <option>Price: High to Low</option>
-                  <option>Price: Low to High</option>
-                </select>
-              </div>
+              <select 
+                className="text-sm border rounded-lg px-3 py-1.5 bg-white
+                  text-gray-700 focus:outline-none focus:ring-2 focus:ring-black"
+                title="Sort options"
+              >
+                <option>Latest First</option>
+                <option>Price: High to Low</option>
+                <option>Price: Low to High</option>
+              </select>
             </div>
 
             {/* Gigs Grid */}
             {loading ? (
-              <div className="space-y-6">
+              <div className="space-y-4">
                 {Array(3).fill(0).map((_, i) => (
                   <GigSkeleton key={i} />
                 ))}
               </div>
             ) : filteredGigs.length > 0 ? (
-              <div className="space-y-6">
+              <div className="space-y-4">
                 {filteredGigs.map((gig) => (
                   <GigCard
                     key={gig.id}
@@ -446,7 +419,7 @@ const Page = () => {
                 ))}
               </div>
             ) : (
-              <div className="text-center py-16 bg-gray-50 rounded-2xl border border-gray-200">
+              <div className="text-center py-12 bg-white rounded-lg border border-gray-200">
                 <Briefcase className="h-12 w-12 text-gray-400 mx-auto mb-4" />
                 <h3 className="text-lg font-medium text-gray-900 mb-2">
                   No opportunities found
