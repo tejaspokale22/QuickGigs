@@ -91,7 +91,7 @@ const SkillsDialog: React.FC<SkillsDialogProps> = ({ isOpen, onClose }) => {
           />
           <Button
             onClick={handleAddSkill}
-            className="mt-2 bg-purple-950 text-white px-6 py-2 rounded hover:bg-purple-900"
+            className="mt-2 bg-black text-white px-6 py-2 rounded hover:bg-gray-800"
           >
             Add Skill
           </Button>
@@ -105,7 +105,7 @@ const SkillsDialog: React.FC<SkillsDialogProps> = ({ isOpen, onClose }) => {
                 <span>{skill}</span>
                 <button
                   onClick={() => handleRemoveSkill(skill)}
-                  className="text-red-500 hover:text-red-700"
+                  className="text-gray-500 hover:text-gray-700"
                 >
                   Remove
                 </button>
@@ -117,7 +117,7 @@ const SkillsDialog: React.FC<SkillsDialogProps> = ({ isOpen, onClose }) => {
         <div className="mt-6 flex justify-end">
           <Button
             onClick={handleSubmit}
-            className="bg-purple-950 text-white px-6 py-2 rounded hover:bg-purple-900"
+            className="bg-black text-white px-6 py-2 rounded hover:bg-gray-800"
           >
             Save Skills
           </Button>

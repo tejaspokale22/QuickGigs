@@ -53,7 +53,7 @@ const ContactDialog: React.FC<ContactDialogProps> = ({ isOpen, onClose }) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="w-full max-w-md bg-white p-6 rounded-lg shadow-lg">
+      <DialogContent className="w-full max-w-md bg-white p-6 rounded shadow-lg">
         <DialogHeader>
           <DialogTitle className="text-xl font-semibold text-gray-800">Add Contact No.</DialogTitle>
         </DialogHeader>
@@ -70,7 +70,7 @@ const ContactDialog: React.FC<ContactDialogProps> = ({ isOpen, onClose }) => {
         <div className="mt-6 flex justify-end">
           <Button
             onClick={handleSubmit}
-            className="bg-purple-950 text-white px-6 py-2 rounded hover:bg-purple-900"
+            className="bg-black text-white px-6 py-2 rounded hover:bg-gray-800"
           >
             Add Contact
           </Button>

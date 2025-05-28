@@ -84,98 +84,134 @@ const CompletedGigsPage = () => {
     return <p className="text-center text-lg text-gray-500 mt-10">No completed gigs found.</p>;
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
-      <h2 className="text-2xl font-semibold text-center text-gray-800 mb-6">
-        Completed Gigs
-      </h2>
-      <ul className="space-y-6">
-        {gigs.map((gig) => (
-          (gig.status==="completed") &&
-          <li key={gig.id} className="bg-white p-6 rounded border border-gray-300">
-            {clients[gig.clientId] && (
-              <div className="flex items-center gap-2 mb-4">
-                <img
-                  src={clients[gig.clientId].profilePicture || "/default-avatar.png"}
-                  alt={clients[gig.clientId].name}
-                  className="w-10 h-10 rounded-full border border-gray-300"
-                />
-                <div>
-                  <p className="text-lg font-medium text-gray-800">{clients[gig.clientId].name}</p>
-                  <p className="text-sm text-gray-600 flex items-center">
-                    <Mail width={18} className="mr-1" />
-                    {clients[gig.clientId].email}
-                  </p>
-                </div>
-              </div>
-            )}
-            <h3 className="text-xl font-semibold text-gray-800">{gig.title}</h3>
-            <p className="text-gray-600 mt-2">Deadline: {formatDeadline(gig.deadline)}</p>
-            <p
-              className={`mt-3 font-medium text-sm px-3 py-1 inline-block rounded ${
-                gig.status === "completed"
-                  ? "bg-green-100 text-green-700"
-                  : gig.status === "progress"
-                  ? "bg-yellow-100 text-yellow-700"
-                  : "bg-gray-200 text-gray-700"
-              }`}
-            >
-              Status: {gig.status.charAt(0).toUpperCase() + gig.status.slice(1)}
-            </p>
-            <div className="flex gap-4 mt-2 justify-between items-center">
-              {gig.workStatus===false &&
-              <p className="bg-gray-200 p-1 w-1/2 rounded">
-              Waiting for the client to approve you work
-              </p>
-              }
-              {gig.workStatus===true &&
-              <p className="bg-gray-200 p-1 w-1/2 rounded">
-              Your work has been successfully approved!
-              </p>
-              }
-              {
-                (gig.workStatus===true && gig.paymentStatus===false) &&
-                <AlertDialog>
-                  <AlertDialogTrigger asChild>
-                  <Button className="text-white w-40 p-1 text-sm bg-black hover:bg-gray-800 rounded"
-                  onClick={() => setSelectedGig(gig.id)}
-                  >
-                      Approve Payout
-                    </Button>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent className="bg-white text-black">
-                    <AlertDialogHeader>
-                      <AlertDialogTitle>Please Confirm!</AlertDialogTitle>
-                      <AlertDialogDescription>
-                        Only approve if you have received the payment from the client!
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel className="bg-white text-black rounded">
-                        Cancel
-                      </AlertDialogCancel>
-                      <AlertDialogAction
-                        className="bg-black text-white rounded hover:bg-gray-800"
-                        onClick={handleApprovePayment}
-                      >
-                        Yes, Approve
-                      </AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
-              }
-              {
-                gig.paymentStatus===true &&
-                <Button className="text-white w-40 p-1 text-sm bg-black hover:bg-gray-800 rounded"
-                disabled={true}
-                  >
-                    <CheckCircle/> Payment Done
-                    </Button>
-              }
-            </div>
+    <div className="min-h-screen bg-gray-50 pt-20 p-6">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="bg-white rounded-2xl shadow-sm p-6 mb-8">
+          <h2 className="text-3xl font-bold text-gray-900 mb-2">Completed Gigs</h2>
+          <p className="text-gray-600">Review and manage your completed work</p>
+        </div>
 
-          </li>
-        ))}
-      </ul>
+        {loading ? (
+          <div className="flex justify-center items-center h-64">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
+          </div>
+        ) : error ? (
+          <div className="bg-red-50 border border-red-200 rounded-xl p-6 text-center">
+            <p className="text-red-600 text-lg">{error}</p>
+          </div>
+        ) : gigs.length === 0 ? (
+          <div className="bg-white rounded-xl shadow-sm p-8 text-center">
+            <p className="text-gray-500 text-lg">No completed gigs found.</p>
+          </div>
+        ) : (
+          <div className="grid gap-6">
+            {gigs.map((gig) => (
+              (gig.status === "completed") && (
+                <div key={gig.id} className="bg-white rounded-xl shadow-sm overflow-hidden transition-all duration-200 hover:shadow-md">
+                  <div className="p-4">
+                    {clients[gig.clientId] && (
+                      <div className="flex items-center gap-3 mb-3 pb-3 border-b border-gray-100">
+                        <div>
+                          <img
+                            src={clients[gig.clientId].profilePicture || "/default-avatar.png"}
+                            alt={clients[gig.clientId].name}
+                            className="w-10 h-10 rounded-full border-2 border-gray-100 object-cover"
+                          />
+                        </div>
+                        <div>
+                          <p className="text-base font-semibold text-gray-900">{clients[gig.clientId].name}</p>
+                          <p className="text-gray-600 flex items-center gap-1 text-xs">
+                            <Mail className="w-3 h-3" />
+                            {clients[gig.clientId].email}
+                          </p>
+                        </div>
+                      </div>
+                    )}
+
+                    <div className="space-y-3">
+                      <div>
+                        <h3 className="text-lg font-bold text-gray-900 mb-1">{gig.title}</h3>
+                        <div className="flex items-center gap-1 text-gray-600 text-xs">
+                          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                          </svg>
+                          <span>Deadline: {formatDeadline(gig.deadline)}</span>
+                        </div>
+                      </div>
+
+                      <div className="flex flex-wrap gap-2 pb-3 border-b border-gray-100">
+                        <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                          gig.status === "completed"
+                            ? "bg-green-100 text-green-700"
+                            : gig.status === "progress"
+                            ? "bg-yellow-100 text-yellow-700"
+                            : "bg-gray-100 text-gray-700"
+                        }`}>
+                          {gig.status.charAt(0).toUpperCase() + gig.status.slice(1)}
+                        </span>
+                      </div>
+
+                      <div className="flex justify-between items-end pt-2">
+                        <div>
+                          {gig.workStatus === false && (
+                            <div className="bg-gray-100 px-3 py-1.5 rounded-lg text-gray-700 text-xs">
+                              Waiting for client to approve your work
+                            </div>
+                          )}
+                          {gig.workStatus === true && (
+                            <div className="bg-gray-100 px-3 py-1.5 rounded-lg text-gray-700 text-xs border border-gray-200">
+                              Your work has been approved by the client
+                            </div>
+                          )}
+                        </div>
+                        <div>
+                          {gig.workStatus === true && gig.paymentStatus === false && (
+                            <AlertDialog>
+                              <AlertDialogTrigger asChild>
+                                <Button 
+                                  className="bg-black hover:bg-gray-800 text-white px-4 py-1.5 rounded flex items-center gap-1 text-sm"
+                                  onClick={() => setSelectedGig(gig.id)}
+                                >
+                                  <CheckCircle className="w-3 h-3" />
+                                  Approve Payout
+                                </Button>
+                              </AlertDialogTrigger>
+                              <AlertDialogContent className="bg-white rounded-xl">
+                                <AlertDialogHeader>
+                                  <AlertDialogTitle className="text-xl font-bold">Confirm Payment Approval</AlertDialogTitle>
+                                  <AlertDialogDescription className="text-gray-600 mt-2 text-sm">
+                                    Please confirm that you have received the payment from the client before approving.
+                                  </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter className="mt-4">
+                                  <AlertDialogCancel className="bg-gray-100 hover:bg-gray-200 text-gray-900 px-4 py-1.5 rounded text-sm">
+                                    Cancel
+                                  </AlertDialogCancel>
+                                  <AlertDialogAction
+                                    className="bg-black hover:bg-gray-800 text-white px-4 py-1.5 rounded text-sm"
+                                    onClick={handleApprovePayment}
+                                  >
+                                    Confirm Approval
+                                  </AlertDialogAction>
+                                </AlertDialogFooter>
+                              </AlertDialogContent>
+                            </AlertDialog>
+                          )}
+                          {gig.paymentStatus === true && (
+                            <div className="bg-blue-50 text-blue-700 px-4 py-1.5 rounded-lg text-xs border border-blue-100">
+                              Payment has been done successfully
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 };

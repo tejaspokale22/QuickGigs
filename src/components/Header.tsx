@@ -37,7 +37,7 @@ const Header = () => {
 
   const handleLogout = async () => {
     try {
-      await signOut(auth)
+      await signOut(auth) 
       localStorage.removeItem('userData')
     } catch (error) {
       console.error('Error signing out:', error)

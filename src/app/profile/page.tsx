@@ -18,9 +18,7 @@ import { doc, onSnapshot } from 'firebase/firestore'
 import { firestore } from '@/app/utils/firebase'
 import {
   Phone,
-  MapPin,
   User,
-  Star,
   Link2,
   Briefcase,
   Mail,

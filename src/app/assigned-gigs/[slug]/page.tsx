@@ -138,193 +138,211 @@ const AssignedGigsPage = () => {
     return <p className="text-center text-lg text-gray-500 mt-10">No assigned gigs found.</p>;
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
-      <h2 className="text-2xl font-semibold text-center text-gray-800 mb-6">
-        Assigned Gigs
-      </h2>
-      <ul className="space-y-6">
-        {gigs.map((gig) => (
-          !(gig.status==="completed") &&
-          <li key={gig.id} className="bg-white p-6 rounded border border-gray-300">
-            {clients[gig.clientId] && (
-              <div className="flex items-center gap-2 mb-4">
-                <img
-                  src={clients[gig.clientId].profilePicture || "/default-avatar.png"}
-                  alt={clients[gig.clientId].name}
-                  className="w-10 h-10 rounded-full border border-gray-300"
-                />
-                <div>
-                  <p className="text-lg font-medium text-gray-800">{clients[gig.clientId].name}</p>
-                  <p className="text-sm text-gray-600 flex items-center">
-                    <Mail width={18} className="mr-1" />
-                    {clients[gig.clientId].email}
-                    <button
-                      onClick={() => handleClipboard(clients[gig.clientId].email, gig.id)}
-                      className="text-gray-600 hover:text-gray-900 ml-1"
-                      aria-label="Copy Email"
+    <div className="min-h-screen bg-gray-50 pt-20">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="px-2 py-5 bg-gray-50">
+            <h2 className="text-2xl font-bold text-gray-900">
+              Assigned Gigs
+            </h2>
+          </div>
+        <div className="bg-white rounded overflow-hidden">
+          <div className="divide-y divide-gray-200">
+            {gigs.map((gig) => (
+              !(gig.status==="completed") &&
+              <div key={gig.id} className="p-6 transition-colors duration-200">
+                {clients[gig.clientId] && (
+                  <div className="flex items-center gap-4 mb-6">
+                    <div className="flex-shrink-0">
+                      <img
+                        src={clients[gig.clientId].profilePicture || "/default-avatar.png"}
+                        alt={clients[gig.clientId].name}
+                        className="w-12 h-12 rounded-full object-cover"
+                      />
+                    </div>
+                    <div className="flex-grow">
+                      <h3 className="text-lg font-semibold text-gray-900">{clients[gig.clientId].name}</h3>
+                      <div className="flex items-center text-sm text-gray-600">
+                        <Mail className="w-4 h-4 mr-2" />
+                        <span className="mr-2">{clients[gig.clientId].email}</span>
+                        <button
+                          onClick={() => handleClipboard(clients[gig.clientId].email, gig.id)}
+                          className="text-gray-500 hover:text-gray-700 transition-colors"
+                          aria-label="Copy Email"
+                        >
+                          {clipboardStatus[gig.id] ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                <div className="space-y-4">
+                  <div>
+                    <h4 className="text-xl font-semibold text-gray-900 mb-2">{gig.title}</h4>
+                    <div className="flex items-center text-sm text-gray-600">
+                      <span className="font-medium">Deadline:</span>
+                      <span className="ml-2">{formatDeadline(gig.deadline)}</span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <span
+                      className={`px-3 py-1 rounded-full text-sm font-medium ${
+                        gig.status === "completed"
+                          ? "bg-green-100 text-green-700"
+                          : gig.status === "progress"
+                          ? "bg-yellow-100 text-yellow-700"
+                          : "bg-blue-100 text-blue-700"
+                      }`}
                     >
-                      {clipboardStatus[gig.id] ? <Check width={16} /> : <Copy width={16} />}
-                    </button>
-                  </p>
+                      {gig.status.charAt(0).toUpperCase() + gig.status.slice(1)}
+                    </span>
+
+                    {/* Accept and Reject Buttons */}
+                    {gig.status === "pending" && (
+                      <div className="flex gap-3">
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button
+                              onClick={() => setSelectedGig(gig.id)}
+                              className="rounded flex items-center gap-2 border-2 border-green-500 text-green-600 hover:bg-green-50 bg-transparent"
+                            >
+                              <Check className="w-4 h-4" /> Accept
+                            </Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent className="bg-white text-black">
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>Confirm Acceptance</AlertDialogTitle>
+                              <AlertDialogDescription>
+                                Are you sure you want to accept this gig request?
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel className="bg-gray-100 hover:bg-gray-200 text-gray-900 rounded">
+                                Cancel
+                              </AlertDialogCancel>
+                              <AlertDialogAction
+                                className="bg-black hover:bg-gray-800 text-white rounded"
+                                onClick={handleAccept}
+                              >
+                                Yes, Accept
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
+
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button
+                              onClick={() => setSelectedGig(gig.id)}
+                              className="rounded flex items-center gap-2 border-2 border-red-500 text-red-600 hover:bg-red-50 bg-transparent"
+                            >
+                              <X className="w-4 h-4" /> Reject
+                            </Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent className="bg-white text-black">
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>Confirm Rejection</AlertDialogTitle>
+                              <AlertDialogDescription>
+                                Are you sure you want to reject this gig request?
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel className="bg-gray-100 hover:bg-gray-200 text-gray-900 rounded">
+                                Cancel
+                              </AlertDialogCancel>
+                              <AlertDialogAction
+                                className="bg-black hover:bg-gray-800 text-white rounded"
+                                onClick={handleReject}
+                              >
+                                Yes, Reject
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="mt-6 pt-4 border-t border-gray-200">
+                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                      <p className="text-sm text-gray-600 bg-gray-50 p-3 rounded-lg border border-gray-200">
+                        Disclaimer: Mark as completed only when you have finished the gig work and sent it for approval to the client.
+                      </p>
+                      
+                      <div className="flex gap-3">
+                        {gig.status === "progress" && (
+                          <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                              <Button
+                                onClick={() => setSelectedGig(gig.id)}
+                                className="bg-black hover:bg-gray-800 text-white rounded"
+                              >
+                                Mark as Completed
+                              </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent className="bg-white text-black">
+                              <AlertDialogHeader>
+                                <AlertDialogTitle>Confirm Completion</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                  Are you sure you have finished with the gig work?
+                                </AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <AlertDialogFooter>
+                                <AlertDialogCancel className="bg-gray-100 hover:bg-gray-200 text-gray-900 rounded">
+                                  Cancel
+                                </AlertDialogCancel>
+                                <AlertDialogAction
+                                  className="bg-black hover:bg-gray-800 text-white rounded"
+                                  onClick={handleCompleted}
+                                >
+                                  Yes, Completed
+                                </AlertDialogAction>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
+                        )}
+
+                        {gig.paymentStatus === true && (
+                          <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                              <Button
+                                onClick={() => setSelectedGig(gig.id)}
+                                className="bg-green-600 hover:bg-green-700 text-white"
+                              >
+                                Approve Payout
+                              </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent className="bg-white text-black">
+                              <AlertDialogHeader>
+                                <AlertDialogTitle>Confirm Payment Approval</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                  Only approve if you have received the payment from the client!
+                                </AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <AlertDialogFooter>
+                                <AlertDialogCancel className="bg-gray-100 hover:bg-gray-200 text-gray-900">
+                                  Cancel
+                                </AlertDialogCancel>
+                                <AlertDialogAction
+                                  className="bg-green-600 hover:bg-green-700 text-white"
+                                  onClick={handleApprovePayment}
+                                >
+                                  Yes, Approve
+                                </AlertDialogAction>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
+                        )}
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
-            )}
-            <h3 className="text-xl font-semibold text-gray-800">{gig.title}</h3>
-            <p className="text-gray-600 mt-2">Deadline: {formatDeadline(gig.deadline)}</p>
-            <p
-              className={`mt-3 font-medium text-sm px-3 py-1 inline-block rounded ${
-                gig.status === "completed"
-                  ? "bg-green-100 text-green-700"
-                  : gig.status === "progress"
-                  ? "bg-yellow-100 text-yellow-700"
-                  : "bg-gray-200 text-gray-700"
-              }`}
-            >
-              Status: {gig.status.charAt(0).toUpperCase() + gig.status.slice(1)}
-            </p>
-
-            {/* Accept and Reject Buttons */}
-            {gig.status === "pending" && (
-              <div className="flex gap-4 mt-4 justify-end">
-
-                {/* Accept Gig Alert  */}
-                <AlertDialog>
-  <AlertDialogTrigger asChild>
-  <button
-                  onClick={() => setSelectedGig(gig.id)}
-                  className="flex items-center text-green-600 border border-green-500 p-1 rounded hover:bg-green-100"
-                >
-                  <Check className="mr-1" /> Accept
-                </button>
-  </AlertDialogTrigger>
-  <AlertDialogContent className="bg-white text-black">
-    <AlertDialogHeader>
-      <AlertDialogTitle>Please Confirm!</AlertDialogTitle>
-      <AlertDialogDescription>
-        Are you sure you want to accept this gig request?
-      </AlertDialogDescription>
-    </AlertDialogHeader>
-    <AlertDialogFooter>
-      <AlertDialogCancel className="bg-white text-black rounded">
-        Cancel
-      </AlertDialogCancel>
-      <AlertDialogAction
-        className="bg-black text-white rounded hover:bg-gray-800"
-        onClick={handleAccept}
-      >
-        Yes, Accept
-      </AlertDialogAction>
-    </AlertDialogFooter>
-  </AlertDialogContent>
-</AlertDialog>
-
-
-                {/* Reject Gig Alert  */}
-      <AlertDialog>
-  <AlertDialogTrigger asChild>
-  <button
-                  onClick={() => setSelectedGig(gig.id)}
-                  className="flex items-center text-red-600 border border-red-500 p-1 rounded hover:bg-red-100"
-                >
-                  <X className="mr-1" /> Reject
-                </button>
-  </AlertDialogTrigger>
-  <AlertDialogContent className="bg-white text-black">
-    <AlertDialogHeader>
-      <AlertDialogTitle>Please Confirm!</AlertDialogTitle>
-      <AlertDialogDescription>
-        Are you sure you want to reject this gig request?
-      </AlertDialogDescription>
-    </AlertDialogHeader>
-    <AlertDialogFooter>
-      <AlertDialogCancel className="bg-white text-black rounded">
-        Cancel
-      </AlertDialogCancel>
-      <AlertDialogAction
-        className="bg-black text-white rounded hover:bg-gray-800"
-        onClick={handleReject}
-      >
-        Yes, Reject
-      </AlertDialogAction>
-    </AlertDialogFooter>
-  </AlertDialogContent>
-</AlertDialog>  
-              </div>
-              
-            )}
-            <div className="flex gap-4 mt-2 justify-between items-center">
-              <p className="bg-gray-200 p-1 w-1/2 rounded">
-                Disclaimer: Mark as completed only when you have finished the gig work and send it for approval to the client.
-              </p>
-              {
-                gig.status === "progress" &&(
-                  <AlertDialog>
-                  <AlertDialogTrigger asChild>
-                  <Button className="text-white w-40 p-1 text-sm bg-black hover:bg-gray-800 rounded"
-                  onClick={() => setSelectedGig(gig.id)}
-                  >
-                      Mark as Completed
-                    </Button>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent className="bg-white text-black">
-                    <AlertDialogHeader>
-                      <AlertDialogTitle>Please Confirm!</AlertDialogTitle>
-                      <AlertDialogDescription>
-                        Are you sure you have finished with the gig work?
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel className="bg-white text-black rounded">
-                        Cancel
-                      </AlertDialogCancel>
-                      <AlertDialogAction
-                        className="bg-black text-white rounded hover:bg-gray-800"
-                        onClick={handleCompleted}
-                      >
-                        Yes
-                      </AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
-                
-                )
-              }
-              {
-                gig.paymentStatus===true &&
-                <AlertDialog>
-                  <AlertDialogTrigger asChild>
-                  <Button className="text-white w-40 p-1 text-sm bg-black hover:bg-gray-800 rounded"
-                  onClick={() => setSelectedGig(gig.id)}
-                  >
-                      Approve Payout
-                    </Button>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent className="bg-white text-black">
-                    <AlertDialogHeader>
-                      <AlertDialogTitle>Please Confirm!</AlertDialogTitle>
-                      <AlertDialogDescription>
-                        Only approve if you have received the payment from the client!
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel className="bg-white text-black rounded">
-                        Cancel
-                      </AlertDialogCancel>
-                      <AlertDialogAction
-                        className="bg-black text-white rounded hover:bg-gray-800"
-                        onClick={handleApprovePayment}
-                      >
-                        Yes, Approve
-                      </AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
-              }
-            </div>
-
-          </li>
-        ))}
-      </ul>
+            ))}
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

@@ -69,8 +69,8 @@ const ProfileDropdown = ({ user, handleLogout }: ProfileDropdownProps) => {
           <div className="p-1.5">
             <Link
               href="/dashboard"
-              className="flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-gray-700
-                hover:bg-gray-100 transition-all duration-200 group"
+              className="flex items-center gap-2.5 px-3 py-2.5 rounded text-gray-700
+                hover:bg-gray-100 group"
               onClick={() => setIsOpen(false)}
             >
               <LayoutDashboard className="h-4 w-4 group-hover:scale-110 transition-transform" />
@@ -79,8 +79,8 @@ const ProfileDropdown = ({ user, handleLogout }: ProfileDropdownProps) => {
 
             <Link
               href="/profile"
-              className="flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-gray-700
-                hover:bg-gray-100 transition-all duration-200 group"
+              className="flex items-center gap-2.5 px-3 py-2.5 rounded text-gray-700
+                hover:bg-gray-100 group"
               onClick={() => setIsOpen(false)}
             >
               <User className="h-4 w-4 group-hover:scale-110 transition-transform" />
@@ -89,8 +89,8 @@ const ProfileDropdown = ({ user, handleLogout }: ProfileDropdownProps) => {
 
             <Link
               href="/notifications"
-              className="flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-gray-700
-                hover:bg-gray-100 transition-all duration-200 group"
+              className="flex items-center gap-2.5 px-3 py-2.5 rounded text-gray-700
+                hover:bg-gray-100 group"
               onClick={() => setIsOpen(false)}
             >
               <Bell className="h-4 w-4 group-hover:scale-110 transition-transform" />
@@ -104,8 +104,8 @@ const ProfileDropdown = ({ user, handleLogout }: ProfileDropdownProps) => {
                 handleLogout()
                 setIsOpen(false)
               }}
-              className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg
-                text-red-600 hover:bg-red-50 transition-all duration-200 group"
+              className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded
+                text-red-600 hover:bg-red-50 group"
             >
               <LogOut className="h-4 w-4 group-hover:scale-110 transition-transform" />
               <span className="font-medium">Log out</span>

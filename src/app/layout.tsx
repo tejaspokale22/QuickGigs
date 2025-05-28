@@ -2,6 +2,8 @@ import type { Metadata } from 'next'
 import './globals.css'
 import NextTopLoader from 'nextjs-toploader'
 import LayoutWrapper from '@/components/LayoutWrapper' // Import the client component
+import Header from '@/components/Header'
+
 
 export const metadata: Metadata = {
   title: 'QuickGigs',
@@ -19,6 +21,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
+        <Header />
+        <main>
           <NextTopLoader
             color="#000000"
             initialPosition={0.08}
@@ -33,6 +37,7 @@ export default function RootLayout({
           />
           {/* Wrap the main layout inside LayoutWrapper */}
           <LayoutWrapper>{children}</LayoutWrapper>
+        </main>
       </body>
     </html>
   )

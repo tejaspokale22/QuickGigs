@@ -70,7 +70,7 @@ const LocationDialog: React.FC<LocationDialogProps> = ({ isOpen, onClose }) => {
         <div className="mt-6 flex justify-end">
           <Button
             onClick={handleSubmit}
-            className="bg-purple-950 text-white px-6 py-2 rounded hover:bg-purple-900"
+            className="bg-black text-white px-6 py-2 rounded hover:bg-gray-800"
           >
             Add Location
           </Button>

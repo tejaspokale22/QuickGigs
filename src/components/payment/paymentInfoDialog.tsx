@@ -13,9 +13,14 @@ interface PaymentInfoDialogProps {
   onClose: (open: boolean) => void;
 }
 
+interface PaymentDetails {
+  upiDetails: { type: string; value: string } | null;
+  bankDetails: { type: string; value: { accountHolder: string; accountNo: string; ifsc: string } } | null;
+}
+
 const PaymentInfoDialog: React.FC<PaymentInfoDialogProps> = ({ freelancerId, isOpen, onClose }) => {
   const [freelancer, setFreelancer] = useState<User | null>(null);
-  const [paymentDetails, setPaymentDetails] = useState<{ type: string; value: string | any } | null>(null);
+  const [paymentDetails, setPaymentDetails] = useState<PaymentDetails | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -28,7 +33,12 @@ const PaymentInfoDialog: React.FC<PaymentInfoDialogProps> = ({ freelancerId, isO
         setFreelancer(freelancerData);
 
         const paymentData = await getFreelancerPaymentDetails(freelancerId);
-        setPaymentDetails(paymentData);
+        if (typeof paymentData === 'string') {
+          setError(paymentData);
+          setPaymentDetails(null);
+        } else {
+          setPaymentDetails(paymentData);
+        }
       } catch (err) {
         console.error("Error fetching details:", err);
         setError("Failed to fetch payment details.");
@@ -65,30 +75,29 @@ const PaymentInfoDialog: React.FC<PaymentInfoDialogProps> = ({ freelancerId, isO
           <p className="text-red-500 text-center">{error}</p>
         ) : paymentDetails ? (
           <div className="flex flex-col items-center space-y-4 w-full">
-            {paymentDetails.type === "UPI" ? (
+            {paymentDetails.upiDetails && (
               <div className="w-full bg-gray-100 p-4 rounded-lg flex items-center gap-3">
                 <Image src="/upi.svg" alt="UPI" width={30} height={30} className="w-8 h-8" />
                 <p className="text-black">
-                  UPI ID: <span className="font-semibold">{paymentDetails.value}</span>
+                  UPI ID: <span className="font-semibold">{paymentDetails.upiDetails.value}</span>
                 </p>
               </div>
-            ) : paymentDetails.type === "Bank" ? (
+            )}
+            {paymentDetails.bankDetails && (
               <div className="w-full bg-gray-100 p-4 rounded-lg">
                 <div className="flex items-center gap-3">
                   <Image src="/bank.svg" alt="Bank" width={30} height={30} className="w-8 h-8" />
                   <p className="text-black font-medium">Bank Account Details</p>
                 </div>
                 <p className="text-black">
-                  <strong>Account Holder:</strong> {paymentDetails.value.accountHolder}
+                  <strong>Account No:</strong> {paymentDetails.bankDetails.value.accountNo}
                 </p>
                 <p className="text-black">
-                  <strong>Account No:</strong> {paymentDetails.value.accountNo}
-                </p>
-                <p className="text-black">
-                  <strong>IFSC Code:</strong> {paymentDetails.value.ifsc}
+                  <strong>IFSC Code:</strong> {paymentDetails.bankDetails.value.ifsc}
                 </p>
               </div>
-            ) : (
+            )}
+            {!paymentDetails.upiDetails && !paymentDetails.bankDetails && (
               <p className="text-gray-500">No payment details available.</p>
             )}
           </div>

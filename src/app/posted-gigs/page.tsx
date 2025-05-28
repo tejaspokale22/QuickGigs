@@ -119,11 +119,11 @@ export default function PostedGigsPage() {
   ]
 
   return (
-    <div className="p-8 max-w-7xl mx-auto">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Posted Gigs</h1>
-        <p className="text-gray-600 mt-2">Manage and track your posted gigs</p>
-      </div>
+    <div className="p-6 max-w-7xl mx-auto pt-20 bg-gray-50">
+      <div className="bg-white rounded-2xl shadow-sm p-6 mb-8">
+          <h2 className="text-3xl font-bold text-gray-900 mb-2">Posted Gigs</h2>
+          <p className="text-gray-600">Review and manage your posted work</p>
+        </div>
 
       {/* Stats Section */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -189,10 +189,10 @@ export default function PostedGigsPage() {
                   {gig.workStatus === true && (
                     <button
                       onClick={() => setPaymentInfoDialogOpen(true)}
-                      className="flex items-center gap-2 px-4 py-2 bg-black text-white rounded-lg
-                        hover:bg-gray-900 transition-colors duration-200"
+                      className="flex items-center gap-2 px-4 py-2 bg-black text-white rounded
+                        hover:bg-gray-800"
                     >
-                      <CreditCard className="h-4 w-4" />
+                      <CreditCard className="h-6 w-6" />
                       <span className="font-medium">Pay Now</span>
                     </button>
                   )}
@@ -223,6 +223,9 @@ export default function PostedGigsPage() {
                 {(gig.status === 'pending' || gig.status === 'progress') && gig.freelancerId && (
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
+                    <p className="text-sm text-gray-600">
+                          {gig.status === 'pending' ? 'Assigned to' : 'Working on this gig'}
+                        </p>
                       <img
                         src={freelancers[gig.freelancerId]?.profilePicture || '/default-avatar.png'}
                         alt={freelancers[gig.freelancerId]?.name}
@@ -231,9 +234,6 @@ export default function PostedGigsPage() {
                       <div>
                         <p className="font-medium text-gray-900">
                           {freelancers[gig.freelancerId]?.name}
-                        </p>
-                        <p className="text-sm text-gray-600">
-                          {gig.status === 'pending' ? 'Assigned to' : 'Working on this gig'}
                         </p>
                       </div>
                     </div>
@@ -263,15 +263,15 @@ export default function PostedGigsPage() {
                       <div className="flex gap-3">
                         <button
                           onClick={() => handleApprove(gig.id)}
-                          className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white 
-                            rounded-lg hover:bg-green-700 transition-colors duration-200"
+                          className="flex items-center gap-2 px-4 py-2 border-2 border-green-500 text-green-600 
+                            rounded hover:bg-green-50 bg-transparent transition-colors duration-200"
                         >
                           <CheckCircle className="h-4 w-4" />
                           <span className="font-medium">Approve</span>
                         </button>
                         <button
-                          className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white 
-                            rounded-lg hover:bg-red-700 transition-colors duration-200"
+                          className="flex items-center gap-2 px-4 py-2 border-2 border-red-500 text-red-600 
+                            rounded hover:bg-red-50 bg-transparent transition-colors duration-200"
                         >
                           <AlertCircle className="h-4 w-4" />
                           <span className="font-medium">Reject</span>

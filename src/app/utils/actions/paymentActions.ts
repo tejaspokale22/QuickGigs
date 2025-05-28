@@ -2,11 +2,8 @@ import { doc, setDoc } from "firebase/firestore";
 import { firestore } from "../firebase";
 import {
   collection,
-  getDoc,
-  addDoc,
   getDocs,
   updateDoc,
-  arrayUnion,
   query,
   where,
 } from "firebase/firestore";
@@ -67,16 +64,22 @@ export const getFreelancerPaymentDetails = async (freelancerId: string) => {
     }
 
     let paymentDetails = null;
+    let upiDetails=null;
+    let bankDetails=null;
 
     querySnapshot.forEach((doc) => {
       const data = doc.data();
       if (data.upiId) {
-        paymentDetails = { type: "UPI", value: data.upiId };
-      } else if (data.bankDetails) {
-        paymentDetails = { type: "Bank", value: data.bankDetails };
+        upiDetails = { type: "UPI", value: data.upiId };
+      } 
+      if (data.bankDetails) {
+        bankDetails = { type: "Bank", value: data.bankDetails };
       }
     });
-
+    paymentDetails = {
+      upiDetails:upiDetails,
+      bankDetails:bankDetails
+    }
     if (!paymentDetails) {
       return "No valid payment details found.";
     }
