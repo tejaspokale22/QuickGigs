@@ -13,7 +13,6 @@ import googleLogo from "../../public/google-icon.svg";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import Logo from "./Logo";
 import loginBg from "../../public/loginbg.jpg";
 import { 
   Lock, 
@@ -76,8 +75,25 @@ const Login: React.FC = () => {
 
         <div className="flex-1 flex flex-col items-center justify-center max-w-lg mx-auto w-full rounded mt-4">
           <div className="w-full space-y-6">
-            <div className="text-center mb-10">
+            <div className="text-center mb-12">
               <p className="text-3xl font-bold text-gray-900">Login to your account</p>
+            </div>
+
+            <Button
+              onClick={handleGoogleLogin}
+              className="w-full py-6 rounded flex items-center justify-center gap-3 bg-gray-50 text-gray-700 hover:bg-gray-100"
+            >
+              <Image src={googleLogo} alt="Google Logo" width={20} height={20} />
+              Sign in with Google
+            </Button>
+
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-gray-200"></div>
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="px-2 bg-white text-gray-500">Or continue with email</span>
+              </div>
             </div>
 
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
@@ -143,29 +159,12 @@ const Login: React.FC = () => {
 
               <Button 
                 type="submit" 
-                className="w-full bg-black text-white py-6 rounded-lg hover:bg-gray-800 transition-colors flex items-center justify-center gap-2"
+                className="w-full bg-black text-white py-6 rounded hover:bg-gray-800 transition-colors flex items-center justify-center gap-2"
               >
                 <LockKeyholeIcon className="w-5 h-5" />
                 Sign In
               </Button>
             </form>
-
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-200"></div>
-              </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-white text-gray-500">Or continue with</span>
-              </div>
-            </div>
-
-            <Button
-              onClick={handleGoogleLogin}
-              className="w-full py-6 rounded-lg flex items-center justify-center gap-3 bg-white border-2 border-gray-200 text-gray-700 hover:bg-gray-50 transition-colors"
-            >
-              <Image src={googleLogo} alt="Google Logo" width={20} height={20} />
-              Sign in with Google
-            </Button>
 
             <p className="text-center text-gray-600">
               Don&apos;t have an account?{" "}
@@ -179,15 +178,15 @@ const Login: React.FC = () => {
         {/* Trust Indicators */}
         <div className="hidden lg:flex items-center justify-center gap-8 pt-8 border-t border-gray-100">
           <div className="flex items-center gap-2">
-            <CheckCircle2 className="w-5 h-5 text-green-500" />
+            <CheckCircle2 className="w-5 h-5 text-black" />
             <span className="text-sm text-gray-600">Secure Login</span>
           </div>
           <div className="flex items-center gap-2">
-            <CheckCircle2 className="w-5 h-5 text-green-500" />
+            <CheckCircle2 className="w-5 h-5 text-black" />
             <span className="text-sm text-gray-600">Trusted by 5000+ Students</span>
           </div>
           <div className="flex items-center gap-2">
-            <CheckCircle2 className="w-5 h-5 text-green-500" />
+            <CheckCircle2 className="w-5 h-5 text-black" />
             <span className="text-sm text-gray-600">24/7 Support</span>
           </div>
         </div>

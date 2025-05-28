@@ -150,7 +150,7 @@ const Register: React.FC = () => {
           {/* Google Sign Up Button */}
           <Button
             onClick={handleGoogleLogin}
-            className="w-full py-5 mb-6 rounded flex items-center justify-center gap-3 bg-white border-2 border-gray-200 text-gray-700 hover:bg-gray-50 transition-colors"
+            className="w-full py-5 mb-6 rounded flex items-center justify-center gap-3 bg-gray-50 text-gray-700 hover:bg-gray-100"
           >
             <Image src={googleLogo} alt="Google Logo" width={20} height={20} />
             Continue with Google

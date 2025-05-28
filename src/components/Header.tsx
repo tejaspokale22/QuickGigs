@@ -55,17 +55,17 @@ const Header = () => {
         <div className="flex items-center">
           <Link
             href="/"
-            className="px-3 py-1.5 text-sm font-medium transition-all flex items-center gap-2 pr-1 justify-center rounded"
+            className="px-3 py-1.5 flex items-center gap-2 pr-1 justify-center rounded"
           >
-            <span className="text-gray-600 hover:text-black text-base">
+            <span className="text-black text-base font-normal">
               Home
             </span>
           </Link>
           <Link
             href="/gigs"
-            className="px-3 py-1.5 text-sm font-medium transition-all flex items-center gap-2 pr-2 justify-center rounded"
+            className="px-3 py-1.5 flex items-center gap-2 pr-2 justify-center rounded"
           >
-            <span className="text-gray-600 hover:text-black text-base">
+            <span className="text-black text-base font-normal">
               Find Gigs
             </span>
           </Link>

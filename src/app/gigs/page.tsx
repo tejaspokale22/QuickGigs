@@ -3,8 +3,9 @@
 import React, { useEffect, useState } from "react";
 import { fetchGigs } from "../utils/actions/gigActions";
 import { fetchUsers } from "../utils/actions/authActions";
-import { Check, ChevronRightIcon, Search, Briefcase, Filter, Clock, DollarSign, IndianRupee } from "lucide-react";
+import { Check, ChevronRightIcon, Search, Briefcase, Filter, Clock, IndianRupee } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import { Gig, User } from "../utils/types";
 import { formatDeadline, getDaysAgo } from "../utils/utilityFunctions";
 import { applyForGig } from "../utils/actions/gigActions";
@@ -52,11 +53,15 @@ const GigCard = ({ gig, user }: { gig: Gig; user?: User }) => {
         {user && (
           <div className="flex justify-between items-start">
             <div className="flex items-center space-x-3">
-              <img
-                src={user.profilePicture || "/default-avatar.png"}
-                alt={user.name}
-                className="w-12 h-12 rounded-full object-cover border-2 border-gray-100"
-              />
+              <div className="relative w-12 h-12">
+                <Image
+                  src={user.profilePicture || "/default-avatar.png"}
+                  alt={user.name}
+                  fill
+                  className="rounded-full object-cover border-2 border-gray-100"
+                  priority
+                />
+              </div>
               <div>
                 <h3 className="font-semibold text-gray-900">{user.name}</h3>
                 <p className="text-sm text-gray-500">{user.email}</p>
@@ -262,7 +267,7 @@ const Page = () => {
   });
 
   return (
-    <div className="min-h-screen bg-gray-50 pt-20">
+    <div className="min-h-screen bg-gray-50 pt-16">
       {/* Compact Header with Search */}
       <div className="bg-black py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -270,7 +275,7 @@ const Page = () => {
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
             <div className="max-w-2xl space-y-4">
               <div>
-                <h1 className="text-3xl font-bold text-white">Find Gigs</h1>
+                <h1 className="text-3xl font-bold text-white">Explore Freelance Opportunities</h1>
                 <p className="text-gray-300 mt-2">Discover opportunities that match your skills and expertise</p>
               </div>
               <div className="flex items-center gap-4 text-gray-300 text-sm">
