@@ -118,8 +118,8 @@ const MessagingPage = () => {
                     <button
                       key={chat.id}
                       onClick={() => setSelectedChatId(chat.id)}
-                      className={`w-full p-3 hover:bg-gray-50 transition-colors duration-200
-                        ${selectedChatId === chat.id ? 'bg-gray-50' : ''}`}
+                      className={`w-full p-3 hover:bg-gray-100 transition-colors duration-200
+                        ${selectedChatId === chat.id ? 'bg-gray-100' : ''}`}
                     >
                       {chat.participants.map((participantId: string) => {
                         const user = participantsDetails.find((user) => user.uid === participantId);
@@ -167,7 +167,7 @@ const MessagingPage = () => {
                   <div className="space-y-4">
                     <button
                       onClick={() => setIsDialogOpen(true)}
-                      className="w-full px-6 py-3 bg-black text-white rounded-lg hover:bg-gray-800 
+                      className="w-full px-6 py-3 bg-black text-white rounded hover:bg-gray-800 
                         transition-all duration-200 flex items-center justify-center space-x-2"
                     >
                       <Plus className="h-5 w-5" />

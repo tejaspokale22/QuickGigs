@@ -6,7 +6,12 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "type-check": "tsc --noEmit",
+    "format": "prettier --write .",
+    "prepare": "husky install",
+    "postinstall": "next telemetry disable",
+    "analyze": "ANALYZE=true next build"
   },
   "dependencies": {
     "@google/generative-ai": "^0.21.0",

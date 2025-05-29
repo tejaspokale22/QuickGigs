@@ -135,7 +135,6 @@ const ChatRoom = ({ chatId, loggedInUserId }: ChatRoomProps) => {
               </div>
               <div>
                 <h2 className="text-lg font-semibold text-gray-900">{receiver.name}</h2>
-                <p className="text-sm text-gray-500">Online</p>
               </div>
             </>
           ) : (
