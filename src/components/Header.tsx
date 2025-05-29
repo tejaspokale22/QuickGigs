@@ -5,18 +5,22 @@ import Link from 'next/link'
 import Image from 'next/image'
 import Logo from './Logo'
 import { auth, signOut } from '@/app/utils/firebase'
-import { onAuthStateChanged } from 'firebase/auth'
+import { onAuthStateChanged, User } from 'firebase/auth'
 import logoImg from '../../public/logoImg.png'
 import ProfileDropdown from './ProfileDropdown'
 
 const Header = () => {
-  // Initialize from localStorage to prevent flicker
-  const [user, setUser] = useState(() => {
-    const savedUser = localStorage.getItem('userData')
-    return savedUser ? JSON.parse(savedUser) : null
-  })
+  const [user, setUser] = useState<User | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
+    // Load saved user data
+    const savedUser = localStorage.getItem('userData')
+    if (savedUser) {
+      setUser(JSON.parse(savedUser) as User)
+    }
+
+    // Set up auth state listener
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser)
       if (currentUser) {
@@ -30,6 +34,7 @@ const Header = () => {
       } else {
         localStorage.removeItem('userData')
       }
+      setIsLoading(false)
     })
 
     return () => unsubscribe()
@@ -42,6 +47,20 @@ const Header = () => {
     } catch (error) {
       console.error('Error signing out:', error)
     }
+  }
+
+  // Show a minimal header while loading to prevent layout shift
+  if (isLoading) {
+    return (
+      <header className="fixed top-0 left-0 right-0 w-full flex items-center justify-between p-3 bg-white z-50 border-b border-gray-200">
+        <div className="flex items-center ml-2 gap-6 justify-center">
+          <div className="flex items-center gap-1">
+            <Image src={logoImg} width={38} height={38} alt="logo" priority />
+            <Logo />
+          </div>
+        </div>
+      </header>
+    )
   }
 
   return (

@@ -11,7 +11,6 @@ import {
     DialogHeader,
     DialogTitle,
   } from "@/components/ui/dialog";
-import { log } from "console";
 
 
 type NewChatForm = {
@@ -89,7 +88,7 @@ const CreateChatDialog = ({ isOpen, onClose }: NewChatProps) => {
             <Button
               type="submit"
               disabled={loading}
-              className="w-full py-2 px-4 text-white bg-black hover:bg-gray-800"
+              className="w-full py-2 px-4 text-white bg-black hover:bg-gray-800 rounded"
             >
               {loading ? "Creating Chat..." : "Add User"}
             </Button>
