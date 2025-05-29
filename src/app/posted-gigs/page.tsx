@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { collection, query, where, onSnapshot } from 'firebase/firestore'
 import { firestore } from '@/app/utils/firebase'
 import { fetchUser } from '@/app/utils/actions/authActions'
@@ -226,10 +227,12 @@ export default function PostedGigsPage() {
                     <p className="text-sm text-gray-600">
                           {gig.status === 'pending' ? 'Assigned to' : 'Working on this gig'}
                         </p>
-                      <img
+                      <Image
                         src={freelancers[gig.freelancerId]?.profilePicture || '/default-avatar.png'}
-                        alt={freelancers[gig.freelancerId]?.name}
-                        className="w-10 h-10 rounded-full object-cover border border-gray-200"
+                        alt={freelancers[gig.freelancerId]?.name || 'Freelancer'}
+                        width={40}
+                        height={40}
+                        className="rounded-full object-cover border border-gray-200"
                       />
                       <div>
                         <p className="font-medium text-gray-900">
@@ -244,10 +247,12 @@ export default function PostedGigsPage() {
                 {gig.status === 'completed' && (
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <img
+                      <Image
                         src={freelancers[gig.freelancerId || '']?.profilePicture || '/default-avatar.png'}
-                        alt={freelancers[gig.freelancerId || '']?.name}
-                        className="w-10 h-10 rounded-full object-cover border border-gray-200"
+                        alt={freelancers[gig.freelancerId || '']?.name || 'Freelancer'}
+                        width={40}
+                        height={40}
+                        className="rounded-full object-cover border border-gray-200"
                       />
                       <div>
                         <p className="font-medium text-gray-900">

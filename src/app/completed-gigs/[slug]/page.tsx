@@ -11,6 +11,7 @@ import { CheckCircle, Mail } from "lucide-react"; // Importing the X icon
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { approvePayment } from "@/app/utils/actions/paymentActions";
+import Image from "next/image";
 
 const CompletedGigsPage = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -112,10 +113,12 @@ const CompletedGigsPage = () => {
                     {clients[gig.clientId] && (
                       <div className="flex items-center gap-3 mb-3 pb-3 border-b border-gray-100">
                         <div>
-                          <img
+                          <Image
                             src={clients[gig.clientId].profilePicture || "/default-avatar.png"}
                             alt={clients[gig.clientId].name}
-                            className="w-10 h-10 rounded-full border-2 border-gray-100 object-cover"
+                            width={40}
+                            height={40}
+                            className="rounded-full border-2 border-gray-100 object-cover"
                           />
                         </div>
                         <div>

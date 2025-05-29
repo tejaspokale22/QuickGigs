@@ -15,6 +15,7 @@ import { rejectGig } from "@/app/utils/actions/gigActions";
 import { Button } from "@/components/ui/button";
 import { markAsCompleted } from "@/app/utils/actions/gigActions";
 import { approvePayment } from "@/app/utils/actions/paymentActions";
+import Image from "next/image";
 
 const AssignedGigsPage = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -153,10 +154,12 @@ const AssignedGigsPage = () => {
                 {clients[gig.clientId] && (
                   <div className="flex items-center gap-4 mb-6">
                     <div className="flex-shrink-0">
-                      <img
+                      <Image
                         src={clients[gig.clientId].profilePicture || "/default-avatar.png"}
                         alt={clients[gig.clientId].name}
-                        className="w-12 h-12 rounded-full object-cover"
+                        width={48}
+                        height={48}
+                        className="rounded-full object-cover"
                       />
                     </div>
                     <div className="flex-grow">
