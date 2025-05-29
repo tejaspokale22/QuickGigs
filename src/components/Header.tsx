@@ -13,13 +13,17 @@ const Header = () => {
   const [user, setUser] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
+  // Initial setup effect
   useEffect(() => {
-    // Load saved user data
-    const savedUser = localStorage.getItem('userData')
-    if (savedUser) {
-      setUser(JSON.parse(savedUser) as User)
+    if (typeof window !== 'undefined') {
+      const savedUser = localStorage.getItem('userData')
+      if (savedUser) {
+        setUser(JSON.parse(savedUser) as User)
+      }
     }
+  }, [])
 
+  useEffect(() => {
     // Set up auth state listener
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser)
@@ -30,9 +34,15 @@ const Header = () => {
           email: currentUser.email,
           uid: currentUser.uid,
         }
-        localStorage.setItem('userData', JSON.stringify(userData))
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('userData', JSON.stringify(userData))
+          localStorage.setItem('uid', currentUser.uid)
+        }
       } else {
-        localStorage.removeItem('userData')
+        if (typeof window !== 'undefined') {
+          localStorage.removeItem('userData')
+          localStorage.removeItem('uid')
+        }
       }
       setIsLoading(false)
     })
@@ -43,7 +53,10 @@ const Header = () => {
   const handleLogout = async () => {
     try {
       await signOut(auth) 
-      localStorage.removeItem('userData')
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('userData')
+        localStorage.removeItem('uid')
+      }
     } catch (error) {
       console.error('Error signing out:', error)
     }
