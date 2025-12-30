@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import '@/app/globals.css'
+import { Poppins } from 'next/font/google'
 import NextTopLoader from 'nextjs-toploader'
 import LayoutWrapper from '@/components/LayoutWrapper'
 import Header from '@/components/Header'
@@ -12,6 +13,13 @@ export const metadata: Metadata = {
   },
 }
 
+const poppins = Poppins({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-poppins',
+  display: 'swap',
+})
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -19,7 +27,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="vsc-initialized">
+      <body className={poppins.className}>
         <Header />
         <main>
           <NextTopLoader

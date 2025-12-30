@@ -1,19 +1,31 @@
-const nextConfig = {
+import type { NextConfig } from 'next'
+
+const nextConfig: NextConfig = {
+  reactStrictMode: true,
+
+  trailingSlash: false,
+
   images: {
     remotePatterns: [
-      { hostname: 'lh3.googleusercontent.com' },
-      { hostname: 'randomuser.me' },
-      { hostname: 'images.unsplash.com' },
-      { hostname: 'placehold.co' },
+      {
+        protocol: 'https',
+        hostname: 'lh3.googleusercontent.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'randomuser.me',
+      },
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'placehold.co',
+      },
     ],
   },
 
-  reactStrictMode: true,
-
-  // Handle trailing slashes
-  trailingSlash: false,
-
-  // Configure headers for security
   async headers() {
     return [
       {
@@ -33,4 +45,4 @@ const nextConfig = {
   },
 }
 
-module.exports = nextConfig
+export default nextConfig
