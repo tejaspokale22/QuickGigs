@@ -7,7 +7,7 @@ import { Check, ChevronRightIcon, Search, Briefcase, Filter, Clock, IndianRupee 
 import Link from "next/link";
 import Image from "next/image";
 import { Gig, User } from "../utils/types";
-import { formatDeadline, getDaysAgo } from "../utils/utilityFunctions";
+import { formatDeadline, getDaysAgo, formatCurrency } from "../utils/utilityFunctions";
 import { applyForGig } from "../utils/actions/gigActions";
 import { Button } from "@/components/ui/button";
 import {
@@ -382,7 +382,7 @@ const Page = () => {
                 />
                 <div className="flex justify-between text-sm text-gray-600 mt-2">
                   <span>₹0</span>
-                  <span>₹{priceRange[1].toLocaleString()}</span>
+                  <span>{formatCurrency(priceRange[1])}</span>
                 </div>
               </div>
             </div>

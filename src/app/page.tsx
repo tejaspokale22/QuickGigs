@@ -14,7 +14,7 @@ import {
   Send,
 } from 'lucide-react'
 import hero from '../../public/hero.jpg'
-// import heroine from '../../public/heroine.jpg';
+import { formatCurrency } from './utils/utilityFunctions'
 
 export default function Home() {
   const features = [
@@ -175,7 +175,7 @@ export default function Home() {
       university: 'IIT Delhi',
       avatar: 'https://randomuser.me/api/portraits/men/1.jpg',
       gigsCompleted: 48,
-      earnings: '₹1,20,000',
+      earnings: formatCurrency(120000),
       rating: 4.9,
       badge: 'Elite',
     },
@@ -185,7 +185,7 @@ export default function Home() {
       university: 'BITS Pilani',
       avatar: 'https://randomuser.me/api/portraits/men/2.jpg',
       gigsCompleted: 42,
-      earnings: '₹95,000',
+      earnings: formatCurrency(95000),
       rating: 4.8,
       badge: 'Pro',
     },
@@ -195,7 +195,7 @@ export default function Home() {
       university: 'VIT Vellore',
       avatar: 'https://randomuser.me/api/portraits/women/3.jpg',
       gigsCompleted: 39,
-      earnings: '₹88,000',
+      earnings: formatCurrency(88000),
       rating: 4.9,
       badge: 'Pro',
     },
@@ -205,7 +205,7 @@ export default function Home() {
       university: 'IIIT Hyderabad',
       avatar: 'https://randomuser.me/api/portraits/men/4.jpg',
       gigsCompleted: 35,
-      earnings: '₹82,000',
+      earnings: formatCurrency(82000),
       rating: 4.7,
       badge: 'Rising Star',
     },
@@ -215,7 +215,7 @@ export default function Home() {
       university: 'NIT Trichy',
       avatar: 'https://randomuser.me/api/portraits/women/5.jpg',
       gigsCompleted: 32,
-      earnings: '₹75,000',
+      earnings: formatCurrency(75000),
       rating: 4.8,
       badge: 'Rising Star',
     },
@@ -243,7 +243,7 @@ export default function Home() {
               </button>
               <button className="border-2 border-black px-6 py-1 rounded text-md font-medium hover:bg-gray-200 transition-all flex gap-3 items-center justify-center">
                 <span>
-                  <Send className='w-5 h-5' />
+                  <Send className="w-5 h-5" />
                 </span>
                 Post a Gig
               </button>

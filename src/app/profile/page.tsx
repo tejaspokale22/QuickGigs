@@ -16,14 +16,7 @@ import X from '../../../public/X.svg'
 import Image from 'next/image'
 import { doc, onSnapshot } from 'firebase/firestore'
 import { firestore } from '@/app/utils/firebase'
-import {
-  Phone,
-  User,
-  Link2,
-  Briefcase,
-  Mail,
-  Edit,
-} from 'lucide-react'
+import { Phone, User, Link2, Briefcase, Mail, Edit } from 'lucide-react'
 import Spinner from '@/components/ui/spinner'
 
 interface UserProfile {

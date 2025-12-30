@@ -31,3 +31,13 @@ export const getDaysAgo = (firebaseTimestamp: Timestamp) => {
 
   return daysAgo === 0 ? 'Today' : `${daysAgo} day${daysAgo > 1 ? 's' : ''} ago`
 }
+
+export const formatCurrency = (amount: number): string => {
+  // Format as Indian currency (e.g. 1,00,000)
+  return new Intl.NumberFormat('en-IN', {
+    style: 'currency',
+    currency: 'INR',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(amount);
+};

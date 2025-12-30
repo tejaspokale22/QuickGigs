@@ -13,7 +13,6 @@ const Header = () => {
   const [user, setUser] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
-  // Initial setup effect
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const savedUser = localStorage.getItem('userData')
@@ -24,7 +23,6 @@ const Header = () => {
   }, [])
 
   useEffect(() => {
-    // Set up auth state listener
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser)
       if (currentUser) {
@@ -52,7 +50,7 @@ const Header = () => {
 
   const handleLogout = async () => {
     try {
-      await signOut(auth) 
+      await signOut(auth)
       if (typeof window !== 'undefined') {
         localStorage.removeItem('userData')
         localStorage.removeItem('uid')
@@ -62,13 +60,12 @@ const Header = () => {
     }
   }
 
-  // Show a minimal header while loading to prevent layout shift
   if (isLoading) {
     return (
-      <header className="fixed top-0 left-0 right-0 w-full flex items-center justify-between p-3 bg-white z-50 border-b border-gray-200">
-        <div className="flex items-center ml-2 gap-6 justify-center">
-          <div className="flex items-center gap-1">
-            <Image src={logoImg} width={38} height={38} alt="logo" priority />
+      <header className="fixed top-0 left-0 right-0 w-full bg-white z-50 border-b border-gray-100">
+        <div className="max-w-full px-4 lg:px-6 py-3 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Image src={logoImg} width={38} height={38} alt="logo" />
             <Logo />
           </div>
         </div>
@@ -77,54 +74,60 @@ const Header = () => {
   }
 
   return (
-    <header className="fixed top-0 left-0 right-0 w-full flex items-center justify-between p-3 bg-white z-50 border-b border-gray-200">
-      {/* Logo Section */}
-      <div className="flex items-center ml-2 gap-6 justify-center">
-        <div className="flex items-center gap-1">
-          <Image src={logoImg} width={38} height={38} alt="logo" priority />
-          <Logo />
-        </div>
-        <div className="flex items-center">
+    <header className="fixed top-0 left-0 right-0 w-full bg-white z-50 border-b border-gray-100">
+      <div className="max-w-full px-4 lg:px-6 py-3 flex items-center justify-between">
+        <div className="flex items-center gap-8">
           <Link
             href="/"
-            className="px-3 py-1.5 flex items-center gap-2 pr-1 justify-center rounded"
+            className="flex items-center gap-2 hover:opacity-80 transition-opacity"
           >
-            <span className="text-black text-base font-normal">
+            <Image
+              src={logoImg}
+              width={38}
+              height={38}
+              alt="QuickGigs"
+              priority
+            />
+            <Logo />
+          </Link>
+
+          <nav className="hidden md:flex items-center gap-1">
+            <Link
+              href="/"
+              className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-black hover:bg-gray-100 rounded-full transition-colors"
+            >
               Home
-            </span>
-          </Link>
-          <Link
-            href="/gigs"
-            className="px-3 py-1.5 flex items-center gap-2 pr-2 justify-center rounded"
-          >
-            <span className="text-black text-base font-normal">
+            </Link>
+            <Link
+              href="/gigs"
+              className="px-3 py-2 text-sm font-medium text-gray-700 hover:text-black hover:bg-gray-100 rounded-full transition-colors"
+            >
               Find Gigs
-            </span>
-          </Link>
+            </Link>
+          </nav>
+        </div>
+
+        <div className="flex items-center gap-3">
+          {user ? (
+            <ProfileDropdown user={user} handleLogout={handleLogout} />
+          ) : (
+            <div className="flex items-center gap-2">
+              <Link
+                href="/login"
+                className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-black hover:bg-gray-100 rounded-full transition-colors"
+              >
+                Log in
+              </Link>
+              <Link
+                href="/register"
+                className="px-4 py-2 text-sm font-medium text-white bg-black hover:bg-gray-900 rounded-full transition-colors"
+              >
+                Register
+              </Link>
+            </div>
+          )}
         </div>
       </div>
-
-      {/* Navigation Section */}
-      <nav className="mr-2 flex items-center gap-2">
-        {user && <ProfileDropdown user={user} handleLogout={handleLogout} />}
-
-        {!user && (
-          <div className="flex items-center gap-2">
-            <Link
-              href="/login"
-              className="bg-white text-black px-3 py-1 text-base font-normal hover:bg-gray-200 rounded"
-            >
-              Log in
-            </Link>
-            <Link
-              href="/register"
-              className="bg-black text-white px-3 py-1 text-base font-normal hover:bg-gray-800 rounded"
-            >
-              Register
-            </Link>
-          </div>
-        )}
-      </nav>
     </header>
   )
 }

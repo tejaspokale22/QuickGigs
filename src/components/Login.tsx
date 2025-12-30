@@ -73,8 +73,8 @@ const Login: React.FC = () => {
           <span>Back to Home</span>
         </Link>
 
-        <div className="flex-1 flex flex-col items-center justify-center max-w-lg mx-auto w-full rounded mt-4">
-          <div className="w-full space-y-6">
+        <div className="flex-1 flex flex-col items-center justify-center max-w-lg mx-auto w-full rounded mt-12">
+          <div className="w-full space-y-2">
             <div className="text-center mb-12">
               <p className="text-3xl font-bold text-gray-900">Login to your account</p>
             </div>
