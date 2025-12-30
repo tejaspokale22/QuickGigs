@@ -21,7 +21,6 @@ import {
   Lock,
   Mail,
   ArrowLeft,
-  CheckCircle2,
   LockKeyholeIcon,
   Eye,
   EyeOff,
@@ -32,7 +31,7 @@ import {
 } from 'lucide-react'
 import googleLogo from '../../public/google-icon.svg'
 import logoImg from '../../public/logoImg.png'
-import freelancerImg from '../../public/freelancer-woman.avif'
+import freelancerImg from '../../public/freelancer-woman.png'
 
 interface SignUpFormInputs {
   email: string
@@ -181,91 +180,85 @@ const Register: React.FC = () => {
 
   return (
     <div className="flex h-screen w-full overflow-hidden">
-      <div className="w-full lg:w-[45%] h-full flex flex-col p-6 lg:p-8 mt-20 bg-white">
-        <Link
-          href="/"
-          className="inline-flex items-center gap-2 text-gray-600 hover:text-black transition-all"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          <span className="font-medium">Back to Home</span>
-        </Link>
-
-        <div className="flex-1 flex flex-col justify-between">
-          <div className="flex flex-col justify-center max-w-md mx-auto w-full">
-            <header className="text-center mb-8">
-              <div className="mb-4 flex justify-center">
+      {/* LEFT PANEL */}
+      <div className="w-full lg:w-[45%] bg-white grid grid-rows-[auto_1fr]">
+        {/* Content */}
+        <div className="flex items-center justify-center px-6 lg:px-8 py-28">
+          <div className="w-full max-w-sm">
+            {/* Header */}
+            <div className="text-center mb-6">
+              <div className="mb-3 flex justify-center">
                 <Image
                   src={logoImg}
-                  width={50}
-                  height={50}
+                  width={44}
+                  height={44}
                   alt="QuickGigs"
                   priority
                 />
               </div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">
+
+              <h1 className="text-2xl font-bold text-gray-900">
                 Join QuickGigs
               </h1>
-              <p className="text-gray-600 text-sm">
+
+              <p className="mt-1 text-sm text-gray-600">
                 Find opportunities that match your skills
               </p>
-            </header>
+            </div>
 
+            {/* Google login */}
             <Button
               onClick={handleGoogleLogin}
               disabled={loading}
-              className="w-full py-6 mb-6 rounded-full flex items-center justify-center gap-3 bg-white text-gray-700 hover:bg-gray-50 border border-gray-300 hover:border-gray-400 transition-colors disabled:opacity-50"
+              className="w-full h-11 rounded-full flex items-center justify-center gap-3
+                     bg-white text-gray-700 border border-gray-300
+                     hover:bg-gray-50 transition disabled:opacity-50"
             >
               {loading ? (
-                <Loader2 className="w-5 h-5 animate-spin" />
+                <Loader2 className="w-4 h-4 animate-spin" />
               ) : (
                 <>
-                  <Image src={googleLogo} alt="Google" width={20} height={20} />
-                  <span className="font-medium">Continue with Google</span>
+                  <Image src={googleLogo} alt="Google" width={18} height={18} />
+                  <span className="text-sm font-medium">
+                    Continue with Google
+                  </span>
                 </>
               )}
             </Button>
 
-            <div className="relative mb-6">
+            {/* Divider */}
+            <div className="relative my-5">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-200"></div>
+                <div className="w-full border-t border-gray-200" />
               </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="px-4 bg-white text-gray-500">
-                  or register with email
+              <div className="relative flex justify-center text-[11px] uppercase tracking-wide">
+                <span className="px-3 bg-white text-gray-500">
+                  Or register with email
                 </span>
               </div>
             </div>
 
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 mb-6">
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700 flex items-center gap-2">
+            {/* Form */}
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+              {/* Email */}
+              <div className="space-y-1.5">
+                <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
                   <Mail className="w-4 h-4" />
                   Email Address
                 </label>
                 <Input
                   type="email"
                   placeholder="you@example.com"
-                  {...register('email', {
-                    required: 'Email is required',
-                    pattern: {
-                      value:
-                        /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
-                      message: 'Please enter a valid email',
-                    },
-                  })}
-                  className="px-4 py-5 bg-gray-50 border-gray-200 focus:bg-white focus:border-gray-900 focus:ring-0 rounded-full transition-colors"
+                  {...register('email')}
                   disabled={loading}
+                  className="h-10 rounded-full bg-gray-50 border-gray-200
+                         focus:bg-white focus:border-black focus:ring-0"
                 />
-                {errors.email && (
-                  <p className="text-sm text-red-500 flex items-center gap-1">
-                    <ShieldAlert className="w-3 h-3" />
-                    {errors.email.message}
-                  </p>
-                )}
               </div>
 
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700 flex items-center gap-2">
+              {/* Password */}
+              <div className="space-y-1.5">
+                <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
                   <Lock className="w-4 h-4" />
                   Password
                 </label>
@@ -273,78 +266,29 @@ const Register: React.FC = () => {
                   <Input
                     type={showPassword ? 'text' : 'password'}
                     placeholder="Create a strong password"
-                    {...register('password', {
-                      required: 'Password is required',
-                      minLength: {
-                        value: 6,
-                        message: 'Password must be at least 6 characters',
-                      },
-                    })}
-                    className="px-4 pr-12 py-5 bg-gray-50 border-gray-200 focus:bg-white focus:border-gray-900 focus:ring-0 rounded-full transition-colors"
+                    {...register('password')}
                     disabled={loading}
+                    className="h-10 pr-11 rounded-full bg-gray-50 border-gray-200
+                           focus:bg-white focus:border-black focus:ring-0"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
                     tabIndex={-1}
                   >
                     {showPassword ? (
-                      <EyeOff className="w-5 h-5" />
+                      <EyeOff className="w-4 h-4" />
                     ) : (
-                      <Eye className="w-5 h-5" />
+                      <Eye className="w-4 h-4" />
                     )}
                   </button>
                 </div>
-
-                {password && (
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2">
-                      {getPasswordStrengthIcon(passwordStrength)}
-                      <span className="text-xs font-medium text-gray-600 capitalize">
-                        {passwordStrength} password
-                      </span>
-                    </div>
-                    <div className="flex gap-1 h-1">
-                      <div
-                        className={`flex-1 rounded-full transition-all ${
-                          passwordStrength === 'weak'
-                            ? 'bg-red-500'
-                            : passwordStrength === 'medium'
-                            ? 'bg-yellow-500'
-                            : 'bg-green-500'
-                        }`}
-                      ></div>
-                      <div
-                        className={`flex-1 rounded-full transition-all ${
-                          passwordStrength === 'medium'
-                            ? 'bg-yellow-500'
-                            : passwordStrength === 'strong'
-                            ? 'bg-green-500'
-                            : 'bg-gray-200'
-                        }`}
-                      ></div>
-                      <div
-                        className={`flex-1 rounded-full transition-all ${
-                          passwordStrength === 'strong'
-                            ? 'bg-green-500'
-                            : 'bg-gray-200'
-                        }`}
-                      ></div>
-                    </div>
-                  </div>
-                )}
-
-                {errors.password && (
-                  <p className="text-sm text-red-500 flex items-center gap-1">
-                    <ShieldAlert className="w-3 h-3" />
-                    {errors.password.message}
-                  </p>
-                )}
               </div>
 
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700 flex items-center gap-2">
+              {/* Confirm Password */}
+              <div className="space-y-1.5">
+                <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
                   <Lock className="w-4 h-4" />
                   Confirm Password
                 </label>
@@ -352,61 +296,53 @@ const Register: React.FC = () => {
                   <Input
                     type={showConfirmPassword ? 'text' : 'password'}
                     placeholder="Confirm your password"
-                    {...register('confirmPassword', {
-                      required: 'Please confirm your password',
-                      minLength: {
-                        value: 6,
-                        message: 'Password must be at least 6 characters',
-                      },
-                    })}
-                    className="px-4 pr-12 py-5 bg-gray-50 border-gray-200 focus:bg-white focus:border-gray-900 focus:ring-0 rounded-full transition-colors"
+                    {...register('confirmPassword')}
                     disabled={loading}
+                    className="h-10 pr-11 rounded-full bg-gray-50 border-gray-200
+                           focus:bg-white focus:border-black focus:ring-0"
                   />
                   <button
                     type="button"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
                     tabIndex={-1}
                   >
                     {showConfirmPassword ? (
-                      <EyeOff className="w-5 h-5" />
+                      <EyeOff className="w-4 h-4" />
                     ) : (
-                      <Eye className="w-5 h-5" />
+                      <Eye className="w-4 h-4" />
                     )}
                   </button>
                 </div>
-                {errors.confirmPassword && (
-                  <p className="text-sm text-red-500 flex items-center gap-1">
-                    <ShieldAlert className="w-3 h-3" />
-                    {errors.confirmPassword.message}
-                  </p>
-                )}
               </div>
 
+              {/* Submit */}
               <Button
                 type="submit"
-                className="w-full bg-black text-white py-6 rounded-full hover:bg-gray-900 transition-colors flex items-center justify-center gap-2 font-semibold disabled:opacity-50"
                 disabled={loading}
+                className="w-full h-11 rounded-full bg-black text-white
+                       hover:bg-gray-900 transition
+                       flex items-center justify-center gap-2 text-sm font-semibold"
               >
                 {loading ? (
                   <>
-                    <Loader2 className="w-5 h-5 animate-spin" />
+                    <Loader2 className="w-4 h-4 animate-spin" />
                     Creating account...
                   </>
                 ) : (
                   <>
-                    <LockKeyholeIcon className="w-5 h-5" />
+                    <LockKeyholeIcon className="w-4 h-4" />
                     Create Account
                   </>
                 )}
               </Button>
             </form>
 
-            <p className="text-center text-gray-600 text-sm mb-6">
+            <p className="mt-5 text-center text-sm text-gray-600">
               Already have an account?{' '}
               <Link
                 href="/login"
-                className="text-black font-semibold hover:underline"
+                className="font-semibold text-black hover:underline"
               >
                 Sign in
               </Link>
@@ -415,20 +351,22 @@ const Register: React.FC = () => {
         </div>
       </div>
 
+      {/* RIGHT IMAGE PANEL (unchanged) */}
       <div className="hidden lg:flex w-[55%] relative overflow-hidden">
         <Image
           src={freelancerImg}
           alt="Professional freelancer"
           fill
-          className="object-cover"
           priority
+          className="object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/20">
-          <div className="absolute top-24 left-12 max-w-lg space-y-4 text-white">
-            <h2 className="text-4xl font-bold leading-tight">
+        <div className="absolute inset-0 bg-linear-to-b from-black/75 via-black/60 to-black/35" />
+        <div className="absolute inset-0 flex items-start">
+          <div className="pt-24 pl-12 max-w-xl space-y-5 text-white">
+            <h2 className="text-4xl font-bold leading-snug tracking-tight">
               Start your freelancing journey
             </h2>
-            <p className="text-lg text-gray-200">
+            <p className="text-lg leading-relaxed text-gray-200">
               Join thousands of talented freelancers finding meaningful work on
               QuickGigs.
             </p>

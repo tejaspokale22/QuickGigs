@@ -2,21 +2,22 @@ import type { Metadata } from 'next'
 import '@/app/globals.css'
 import { Poppins } from 'next/font/google'
 import NextTopLoader from 'nextjs-toploader'
-import LayoutWrapper from '@/components/LayoutWrapper'
 import Header from '@/components/Header'
+import LayoutWrapper from '@/components/LayoutWrapper'
 
+// App-level metadata
 export const metadata: Metadata = {
   title: 'QuickGigs',
-  description: 'Freelancing Platform for Students',
+  description: 'Freelancing Platform for Students and Beginners.',
   icons: {
     icon: ['/favicon.ico?v=4'],
   },
 }
 
+// Google Font configuration
 const poppins = Poppins({
   subsets: ['latin'],
   weight: ['400', '500', '600', '700'],
-  variable: '--font-poppins',
   display: 'swap',
 })
 
@@ -29,20 +30,17 @@ export default function RootLayout({
     <html lang="en">
       <body className={poppins.className}>
         <Header />
+
+        {/* Global route change loader */}
+        <NextTopLoader
+          color="#000000"
+          height={4}
+          crawl
+          showSpinner={false}
+          speed={300}
+        />
+
         <main>
-          <NextTopLoader
-            color="#000000"
-            initialPosition={0.08}
-            crawlSpeed={150}
-            height={4}
-            crawl={true}
-            showSpinner={false}
-            easing="ease-in-out"
-            speed={300}
-            zIndex={1600}
-            showAtBottom={false}
-          />
-          {/* Wrap the main layout inside LayoutWrapper */}
           <LayoutWrapper>{children}</LayoutWrapper>
         </main>
       </body>
