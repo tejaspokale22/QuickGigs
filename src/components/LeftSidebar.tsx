@@ -12,7 +12,7 @@ import {
   Menu,
   X,
 } from 'lucide-react'
-import { auth } from '@/app/utils/firebase'
+import { auth } from '@/utils/firebase'
 import { onAuthStateChanged } from 'firebase/auth'
 import GigForm from './GigForm'
 

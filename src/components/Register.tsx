@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState } from 'react'
 import { useForm, SubmitHandler } from 'react-hook-form'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
@@ -12,26 +12,16 @@ import {
   createUserWithEmailAndPassword,
   sendEmailVerification,
   firestore,
-} from '@/app/utils/firebase'
+  signOut,
+} from '@/utils/firebase'
 import { doc, setDoc, getDoc } from 'firebase/firestore'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-import { useToast } from '@/hooks/use-toast'
-import {
-  Lock,
-  Mail,
-  ArrowLeft,
-  LockKeyholeIcon,
-  Eye,
-  EyeOff,
-  Loader2,
-  ShieldCheck,
-  ShieldAlert,
-  Shield,
-} from 'lucide-react'
+import { Lock, Mail, LockKeyholeIcon, Eye, EyeOff, Loader2 } from 'lucide-react'
 import googleLogo from '../../public/google-icon.svg'
 import logoImg from '../../public/logoImg.png'
 import freelancerImg from '../../public/freelancer-woman.png'
+import toast from 'react-hot-toast'
 
 interface SignUpFormInputs {
   email: string
@@ -39,61 +29,27 @@ interface SignUpFormInputs {
   confirmPassword: string
 }
 
-type PasswordStrength = 'weak' | 'medium' | 'strong'
-
-const calculatePasswordStrength = (password: string): PasswordStrength => {
-  if (!password) return 'weak'
-  let strength = 0
-  if (password.length >= 8) strength++
-  if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength++
-  if (/\d/.test(password)) strength++
-  if (/[!@#$%^&*(),.?":{}|<>]/.test(password)) strength++
-  if (strength <= 1) return 'weak'
-  if (strength <= 3) return 'medium'
-  return 'strong'
-}
-
-const getPasswordStrengthIcon = (strength: PasswordStrength) => {
-  const icons = {
-    weak: <ShieldAlert className="w-4 h-4 text-red-500" />,
-    medium: <Shield className="w-4 h-4 text-yellow-500" />,
-    strong: <ShieldCheck className="w-4 h-4 text-green-500" />,
-  }
-  return icons[strength]
-}
-
 const Register: React.FC = () => {
-  const [loading, setLoading] = useState(false)
-  const [showPassword, setShowPassword] = useState(false)
+  const [emailLoading, setEmailLoading] = useState<boolean>(false)
+  const [googleLoading, setGoogleLoading] = useState<boolean>(false)
+  const [showPassword, setShowPassword] = useState<boolean>(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
-  const { toast } = useToast()
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
   } = useForm<SignUpFormInputs>()
   const router = useRouter()
 
-  const password = watch('password', '')
-  const passwordStrength = useMemo(
-    () => calculatePasswordStrength(password),
-    [password],
-  )
-
   const handleGoogleLogin = async () => {
-    setLoading(true)
+    setGoogleLoading(true)
     try {
       const result = await signInWithPopup(auth, new GoogleAuthProvider())
       const user = result.user
 
       if (!user.emailVerified) {
-        toast({
-          variant: 'destructive',
-          title: 'Email Not Verified',
-          description: 'Please verify your email to proceed.',
-        })
-        setLoading(false)
+        toast.error('Please verify your email before logging in.')
+        setGoogleLoading(false)
         return
       }
 
@@ -112,36 +68,22 @@ const Register: React.FC = () => {
       localStorage.setItem('isAuthenticated', JSON.stringify(true))
       localStorage.setItem('uid', user.uid)
 
-      toast({
-        title: 'Success!',
-        description: 'You have successfully signed up with Google.',
-      })
-
       router.push('/')
     } catch (error: any) {
       console.error('Google login error:', error)
-      toast({
-        variant: 'destructive',
-        title: 'Authentication Failed',
-        description:
-          error.message || 'Failed to log in with Google. Please try again.',
-      })
+      toast.error('Google login failed. Please try again.')
     } finally {
-      setLoading(false)
+      setGoogleLoading(false)
     }
   }
 
   const onSubmit: SubmitHandler<SignUpFormInputs> = async (data) => {
-    setLoading(true)
+    setEmailLoading(true)
     const { email, password, confirmPassword } = data
 
     if (password !== confirmPassword) {
-      toast({
-        variant: 'destructive',
-        title: 'Password Mismatch',
-        description: 'Passwords do not match. Please check and try again.',
-      })
-      setLoading(false)
+      toast.error('Passwords do not match. Please check and try again.')
+      setEmailLoading(false)
       return
     }
 
@@ -151,30 +93,31 @@ const Register: React.FC = () => {
         email,
         password,
       )
+
       const user = userCredential.user
 
-      if (user) {
-        await sendEmailVerification(user)
-        toast({
-          title: 'Verification Email Sent!',
-          description: 'Please check your inbox and verify your email.',
-        })
-        localStorage.setItem('isAuthenticated', JSON.stringify(true))
-        router.push('/')
-      }
+      // ✅ Send verification email
+      await sendEmailVerification(user)
+
+      // ✅ IMPORTANT: Sign out immediately
+      await signOut(auth)
+
+      toast.success(
+        'Verification email sent. Please verify your email before logging in.',
+      )
+
+      // ❌ DO NOT set auth flags
+      // ❌ DO NOT redirect to home/dashboard
+      router.push('/login')
     } catch (error: any) {
       const errorMessage =
         error.code === 'auth/email-already-in-use'
           ? 'This email is already registered. Please login instead.'
           : error.message || 'Failed to register. Please try again.'
 
-      toast({
-        variant: 'destructive',
-        title: 'Registration Failed',
-        description: errorMessage,
-      })
+      toast.error(errorMessage)
     } finally {
-      setLoading(false)
+      setEmailLoading(false)
     }
   }
 
@@ -184,7 +127,7 @@ const Register: React.FC = () => {
       <div className="w-full lg:w-[45%] bg-white grid grid-rows-[auto_1fr]">
         {/* Content */}
         <div className="flex items-center justify-center px-6 lg:px-8 py-28">
-          <div className="w-full max-w-sm">
+          <div className="w-full max-w-md">
             {/* Header */}
             <div className="text-center mb-6">
               <div className="mb-3 flex justify-center">
@@ -209,12 +152,12 @@ const Register: React.FC = () => {
             {/* Google login */}
             <Button
               onClick={handleGoogleLogin}
-              disabled={loading}
-              className="w-full h-11 rounded-full flex items-center justify-center gap-3
-                     bg-white text-gray-700 border border-gray-300
-                     hover:bg-gray-50 transition disabled:opacity-50"
+              disabled={googleLoading}
+              className="w-full h-11 rounded-lg flex items-center justify-center gap-3
+                     bg-gray-50 text-gray-700
+                     hover:bg-gray-100 disabled:opacity-50 cursor-pointer border border-gray-100"
             >
-              {loading ? (
+              {googleLoading ? (
                 <Loader2 className="w-4 h-4 animate-spin" />
               ) : (
                 <>
@@ -239,7 +182,7 @@ const Register: React.FC = () => {
             </div>
 
             {/* Form */}
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
               {/* Email */}
               <div className="space-y-1.5">
                 <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
@@ -250,12 +193,11 @@ const Register: React.FC = () => {
                   type="email"
                   placeholder="you@example.com"
                   {...register('email')}
-                  disabled={loading}
-                  className="h-10 rounded-full bg-gray-50 border-gray-200
+                  disabled={emailLoading}
+                  className="h-10 rounded-full bg-gray-50 border-gray-100
                          focus:bg-white focus:border-black focus:ring-0"
                 />
               </div>
-
               {/* Password */}
               <div className="space-y-1.5">
                 <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
@@ -267,8 +209,8 @@ const Register: React.FC = () => {
                     type={showPassword ? 'text' : 'password'}
                     placeholder="Create a strong password"
                     {...register('password')}
-                    disabled={loading}
-                    className="h-10 pr-11 rounded-full bg-gray-50 border-gray-200
+                    disabled={emailLoading}
+                    className="h-10 pr-11 rounded-full bg-gray-50 border-gray-100
                            focus:bg-white focus:border-black focus:ring-0"
                   />
                   <button
@@ -297,8 +239,8 @@ const Register: React.FC = () => {
                     type={showConfirmPassword ? 'text' : 'password'}
                     placeholder="Confirm your password"
                     {...register('confirmPassword')}
-                    disabled={loading}
-                    className="h-10 pr-11 rounded-full bg-gray-50 border-gray-200
+                    disabled={emailLoading}
+                    className="h-10 pr-11 rounded-full bg-gray-50 border-gray-100
                            focus:bg-white focus:border-black focus:ring-0"
                   />
                   <button
@@ -319,15 +261,14 @@ const Register: React.FC = () => {
               {/* Submit */}
               <Button
                 type="submit"
-                disabled={loading}
-                className="w-full h-11 rounded-full bg-black text-white
-                       hover:bg-gray-900 transition
-                       flex items-center justify-center gap-2 text-sm font-semibold"
+                disabled={emailLoading}
+                className="w-full h-11 rounded-lg bg-black text-white
+                       hover:bg-gray-700 transition
+                       flex items-center justify-center gap-2 text-sm font-semibold mt-4 cursor-pointer"
               >
-                {loading ? (
+                {emailLoading ? (
                   <>
                     <Loader2 className="w-4 h-4 animate-spin" />
-                    Creating account...
                   </>
                 ) : (
                   <>
@@ -363,10 +304,10 @@ const Register: React.FC = () => {
         <div className="absolute inset-0 bg-linear-to-b from-black/75 via-black/60 to-black/35" />
         <div className="absolute inset-0 flex items-start">
           <div className="pt-24 pl-12 max-w-xl space-y-5 text-white">
-            <h2 className="text-4xl font-bold leading-snug tracking-tight">
-              Start your freelancing journey
+            <h2 className="text-4xl font-normal leading-snug tracking-tight">
+              Begin your freelancing journey
             </h2>
-            <p className="text-lg leading-relaxed text-gray-200">
+            <p className="text-xl leading-relaxed text-gray-200">
               Join thousands of talented freelancers finding meaningful work on
               QuickGigs.
             </p>

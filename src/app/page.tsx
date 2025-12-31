@@ -35,7 +35,7 @@ export default function Home() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="pt-[96px] px-6 max-w-[1400px] mx-auto relative bg-white rounded-2xl"
+        className="pt-24 px-6 max-w-350 mx-auto relative bg-white rounded-2xl"
       >
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className="space-y-8">
@@ -50,13 +50,13 @@ export default function Home() {
             </p>
             <div className="flex gap-4">
               <Link href="/register">
-                <button className="bg-black text-white px-8 py-3 rounded-md text-lg font-medium hover:bg-gray-900 transition-all flex items-center gap-2 group cursor-pointer">
+                <button className="bg-black text-white px-8 py-2 rounded-md text-lg font-medium hover:bg-gray-700 transition-all flex items-center gap-2 group cursor-pointer">
                   Get Started
-                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                  <ArrowRight className="w-5 h-5" />
                 </button>
               </Link>
               <Link href="/gigs">
-                <button className="border-2 border-black px-6 py-3 rounded-md text-md font-medium hover:bg-gray-50 transition-all flex gap-3 items-center justify-center cursor-pointer">
+                <button className="border-2 border-black px-6 py-2 rounded-md text-md font-medium hover:bg-gray-100 transition-all flex gap-3 items-center justify-center cursor-pointer">
                   <Send className="w-5 h-5" />
                   Browse Gigs
                 </button>
@@ -88,9 +88,9 @@ export default function Home() {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="relative h-[600px] hidden lg:block"
+            className="relative h-150 hidden lg:block"
           >
-            <div className="absolute inset-0 bg-gradient-to-tr from-gray-100 to-gray-200 rounded-2xl overflow-hidden">
+            <div className="absolute inset-0 bg-linear-to-br from-gray-100 to-gray-200 rounded-2xl overflow-hidden">
               <Image
                 src={hero}
                 alt="Students collaborating"
@@ -190,7 +190,7 @@ export default function Home() {
 
       {/* Why Choose QuickGigs */}
       <section className="mt-32 px-6 max-w-7xl mx-auto">
-        <div className="bg-gradient-to-br from-gray-50 to-white rounded-2xl p-12 border border-gray-200 shadow-sm">
+        <div className="bg-linear-to-br from-gray-50 to-white rounded-2xl p-12 border border-gray-200 shadow-sm">
           <h2 className="text-4xl font-bold mb-4">Why Choose QuickGigs</h2>
           <p className="text-gray-600 mb-12 max-w-2xl">
             We understand the unique challenges of balancing academics with
@@ -398,7 +398,7 @@ export default function Home() {
 
       {/* CTA Section */}
       <section className="mt-32 mb-20 px-6">
-        <div className="max-w-4xl mx-auto bg-gradient-to-br from-black to-gray-900 rounded-2xl p-12 text-center text-white relative overflow-hidden shadow-xl">
+        <div className="max-w-4xl mx-auto bg-linear-to-br from-black to-gray-900 rounded-2xl p-12 text-center text-white relative overflow-hidden shadow-xl">
           <div className="relative z-10">
             <h2 className="text-4xl font-bold mb-6">Ready to Start Earning?</h2>
             <p className="text-lg text-gray-200 mb-8 max-w-2xl mx-auto">
@@ -627,7 +627,7 @@ function FAQItem({
       >
         <span className="font-semibold text-lg pr-8">{faq.question}</span>
         <ChevronDown
-          className={`w-5 h-5 text-gray-500 flex-shrink-0 transition-transform duration-300 ${
+          className={`w-5 h-5 text-gray-500 shrink-0 transition-transform duration-300 ${
             isOpen ? 'rotate-180' : ''
           }`}
         />

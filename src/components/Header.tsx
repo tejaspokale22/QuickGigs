@@ -5,9 +5,11 @@ import Link from 'next/link'
 import Image from 'next/image'
 import Logo from './Logo'
 import ProfileDropdown from './ProfileDropdown'
-import { auth, signOut } from '@/app/utils/firebase'
+import { auth, signOut } from '@/utils/firebase'
 import { onAuthStateChanged, User } from 'firebase/auth'
 import logoImg from '../../public/logoImg.png'
+import { toast } from 'react-hot-toast'
+import { useRouter } from 'next/navigation'
 
 const NAV_LINKS = [
   { href: '/', label: 'Home' },
@@ -32,6 +34,7 @@ const AUTH_LINKS = [
 const Header = () => {
   const [user, setUser] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const router = useRouter()
 
   useEffect(() => {
     if (typeof window === 'undefined') return
@@ -73,12 +76,19 @@ const Header = () => {
   const handleLogout = async () => {
     try {
       await signOut(auth)
+
       if (typeof window !== 'undefined') {
         localStorage.removeItem('userData')
         localStorage.removeItem('uid')
+        localStorage.removeItem('isAuthenticated')
       }
+
+      toast.success('Logged out successfully')
+
+      router.replace('/login')
     } catch (error) {
       console.error('Error signing out:', error)
+      toast.error('Failed to log out. Please try again.')
     }
   }
 
@@ -107,7 +117,7 @@ const Header = () => {
                 <Link
                   key={href}
                   href={href}
-                  className="px-3 py-2 text-medium font-medium text-gray-700 hover:text-black hover:bg-gray-100 rounded-md"
+                  className="px-3 py-2 text-medium font-medium text-gray-700 hover:text-black hover:bg-gray-100 rounded-3xl"
                 >
                   {label}
                 </Link>

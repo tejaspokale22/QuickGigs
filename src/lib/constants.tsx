@@ -12,7 +12,7 @@ import {
   Database,
   Users,
 } from 'lucide-react'
-import { formatCurrency } from '@/app/utils/utilityFunctions'
+import { formatCurrency } from '@/utils/utilityFunctions'
 
 export const features = [
   {

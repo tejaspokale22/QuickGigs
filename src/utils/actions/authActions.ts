@@ -1,4 +1,4 @@
-import { firestore } from '@/app/utils/firebase'
+import { firestore } from '@/utils/firebase'
 import { doc, getDoc, collection, getDocs } from 'firebase/firestore'
 import { User } from '../types'
 

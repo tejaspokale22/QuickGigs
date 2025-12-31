@@ -2,8 +2,10 @@ import type { Metadata } from 'next'
 import '@/app/globals.css'
 import { Poppins } from 'next/font/google'
 import NextTopLoader from 'nextjs-toploader'
+import { Toaster } from 'react-hot-toast'
 import Header from '@/components/Header'
 import LayoutWrapper from '@/components/LayoutWrapper'
+import { AuthProvider } from '@/context/AuthContext'
 
 // App-level metadata
 export const metadata: Metadata = {
@@ -27,22 +29,30 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
+    <html>
       <body className={poppins.className}>
-        <Header />
-
-        {/* Global route change loader */}
-        <NextTopLoader
-          color="#000000"
-          height={4}
-          crawl
-          showSpinner={false}
-          speed={300}
-        />
-
-        <main>
-          <LayoutWrapper>{children}</LayoutWrapper>
-        </main>
+        <AuthProvider>
+          <Header />
+          <Toaster
+            position="top-center"
+            toastOptions={{
+              duration: 3500,
+              style: {
+                zIndex: 9999,
+              },
+            }}
+          />
+          <NextTopLoader
+            color="#000000"
+            height={4}
+            crawl
+            showSpinner={false}
+            speed={300}
+          />
+          <main>
+            <LayoutWrapper>{children}</LayoutWrapper>
+          </main>
+        </AuthProvider>
       </body>
     </html>
   )
