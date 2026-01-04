@@ -1,85 +1,94 @@
-"use client";
-import React, { useState, useEffect } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { firestore } from "@/app/utils/firebase";
-import { doc, updateDoc, getDoc } from "firebase/firestore";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+'use client'
+import React, { useState, useEffect } from 'react'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
+import { firestore } from '@/utils/firebase'
+import { doc, updateDoc, getDoc } from 'firebase/firestore'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
 
 interface SkillsDialogProps {
-  isOpen: boolean;
-  onClose: () => void;
+  isOpen: boolean
+  onClose: () => void
 }
 
 const SkillsDialog: React.FC<SkillsDialogProps> = ({ isOpen, onClose }) => {
-  const [skills, setSkills] = useState<string[]>([]); // State to hold skills array
-  const [newSkill, setNewSkill] = useState<string>(""); // State for new skill input
-  const [uid, setUid] = useState<string | null>(null); // State for UID
+  const [skills, setSkills] = useState<string[]>([]) // State to hold skills array
+  const [newSkill, setNewSkill] = useState<string>('') // State for new skill input
+  const [uid, setUid] = useState<string | null>(null) // State for UID
 
   // Get UID from localStorage once the component mounts (client-side)
   useEffect(() => {
-    const storedUid = localStorage.getItem("uid");
+    const storedUid = localStorage.getItem('uid')
     if (storedUid) {
-      setUid(storedUid);
+      setUid(storedUid)
     }
-  }, []);
+  }, [])
 
   // Fetch current skills from Firestore when the component mounts
   useEffect(() => {
     if (uid) {
       const fetchSkills = async () => {
         try {
-          const userDocRef = doc(firestore, "users", uid);
-          const docSnapshot = await getDoc(userDocRef);
+          const userDocRef = doc(firestore, 'users', uid)
+          const docSnapshot = await getDoc(userDocRef)
           if (docSnapshot.exists()) {
-            const userSkills = docSnapshot.data()?.skills || [];
-            setSkills(userSkills);
+            const userSkills = docSnapshot.data()?.skills || []
+            setSkills(userSkills)
           }
         } catch (error) {
-          console.error("Error fetching skills:", error);
+          console.error('Error fetching skills:', error)
         }
-      };
-      fetchSkills();
+      }
+      fetchSkills()
     }
-  }, [uid]);
+  }, [uid])
 
   const handleAddSkill = () => {
     if (newSkill.trim() && !skills.includes(newSkill.trim())) {
-      setSkills((prevSkills) => [...prevSkills, newSkill.trim()]);
-      setNewSkill(""); // Clear input after adding
+      setSkills((prevSkills) => [...prevSkills, newSkill.trim()])
+      setNewSkill('') // Clear input after adding
     }
-  };
+  }
 
   const handleRemoveSkill = (skillToRemove: string) => {
-    setSkills((prevSkills) => prevSkills.filter((skill) => skill !== skillToRemove));
-  };
+    setSkills((prevSkills) =>
+      prevSkills.filter((skill) => skill !== skillToRemove),
+    )
+  }
 
   const handleSubmit = async () => {
     if (skills.length > 0 && uid) {
       try {
-        const userDocRef = doc(firestore, "users", uid);
+        const userDocRef = doc(firestore, 'users', uid)
 
         // Update the user's skills in Firestore
         await updateDoc(userDocRef, {
           skills: skills, // Save the skills array
-        });
+        })
 
-        alert("Skills updated successfully!");
-        onClose(); // Close the dialog after submission
+        alert('Skills updated successfully!')
+        onClose() // Close the dialog after submission
       } catch (error) {
-        console.error("Error updating skills:", error);
-        alert("Failed to update skills. Please try again.");
+        console.error('Error updating skills:', error)
+        alert('Failed to update skills. Please try again.')
       }
     } else {
-      alert("Please enter at least one skill.");
+      alert('Please enter at least one skill.')
     }
-  };
+  }
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="w-full max-w-md bg-white p-6 rounded-lg shadow-lg">
         <DialogHeader>
-          <DialogTitle className="text-xl font-semibold text-gray-800">Add Skills</DialogTitle>
+          <DialogTitle className="text-xl font-semibold text-gray-800">
+            Add Skills
+          </DialogTitle>
         </DialogHeader>
         <div className="mt-4">
           <Input
@@ -124,7 +133,7 @@ const SkillsDialog: React.FC<SkillsDialogProps> = ({ isOpen, onClose }) => {
         </div>
       </DialogContent>
     </Dialog>
-  );
-};
+  )
+}
 
-export default SkillsDialog;
+export default SkillsDialog

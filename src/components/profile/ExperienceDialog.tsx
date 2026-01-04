@@ -1,61 +1,71 @@
-"use client";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import React, { useState, useEffect } from "react";
-import { Briefcase } from "lucide-react"; // Import Briefcase icon from lucide-react
-import { firestore } from "@/app/utils/firebase";
-import { doc, updateDoc } from "firebase/firestore";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+'use client'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
+import React, { useState, useEffect } from 'react'
+import { Briefcase } from 'lucide-react' // Import Briefcase icon from lucide-react
+import { firestore } from '@/utils/firebase'
+import { doc, updateDoc } from 'firebase/firestore'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
 
 interface ExperienceDialogProps {
-  isOpen: boolean;
-  onClose: () => void;
+  isOpen: boolean
+  onClose: () => void
 }
 
-const ExperienceDialog: React.FC<ExperienceDialogProps> = ({ isOpen, onClose }) => {
-  const [experience, setExperience] = useState("");
-  const [uid, setUid] = useState<string | null>(null); // State for UID
+const ExperienceDialog: React.FC<ExperienceDialogProps> = ({
+  isOpen,
+  onClose,
+}) => {
+  const [experience, setExperience] = useState('')
+  const [uid, setUid] = useState<string | null>(null) // State for UID
 
   // Get UID from localStorage once the component mounts (client-side)
   useEffect(() => {
-    const storedUid = localStorage.getItem("uid");
+    const storedUid = localStorage.getItem('uid')
     if (storedUid) {
-      setUid(storedUid);
+      setUid(storedUid)
     }
-  }, []);
+  }, [])
 
   const handleSubmit = async () => {
     if (experience.trim() && uid) {
       try {
         // Reference to the user document based on UID
-        const userDocRef = doc(firestore, "users", uid);
+        const userDocRef = doc(firestore, 'users', uid)
 
         // Update the user's experience information in Firestore
         await updateDoc(userDocRef, {
           experience: experience, // Add experience to the user's document
-        });
+        })
 
-        setExperience(""); // Clear the input after successful submission
-        alert("Experience added successfully!");
+        setExperience('') // Clear the input after successful submission
+        alert('Experience added successfully!')
 
         // Reload the window to reflect changes
-        window.location.reload();
+        window.location.reload()
 
-        onClose(); // Close the dialog after submission
+        onClose() // Close the dialog after submission
       } catch (error) {
-        console.error("Error updating document: ", error);
-        alert("Failed to update experience. Please try again.");
+        console.error('Error updating document: ', error)
+        alert('Failed to update experience. Please try again.')
       }
     } else {
-      alert("Please enter a valid experience or ensure you're logged in.");
+      alert("Please enter a valid experience or ensure you're logged in.")
     }
-  };
+  }
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="w-full max-w-md bg-white p-6 rounded-lg shadow-lg">
         <DialogHeader>
-          <DialogTitle className="text-xl font-semibold text-gray-800">Add Experience</DialogTitle>
+          <DialogTitle className="text-xl font-semibold text-gray-800">
+            Add Experience
+          </DialogTitle>
         </DialogHeader>
         <div className="mt-4 flex items-center space-x-3">
           <Briefcase className="text-2xl text-black" /> {/* Briefcase icon */}
@@ -77,7 +87,7 @@ const ExperienceDialog: React.FC<ExperienceDialogProps> = ({ isOpen, onClose }) 
         </div>
       </DialogContent>
     </Dialog>
-  );
-};
+  )
+}
 
-export default ExperienceDialog;
+export default ExperienceDialog

@@ -1,59 +1,68 @@
-"use client";
-import React, { useEffect, useState } from "react";
-import { fetchUser } from "@/app/utils/actions/authActions";
-import Image from 'next/image';
-import Link from 'next/link';
-import { useParams } from "next/navigation";
-import { Mail, Phone, Link2, Briefcase, MapPin, User, Copy, Check } from 'lucide-react';
-import Website from '../../../../public/globe.svg';
-import Linkedin from '../../../../public/linkedin.svg';
-import Instagram from '../../../../public/instagram.svg';
-import Github from '../../../../public/github.svg';
-import X from '../../../../public/X.svg';
-import { copyToClipboard } from "@/app/utils/utilityFunctions";
-import Spinner from "@/components/ui/spinner";
+'use client'
+import React, { useEffect, useState } from 'react'
+import { fetchUser } from '@/utils/actions/authActions'
+import Image from 'next/image'
+import Link from 'next/link'
+import { useParams } from 'next/navigation'
+import {
+  Mail,
+  Phone,
+  Link2,
+  Briefcase,
+  MapPin,
+  User,
+  Copy,
+  Check,
+} from 'lucide-react'
+import Website from '../../../../public/globe.svg'
+import Linkedin from '../../../../public/linkedin.svg'
+import Instagram from '../../../../public/instagram.svg'
+import Github from '../../../../public/github.svg'
+import X from '../../../../public/X.svg'
+import { copyToClipboard } from '@/utils/utilityFunctions'
+import Spinner from '@/components/ui/spinner'
 
 interface UserProfile {
-  name: string;
-  email: string;
-  profilePicture: string;
-  contact?: string;
-  location?: string;
-  bio?: string;
-  skills?: string[];
+  name: string
+  email: string
+  profilePicture: string
+  contact?: string
+  location?: string
+  bio?: string
+  skills?: string[]
   socials?: {
-    github?: string;
-    twitter?: string;
-    linkedin?: string;
-    instagram?: string;
-    website?: string;
-  };
-  experience?: string;
+    github?: string
+    twitter?: string
+    linkedin?: string
+    instagram?: string
+    website?: string
+  }
+  experience?: string
 }
 
 const ProfilePage = () => {
-  const { slug } = useParams() as { slug: string };
-  const [userData, setUserData] = useState<UserProfile | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-  const [clipboardStatus, setClipboardStatus] = useState<boolean>(false);
+  const { slug } = useParams() as { slug: string }
+  const [userData, setUserData] = useState<UserProfile | null>(null)
+  const [loading, setLoading] = useState<boolean>(true)
+  const [error, setError] = useState<string | null>(null)
+  const [clipboardStatus, setClipboardStatus] = useState<boolean>(false)
 
   const handleClipboard = async (email: string) => {
     try {
-      await copyToClipboard(email);
-      setClipboardStatus(true);
+      await copyToClipboard(email)
+      setClipboardStatus(true)
       setTimeout(() => {
-        setClipboardStatus(false);
-      }, 2000);
+        setClipboardStatus(false)
+      }, 2000)
     } catch (error) {
-      console.error('Failed to copy email:', error);
+      console.error('Failed to copy email:', error)
     }
-  };
+  }
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const user = await fetchUser(slug);
+        const user = await fetchUser(slug)
         if (user) {
           const userProfile: UserProfile = {
             name: user.name || 'Anonymous',
@@ -63,33 +72,43 @@ const ProfilePage = () => {
             location: user.location || '',
             bio: user.bio || '',
             skills: user.skills || [],
-            socials: user.socials || { github: '', twitter: '', linkedin: '', instagram: '', website: '' },
+            socials: user.socials || {
+              github: '',
+              twitter: '',
+              linkedin: '',
+              instagram: '',
+              website: '',
+            },
             experience: user.experience || '',
-          };
-          setUserData(userProfile);
+          }
+          setUserData(userProfile)
         } else {
-          setError("User not found");
+          setError('User not found')
         }
       } catch (error) {
-        setError("Error fetching user data");
+        setError('Error fetching user data')
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
-    };
+    }
 
-    fetchUserData();
-  }, [slug]);
+    fetchUserData()
+  }, [slug])
 
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen bg-gray-50">
         <Spinner />
       </div>
-    );
+    )
   }
 
   if (error || !userData) {
-    return <div className="text-red-500 text-center">{error || "User data not available"}</div>;
+    return (
+      <div className="text-red-500 text-center">
+        {error || 'User data not available'}
+      </div>
+    )
   }
 
   return (
@@ -156,7 +175,9 @@ const ProfilePage = () => {
                 <div>
                   <p className="text-sm text-gray-500">Phone</p>
                   <p className="text-gray-900">
-                    {userData.contact ? `+91 ${userData.contact}` : 'Not provided'}
+                    {userData.contact
+                      ? `+91 ${userData.contact}`
+                      : 'Not provided'}
                   </p>
                 </div>
                 <div>
@@ -190,7 +211,12 @@ const ProfilePage = () => {
                     target="_blank"
                     className="p-2 transition-transform transform hover:scale-110"
                   >
-                    <Image src={Linkedin} alt="LinkedIn" width={24} height={24} />
+                    <Image
+                      src={Linkedin}
+                      alt="LinkedIn"
+                      width={24}
+                      height={24}
+                    />
                   </Link>
                 )}
                 {userData.socials?.github && (
@@ -208,7 +234,12 @@ const ProfilePage = () => {
                     target="_blank"
                     className="p-2 transition-transform transform hover:scale-110"
                   >
-                    <Image src={Instagram} alt="Instagram" width={24} height={24} />
+                    <Image
+                      src={Instagram}
+                      alt="Instagram"
+                      width={24}
+                      height={24}
+                    />
                   </Link>
                 )}
                 {userData.socials?.twitter && (
@@ -220,11 +251,13 @@ const ProfilePage = () => {
                     <Image src={X} alt="Twitter" width={24} height={24} />
                   </Link>
                 )}
-                {!userData.socials?.github && !userData.socials?.linkedin && 
-                 !userData.socials?.twitter && !userData.socials?.instagram && 
-                 !userData.socials?.website && (
-                  <p className="text-gray-500">No social links provided</p>
-                )}
+                {!userData.socials?.github &&
+                  !userData.socials?.linkedin &&
+                  !userData.socials?.twitter &&
+                  !userData.socials?.instagram &&
+                  !userData.socials?.website && (
+                    <p className="text-gray-500">No social links provided</p>
+                  )}
               </div>
             </div>
           </div>
@@ -256,7 +289,7 @@ const ProfilePage = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default ProfilePage;
+export default ProfilePage

@@ -13,10 +13,10 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { CheckCircle, Camera } from 'lucide-react'
-import toast from 'react-hot-toast'
+import toast, { Toaster } from 'react-hot-toast'
 import Image from 'next/image'
 import upi from '@/../public/upi.svg'
-// import bank from '../../../public/bank.svg'
+import bank from '@/../public/bank.svg'
 import {
   saveUpiId,
   saveBankDetails,
@@ -126,27 +126,15 @@ export default function PaymentSetupDialog() {
     try {
       const userId = localStorage.getItem('uid')
       if (!userId) {
-        toast({
-          title: 'Error',
-          description: 'Please login to continue',
-          variant: 'destructive',
-        })
+        toast.error('Please login to continue')
         return
       }
 
       await saveUpiId(userId, data.upiId)
-      toast({
-        title: 'Success',
-        description: 'UPI ID saved successfully!',
-        className: 'bg-white text-black flex items-center',
-      })
+      toast.success('UPI ID saved successfully!')
       setOpen(false)
     } catch (error) {
-      toast({
-        title: 'Error',
-        description: 'Failed to save UPI ID',
-        variant: 'destructive',
-      })
+      toast.error('Failed to save UPI ID')
     }
   }
 
@@ -155,11 +143,7 @@ export default function PaymentSetupDialog() {
     try {
       const userId = localStorage.getItem('uid')
       if (!userId) {
-        toast({
-          title: 'Error',
-          description: 'Please login to continue',
-          variant: 'destructive',
-        })
+        toast.error('Please login to continue')
         return
       }
 

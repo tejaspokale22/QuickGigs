@@ -54,7 +54,6 @@ const Login: React.FC = () => {
       const result = await signInWithPopup(auth, new GoogleAuthProvider())
       const user = result.user
 
-      // 🔐 Optional but recommended
       if (!user.emailVerified) {
         await signOut(auth)
         toast.error('Please verify your email before logging in.')
@@ -101,7 +100,7 @@ const Login: React.FC = () => {
       {/* Left Side - Login Form */}
       <div className="w-full lg:w-[45%] bg-white grid grid-rows-[auto_1fr]">
         {/* Content */}
-        <div className="flex items-center justify-center px-6 lg:px-8 py-28">
+        <div className="flex items-center justify-center px-6 lg:px-8 py-36">
           <div className="w-full max-w-md">
             {/* Header */}
             <div className="text-center mb-6">
@@ -269,7 +268,7 @@ const Login: React.FC = () => {
       </div>
 
       {/* Right Side - Background Image */}
-      <div className="hidden lg:block w-1/2 relative">
+      <div className="hidden lg:block w-3/5 relative">
         <Image
           src={loginBg}
           alt="Students working"

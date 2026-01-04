@@ -11,6 +11,8 @@ import {
   Plus,
   Menu,
   X,
+  LayoutDashboard,
+  UserCircle,
 } from 'lucide-react'
 import { auth } from '@/utils/firebase'
 import { onAuthStateChanged } from 'firebase/auth'
@@ -46,6 +48,18 @@ const LeftSidebar = () => {
     ...(user
       ? [
           {
+            id: 'dashboard',
+            label: 'Dashboard',
+            href: '/dashboard',
+            icon: LayoutDashboard,
+          },
+          {
+            id: 'profile',
+            label: 'Profile',
+            href: '/profile',
+            icon: UserCircle,
+          },
+          {
             id: 'assigned-gigs',
             label: 'Assigned Gigs',
             href: `/assigned-gigs/${uid}`,
@@ -78,7 +92,7 @@ const LeftSidebar = () => {
           {
             id: 'getpaid',
             label: 'Wallet',
-            href: '/paymentdetails',
+            href: '/payment-details',
             icon: CreditCard,
           },
         ]
@@ -151,9 +165,9 @@ const LeftSidebar = () => {
             <div className="p-4 border-t border-gray-200">
               <button
                 onClick={() => setIsDialogOpen(true)}
-                className="w-full flex items-center justify-center gap-2 px-4 py-2.5 
-                  bg-black text-white rounded-xl hover:bg-gray-800 
-                  transition-colors duration-200"
+                className="w-full flex items-center justify-center gap-2 px-6 py-3 
+                  bg-black text-white rounded-xl hover:bg-gray-800
+                  transition-colors duration-200 cursor-pointer"
               >
                 <Plus className="h-5 w-5" />
                 <span className="font-medium">Post a Gig</span>

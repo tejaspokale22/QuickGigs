@@ -1,54 +1,68 @@
-"use client";
+'use client'
 
-import { useEffect, useState } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { fetchUser } from "@/app/utils/actions/authActions";
-import { getFreelancerPaymentDetails } from "@/app/utils/actions/paymentActions";
-import Image from "next/image";
-import { PaymentInfo, User } from "@/app/utils/types";
+import { useEffect, useState } from 'react'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
+import { fetchUser } from '@/utils/actions/authActions'
+import { getFreelancerPaymentDetails } from '@/utils/actions/paymentActions'
+import Image from 'next/image'
+import { PaymentInfo, User } from '@/utils/types'
 
 interface PaymentInfoDialogProps {
-  freelancerId: string;
-  isOpen: boolean;
-  onClose: (open: boolean) => void;
+  freelancerId: string
+  isOpen: boolean
+  onClose: (open: boolean) => void
 }
 
 interface PaymentDetails {
-  upiDetails: { type: string; value: string } | null;
-  bankDetails: { type: string; value: { accountHolder: string; accountNo: string; ifsc: string } } | null;
+  upiDetails: { type: string; value: string } | null
+  bankDetails: {
+    type: string
+    value: { accountHolder: string; accountNo: string; ifsc: string }
+  } | null
 }
 
-const PaymentInfoDialog: React.FC<PaymentInfoDialogProps> = ({ freelancerId, isOpen, onClose }) => {
-  const [freelancer, setFreelancer] = useState<User | null>(null);
-  const [paymentDetails, setPaymentDetails] = useState<PaymentDetails | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+const PaymentInfoDialog: React.FC<PaymentInfoDialogProps> = ({
+  freelancerId,
+  isOpen,
+  onClose,
+}) => {
+  const [freelancer, setFreelancer] = useState<User | null>(null)
+  const [paymentDetails, setPaymentDetails] = useState<PaymentDetails | null>(
+    null,
+  )
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    if (!isOpen) return;
+    if (!isOpen) return
 
     const fetchDetails = async () => {
       try {
-        const freelancerData = await fetchUser(freelancerId);
-        setFreelancer(freelancerData);
+        const freelancerData = await fetchUser(freelancerId)
+        setFreelancer(freelancerData)
 
-        const paymentData = await getFreelancerPaymentDetails(freelancerId);
+        const paymentData = await getFreelancerPaymentDetails(freelancerId)
         if (typeof paymentData === 'string') {
-          setError(paymentData);
-          setPaymentDetails(null);
+          setError(paymentData)
+          setPaymentDetails(null)
         } else {
-          setPaymentDetails(paymentData);
+          setPaymentDetails(paymentData)
         }
       } catch (err) {
-        console.error("Error fetching details:", err);
-        setError("Failed to fetch payment details.");
+        console.error('Error fetching details:', err)
+        setError('Failed to fetch payment details.')
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
-    };
+    }
 
-    fetchDetails();
-  }, [freelancerId, isOpen]);
+    fetchDetails()
+  }, [freelancerId, isOpen])
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -58,13 +72,15 @@ const PaymentInfoDialog: React.FC<PaymentInfoDialogProps> = ({ freelancerId, isO
           {freelancer && (
             <>
               <Image
-                src={freelancer.profilePicture || "/default-avatar.png"}
+                src={freelancer.profilePicture || '/default-avatar.png'}
                 alt={freelancer.name}
                 width={60}
                 height={60}
                 className="w-16 h-16 rounded-full border border-gray-300"
               />
-              <DialogTitle className="text-xl font-semibold text-center mb-2">{freelancer.name}'s Payment Details</DialogTitle>
+              <DialogTitle className="text-xl font-semibold text-center mb-2">
+                {freelancer.name}'s Payment Details
+              </DialogTitle>
             </>
           )}
         </DialogHeader>
@@ -77,23 +93,40 @@ const PaymentInfoDialog: React.FC<PaymentInfoDialogProps> = ({ freelancerId, isO
           <div className="flex flex-col items-center space-y-4 w-full">
             {paymentDetails.upiDetails && (
               <div className="w-full bg-gray-100 p-4 rounded-lg flex items-center gap-3">
-                <Image src="/upi.svg" alt="UPI" width={30} height={30} className="w-8 h-8" />
+                <Image
+                  src="/upi.svg"
+                  alt="UPI"
+                  width={30}
+                  height={30}
+                  className="w-8 h-8"
+                />
                 <p className="text-black">
-                  UPI ID: <span className="font-semibold">{paymentDetails.upiDetails.value}</span>
+                  UPI ID:{' '}
+                  <span className="font-semibold">
+                    {paymentDetails.upiDetails.value}
+                  </span>
                 </p>
               </div>
             )}
             {paymentDetails.bankDetails && (
               <div className="w-full bg-gray-100 p-4 rounded-lg">
                 <div className="flex items-center gap-3">
-                  <Image src="/bank.svg" alt="Bank" width={30} height={30} className="w-8 h-8" />
+                  <Image
+                    src="/bank.svg"
+                    alt="Bank"
+                    width={30}
+                    height={30}
+                    className="w-8 h-8"
+                  />
                   <p className="text-black font-medium">Bank Account Details</p>
                 </div>
                 <p className="text-black">
-                  <strong>Account No:</strong> {paymentDetails.bankDetails.value.accountNo}
+                  <strong>Account No:</strong>{' '}
+                  {paymentDetails.bankDetails.value.accountNo}
                 </p>
                 <p className="text-black">
-                  <strong>IFSC Code:</strong> {paymentDetails.bankDetails.value.ifsc}
+                  <strong>IFSC Code:</strong>{' '}
+                  {paymentDetails.bankDetails.value.ifsc}
                 </p>
               </div>
             )}
@@ -102,11 +135,13 @@ const PaymentInfoDialog: React.FC<PaymentInfoDialogProps> = ({ freelancerId, isO
             )}
           </div>
         ) : (
-          <p className="text-gray-500 text-center">Freelancer details not found.</p>
+          <p className="text-gray-500 text-center">
+            Freelancer details not found.
+          </p>
         )}
       </DialogContent>
     </Dialog>
-  );
-};
+  )
+}
 
-export default PaymentInfoDialog;
+export default PaymentInfoDialog

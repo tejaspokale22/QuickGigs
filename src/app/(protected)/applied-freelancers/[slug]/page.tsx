@@ -6,7 +6,7 @@ import { fetchUser } from '@/utils/actions/authActions'
 import Image from 'next/image'
 import { Eye, Mail, Copy, ArrowLeft } from 'lucide-react'
 import { findBestFreelancer } from '@/utils/ai/findBestFreelancer'
-import Gemini from '../../../../public/gemini.svg'
+import Gemini from '@/../public/gemini.svg'
 import Link from 'next/link'
 import { copyToClipboard } from '@/utils/utilityFunctions'
 import { Check } from 'lucide-react'
@@ -274,7 +274,7 @@ export default function AppliedFreelancersPage() {
                         >
                           <td className="px-6 py-4 whitespace-nowrap border-b border-r border-gray-200">
                             <div className="flex items-center space-x-4">
-                              <div className="flex-shrink-0 h-12 w-12 relative">
+                              <div className="shrink-0 h-12 w-12 relative">
                                 <Image
                                   src={
                                     freelancer.profilePicture ||

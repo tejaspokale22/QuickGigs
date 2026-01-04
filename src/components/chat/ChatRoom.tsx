@@ -1,92 +1,103 @@
-"use client";
+'use client'
 
-import { useState, useEffect, useRef } from "react";
-import Image from "next/image";
-import { useForm } from "react-hook-form";
-import { fetchChatUsingId, sendMessage } from "@/app/utils/actions/chatActions";
-import { onSnapshot, query, collection, orderBy } from "firebase/firestore";
-import { firestore } from "@/app/utils/firebase";
-import { fetchUser } from "@/app/utils/actions/authActions";
-import { Send, MoreVertical, Phone, Video, Info, MessageSquare } from 'lucide-react';
-import { Chat, Message } from "@/app/utils/types"; 
-import Spinner from "@/components/ui/spinner";
+import { useState, useEffect, useRef } from 'react'
+import Image from 'next/image'
+import { useForm } from 'react-hook-form'
+import { fetchChatUsingId, sendMessage } from '@/utils/actions/chatActions'
+import { onSnapshot, query, collection, orderBy } from 'firebase/firestore'
+import { firestore } from '@/utils/firebase'
+import { fetchUser } from '@/utils/actions/authActions'
+import {
+  Send,
+  MoreVertical,
+  Phone,
+  Video,
+  Info,
+  MessageSquare,
+} from 'lucide-react'
+import { Chat, Message } from '@/utils/types'
+import Spinner from '@/components/ui/spinner'
 
 type FormData = {
-  message: string;
-};
+  message: string
+}
 
 interface ChatRoomProps {
-  chatId: string;
-  loggedInUserId: string;
+  chatId: string
+  loggedInUserId: string
 }
 
 const ChatRoom = ({ chatId, loggedInUserId }: ChatRoomProps) => {
-  const [chat, setChat] = useState<Chat | null>(null);
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [receiver, setReceiver] = useState<any | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string>("");
-  const messagesEndRef = useRef<HTMLDivElement>(null);
-  const { register, handleSubmit, reset } = useForm<FormData>();
+  const [chat, setChat] = useState<Chat | null>(null)
+  const [messages, setMessages] = useState<Message[]>([])
+  const [receiver, setReceiver] = useState<any | null>(null)
+  const [loading, setLoading] = useState<boolean>(true)
+  const [error, setError] = useState<string>('')
+  const messagesEndRef = useRef<HTMLDivElement>(null)
+  const { register, handleSubmit, reset } = useForm<FormData>()
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }
 
   useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
+    scrollToBottom()
+  }, [messages])
 
-  useEffect(() => {    
+  useEffect(() => {
     const loadChat = async () => {
-      if (!chatId || !loggedInUserId) return;
+      if (!chatId || !loggedInUserId) return
 
       try {
-        const fetchedChat = await fetchChatUsingId(chatId);
-        setChat(fetchedChat);
+        const fetchedChat = await fetchChatUsingId(chatId)
+        setChat(fetchedChat)
 
         if (fetchedChat?.participants) {
-          const receiverId = fetchedChat.participants.find((id: string) => id !== loggedInUserId);
-          
+          const receiverId = fetchedChat.participants.find(
+            (id: string) => id !== loggedInUserId,
+          )
+
           if (receiverId) {
-            const fetchedReceiver = await fetchUser(receiverId);
-            setReceiver(fetchedReceiver);
+            const fetchedReceiver = await fetchUser(receiverId)
+            setReceiver(fetchedReceiver)
           }
         }
 
-        const messagesQuery = query(collection(firestore, `chats/${chatId}/messages`), orderBy("createdAt"));
+        const messagesQuery = query(
+          collection(firestore, `chats/${chatId}/messages`),
+          orderBy('createdAt'),
+        )
         const unsubscribe = onSnapshot(messagesQuery, (snapshot) => {
-          let updatedMessages: any[] = [];
+          let updatedMessages: any[] = []
           snapshot.forEach((doc) => {
-            updatedMessages.push({ ...doc.data(), id: doc.id });
-          });
-          setMessages(updatedMessages);
-          setLoading(false);
-        });
+            updatedMessages.push({ ...doc.data(), id: doc.id })
+          })
+          setMessages(updatedMessages)
+          setLoading(false)
+        })
 
-        return () => unsubscribe();
-
+        return () => unsubscribe()
       } catch (error) {
-        setError("Failed to load chat data.");
-        console.error(error);
-        setLoading(false);
+        setError('Failed to load chat data.')
+        console.error(error)
+        setLoading(false)
       }
-    };
+    }
 
-    loadChat();
-  }, [chatId, loggedInUserId]);
+    loadChat()
+  }, [chatId, loggedInUserId])
 
   const onSubmit = async (data: FormData) => {
-    if (!loggedInUserId || !receiver || !chatId || !chat) return;
-    
+    if (!loggedInUserId || !receiver || !chatId || !chat) return
+
     try {
-      await sendMessage(chat.id, loggedInUserId, receiver.uid, data.message);
-      reset(); 
+      await sendMessage(chat.id, loggedInUserId, receiver.uid, data.message)
+      reset()
     } catch (error) {
-      console.error("Message sending failed", error);
-      setError("Failed to send message.");
+      console.error('Message sending failed', error)
+      setError('Failed to send message.')
     }
-  };
+  }
 
   if (loading) {
     return (
@@ -95,7 +106,7 @@ const ChatRoom = ({ chatId, loggedInUserId }: ChatRoomProps) => {
           <Spinner />
         </div>
       </div>
-    );
+    )
   }
 
   if (error) {
@@ -103,7 +114,7 @@ const ChatRoom = ({ chatId, loggedInUserId }: ChatRoomProps) => {
       <div className="flex justify-center items-center h-full">
         <p className="text-red-500 font-medium">{error}</p>
       </div>
-    );
+    )
   }
 
   if (!chatId) {
@@ -112,9 +123,11 @@ const ChatRoom = ({ chatId, loggedInUserId }: ChatRoomProps) => {
         <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
           <MessageSquare className="w-8 h-8 text-gray-400" />
         </div>
-        <p className="text-gray-500 text-sm">Select a conversation to start chatting</p>
+        <p className="text-gray-500 text-sm">
+          Select a conversation to start chatting
+        </p>
       </div>
-    );
+    )
   }
 
   return (
@@ -134,7 +147,9 @@ const ChatRoom = ({ chatId, loggedInUserId }: ChatRoomProps) => {
                 />
               </div>
               <div>
-                <h2 className="text-lg font-semibold text-gray-900">{receiver.name}</h2>
+                <h2 className="text-lg font-semibold text-gray-900">
+                  {receiver.name}
+                </h2>
               </div>
             </>
           ) : (
@@ -147,31 +162,31 @@ const ChatRoom = ({ chatId, loggedInUserId }: ChatRoomProps) => {
             </div>
           )}
         </div>
-        
+
         {/* Header Actions */}
         <div className="flex items-center space-x-4">
-          <button 
+          <button
             className="p-2 hover:bg-gray-100 rounded-full transition-colors"
             aria-label="Start voice call"
             title="Voice call"
           >
             <Phone className="w-5 h-5 text-gray-600" />
           </button>
-          <button 
+          <button
             className="p-2 hover:bg-gray-100 rounded-full transition-colors"
             aria-label="Start video call"
             title="Video call"
           >
             <Video className="w-5 h-5 text-gray-600" />
           </button>
-          <button 
+          <button
             className="p-2 hover:bg-gray-100 rounded-full transition-colors"
             aria-label="View chat info"
             title="Chat info"
           >
             <Info className="w-5 h-5 text-gray-600" />
           </button>
-          <button 
+          <button
             className="p-2 hover:bg-gray-100 rounded-full transition-colors"
             aria-label="More options"
             title="More options"
@@ -189,20 +204,41 @@ const ChatRoom = ({ chatId, loggedInUserId }: ChatRoomProps) => {
               {messages.map((msg: Message, index: number) => (
                 <div
                   key={index}
-                  className={`flex ${msg.senderId === loggedInUserId ? "justify-end" : "justify-start"}`}
+                  className={`flex ${
+                    msg.senderId === loggedInUserId
+                      ? 'justify-end'
+                      : 'justify-start'
+                  }`}
                 >
-                  <div className={`flex flex-col max-w-[70%] ${msg.senderId === loggedInUserId ? "items-end" : "items-start"}`}>
+                  <div
+                    className={`flex flex-col max-w-[70%] ${
+                      msg.senderId === loggedInUserId
+                        ? 'items-end'
+                        : 'items-start'
+                    }`}
+                  >
                     <div
                       className={`rounded-2xl px-4 py-2.5 ${
                         msg.senderId === loggedInUserId
-                          ? "bg-black text-white rounded-br-none"
-                          : "bg-gray-100 text-gray-900 rounded-bl-none"
+                          ? 'bg-black text-white rounded-br-none'
+                          : 'bg-gray-100 text-gray-900 rounded-bl-none'
                       }`}
                     >
                       <p className="text-sm leading-relaxed">{msg.message}</p>
                     </div>
-                    <span className={`text-[10px] mt-1 text-gray-500 ${msg.senderId === loggedInUserId ? "text-right" : "text-left"}`}>
-                      {msg.createdAt?.toDate().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                    <span
+                      className={`text-[10px] mt-1 text-gray-500 ${
+                        msg.senderId === loggedInUserId
+                          ? 'text-right'
+                          : 'text-left'
+                      }`}
+                    >
+                      {msg.createdAt
+                        ?.toDate()
+                        .toLocaleTimeString([], {
+                          hour: '2-digit',
+                          minute: '2-digit',
+                        })}
                     </span>
                   </div>
                 </div>
@@ -214,18 +250,23 @@ const ChatRoom = ({ chatId, loggedInUserId }: ChatRoomProps) => {
               <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center">
                 <MessageSquare className="w-8 h-8 text-gray-400" />
               </div>
-              <p className="text-gray-500 text-sm">No messages yet. Start the conversation!</p>
+              <p className="text-gray-500 text-sm">
+                No messages yet. Start the conversation!
+              </p>
             </div>
           )}
         </div>
       </div>
 
       {/* Message Input */}
-      <div className="flex-shrink-0 p-6 border-t border-gray-200 bg-white">
+      <div className="shrink-0 p-6 border-t border-gray-200 bg-white">
         <div className="max-w-3xl mx-auto">
-          <form onSubmit={handleSubmit(onSubmit)} className="flex items-center gap-4">
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="flex items-center gap-4"
+          >
             <input
-              {...register("message", { required: true })}
+              {...register('message', { required: true })}
               type="text"
               placeholder="Type your message..."
               className="flex-1 px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl 
@@ -245,7 +286,7 @@ const ChatRoom = ({ chatId, loggedInUserId }: ChatRoomProps) => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default ChatRoom; 
+export default ChatRoom

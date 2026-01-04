@@ -10,6 +10,7 @@ import { onAuthStateChanged, User } from 'firebase/auth'
 import logoImg from '../../public/logoImg.png'
 import { toast } from 'react-hot-toast'
 import { useRouter } from 'next/navigation'
+import { Bell } from 'lucide-react'
 
 const NAV_LINKS = [
   { href: '/', label: 'Home' },
@@ -21,13 +22,13 @@ const AUTH_LINKS = [
     href: '/login',
     label: 'Log in',
     className:
-      'px-3 py-2 text-medium font-medium text-gray-700 hover:text-black hover:bg-gray-100 rounded-md transition-colors',
+      'px-3 py-2 text-medium font-medium text-gray-700 hover:text-black hover:bg-gray-200 rounded-md transition-colors',
   },
   {
     href: '/register',
     label: 'Register',
     className:
-      'px-3 py-2 text-medium font-medium text-white bg-black hover:bg-gray-900 rounded-md transition-colors',
+      'px-3 py-2 text-medium font-medium text-white bg-black hover:bg-gray-800 rounded-md transition-colors',
   },
 ]
 
@@ -117,7 +118,7 @@ const Header = () => {
                 <Link
                   key={href}
                   href={href}
-                  className="px-3 py-2 text-medium font-medium text-gray-700 hover:text-black hover:bg-gray-100 rounded-3xl"
+                  className="px-3 py-2 text-medium font-medium text-gray-700 hover:text-black hover:bg-gray-200 rounded-md"
                 >
                   {label}
                 </Link>
@@ -130,7 +131,15 @@ const Header = () => {
         {!isLoading && (
           <div className="flex items-center gap-3">
             {user ? (
-              <ProfileDropdown user={user} handleLogout={handleLogout} />
+              <>
+                <Link
+                  href="/notifications"
+                  className="relative p-2 rounded-xl hover:bg-gray-100 transition-colors group"
+                >
+                  <Bell className="h-5 w-5 text-gray-700 group-hover:text-black" />
+                </Link>
+                <ProfileDropdown user={user} handleLogout={handleLogout} />
+              </>
             ) : (
               <div className="flex items-center gap-2">
                 {AUTH_LINKS.map(({ href, label, className }) => (

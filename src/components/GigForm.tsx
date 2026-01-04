@@ -1,5 +1,8 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
+import { toast } from 'react-hot-toast'
+import { auth } from '@/utils/firebase'
+import { onAuthStateChanged } from 'firebase/auth'
 import {
   Dialog,
   DialogContent,
@@ -14,6 +17,7 @@ import { Label } from '@/components/ui/label'
 import { postGig } from '@/utils/actions/gigActions'
 import { Timestamp } from 'firebase/firestore'
 import { Upload, X, Loader2 } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 
 type GigFormInputs = {
   title: string
@@ -35,33 +39,62 @@ export default function GigForm({ isOpen, onClose }: GigFormProps) {
     formState: { errors },
     reset,
   } = useForm<GigFormInputs>({})
-  const [selectedFiles, setSelectedFiles] = useState<FileList | null>(null)
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([])
   const [selectedSkills, setSelectedSkills] = useState<string[]>([])
   const [searchSkill, setSearchSkill] = useState('')
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(true)
+  const [user, setUser] = useState<any>(null)
+  const router = useRouter()
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser)
+    })
+    return () => unsubscribe()
+  }, [])
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSelectedFiles(event.target.files)
+    const files = event.target.files
+    if (files) {
+      setSelectedFiles((prev) => [...prev, ...Array.from(files)])
+    }
+  }
+
+  const removeFile = (index: number) => {
+    setSelectedFiles((prev) => prev.filter((_, i) => i !== index))
   }
 
   const onSubmit = async (data: GigFormInputs) => {
     try {
       setIsSubmitting(true)
-      const uid = localStorage.getItem('uid')
-      if (!uid) throw new Error('User not authenticated')
+
+      if (!user) {
+        toast.error('Not authenticated')
+        return
+      }
+
+      const skillsArray = data.skillsRequired
+        .split(',')
+        .map((skill) => skill.trim())
+        .filter(Boolean)
+
+      if (skillsArray.length === 0) {
+        toast.error('Please add at least one skill')
+        return
+      }
 
       const deadlineTimestamp = Timestamp.fromDate(new Date(data.deadline))
-      const attachmentsArray = selectedFiles ? Array.from(selectedFiles) : []
+      const attachmentsArray = selectedFiles.length ? selectedFiles : []
 
       const result = await postGig(
         {
           title: data.title,
           description: data.description,
-          skillsRequired: selectedSkills,
+          skillsRequired: skillsArray,
           price: data.price,
           deadline: deadlineTimestamp,
           status: 'pending',
-          clientId: uid,
+          clientId: user.uid,
           freelancerId: '',
           createdAt: Timestamp.now(),
           appliedFreelancers: [],
@@ -72,12 +105,17 @@ export default function GigForm({ isOpen, onClose }: GigFormProps) {
       )
 
       if (result) {
+        toast.success('Gig posted successfully')
         reset()
-        setSelectedFiles(null)
+        setSelectedFiles([])
         setSelectedSkills([])
         onClose()
+        router.push('/gigs')
+      } else {
+        toast.error('Failed to post gig')
       }
     } catch (error) {
+      toast.error('Error posting gig')
       console.error('Error posting gig:', error)
     } finally {
       setIsSubmitting(false)
@@ -92,7 +130,7 @@ export default function GigForm({ isOpen, onClose }: GigFormProps) {
             Post a Gig
           </DialogTitle>
           <DialogDescription className="text-sm text-gray-600">
-            Fill in the details below to create a new gig opportunity.
+            Fill in the details below to create a new gig.
           </DialogDescription>
         </DialogHeader>
 
@@ -219,25 +257,61 @@ export default function GigForm({ isOpen, onClose }: GigFormProps) {
                 >
                   Attachments
                 </Label>
-                <div className="border-2 border-dashed border-gray-200 rounded p-3 hover:border-gray-300 transition-colors h-[38px] flex items-center justify-center">
-                  <Input
-                    type="file"
-                    id="attachments"
-                    multiple
-                    onChange={handleFileChange}
-                    className="hidden"
-                  />
-                  <label
-                    htmlFor="attachments"
-                    className="flex items-center gap-2 cursor-pointer"
-                  >
-                    <Upload className="h-4 w-4 text-gray-400" />
-                    <span className="text-sm text-gray-600">
-                      {selectedFiles
-                        ? `${selectedFiles.length} files selected`
-                        : 'Upload files'}
-                    </span>
-                  </label>
+                <div className="space-y-3">
+                  <div className="border-2 border-dashed border-gray-200 rounded-lg p-4 hover:border-gray-300 transition-colors flex items-center justify-center bg-gray-50/50">
+                    <Input
+                      type="file"
+                      id="attachments"
+                      multiple
+                      onChange={handleFileChange}
+                      className="hidden"
+                    />
+                    <label
+                      htmlFor="attachments"
+                      className="flex items-center gap-2 cursor-pointer w-full justify-center"
+                    >
+                      <Upload className="h-4 w-4 text-gray-400" />
+                      <span className="text-sm text-gray-600 font-medium">
+                        {selectedFiles.length > 0
+                          ? `${selectedFiles.length} file${
+                              selectedFiles.length !== 1 ? 's' : ''
+                            } added`
+                          : 'Upload files'}
+                      </span>
+                    </label>
+                  </div>
+
+                  {/* File List */}
+                  {selectedFiles.length > 0 && (
+                    <div className="space-y-2 max-h-40 overflow-y-auto">
+                      {selectedFiles.map((file, index) => (
+                        <div
+                          key={`${file.name}-${index}`}
+                          className="flex items-center justify-between bg-gray-50 p-3 rounded-lg border border-gray-200 group"
+                        >
+                          <div className="flex items-center gap-2 flex-1 min-w-0">
+                            <Upload className="h-4 w-4 text-gray-400 flex-shrink-0" />
+                            <div className="min-w-0">
+                              <p className="text-sm font-medium text-gray-900 truncate">
+                                {file.name}
+                              </p>
+                              <p className="text-xs text-gray-500">
+                                {(file.size / 1024).toFixed(2)} KB
+                              </p>
+                            </div>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => removeFile(index)}
+                            className="ml-2 p-1 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors flex-shrink-0"
+                            title="Remove file"
+                          >
+                            <X className="h-4 w-4" />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -246,13 +320,13 @@ export default function GigForm({ isOpen, onClose }: GigFormProps) {
           {/* Submit Button */}
           <Button
             type="submit"
-            className="w-full bg-black text-white py-2 rounded hover:bg-gray-800 transition-colors mt-2 relative"
+            className="w-full bg-black text-white py-2 rounded-lg cursor-pointer hover:bg-gray-800 transition-colors mt-2 relative flex items-center justify-center"
             disabled={isSubmitting}
           >
             {isSubmitting ? (
               <>
-                <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                Posting Gig...
+                <Loader2 className="h-4 w-4 animate-spin" />
+                Posting Gig
               </>
             ) : (
               'Post Gig'

@@ -96,18 +96,14 @@ const Register: React.FC = () => {
 
       const user = userCredential.user
 
-      // ✅ Send verification email
       await sendEmailVerification(user)
 
-      // ✅ IMPORTANT: Sign out immediately
       await signOut(auth)
 
       toast.success(
         'Verification email sent. Please verify your email before logging in.',
       )
 
-      // ❌ DO NOT set auth flags
-      // ❌ DO NOT redirect to home/dashboard
       router.push('/login')
     } catch (error: any) {
       const errorMessage =

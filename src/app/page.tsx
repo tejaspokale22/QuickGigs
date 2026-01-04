@@ -1,7 +1,6 @@
 'use client'
 import Image from 'next/image'
 import Link from 'next/link'
-import { motion } from 'framer-motion'
 import {
   Github,
   Linkedin,
@@ -30,13 +29,7 @@ import {
 export default function Home() {
   return (
     <div className="min-h-screen bg-white">
-      {/* Hero Section */}
-      <motion.section
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="pt-24 px-6 max-w-350 mx-auto relative bg-white rounded-2xl"
-      >
+      <section className="pt-30 px-6 max-w-350 mx-auto relative bg-white rounded-2xl">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className="space-y-8">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-black leading-tight">
@@ -56,7 +49,7 @@ export default function Home() {
                 </button>
               </Link>
               <Link href="/gigs">
-                <button className="border-2 border-black px-6 py-2 rounded-md text-md font-medium hover:bg-gray-100 transition-all flex gap-3 items-center justify-center cursor-pointer">
+                <button className="border-2 border-black px-6 py-2 rounded-md text-md font-medium hover:bg-gray-200 transition-all flex gap-3 items-center justify-center cursor-pointer">
                   <Send className="w-5 h-5" />
                   Browse Gigs
                 </button>
@@ -84,55 +77,34 @@ export default function Home() {
               </p>
             </div>
           </div>
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="relative h-150 hidden lg:block"
-          >
+          <div className="relative h-150 hidden lg:block">
             <div className="absolute inset-0 bg-linear-to-br from-gray-100 to-gray-200 rounded-2xl overflow-hidden">
               <Image
                 src={hero}
                 alt="Students collaborating"
                 fill
+                sizes="(max-width: 1024px) 100vw, 50vw"
                 className="object-cover opacity-100"
                 priority
               />
             </div>
-          </motion.div>
+          </div>
         </div>
-      </motion.section>
-
-      {/* Stats Section */}
-      <motion.section
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.6 }}
-        className="mt-32 px-6"
-      >
+      </section>
+      <section className="mt-32 px-6">
         <div className="max-w-7xl mx-auto border-y border-gray-100 py-12">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {stats.map((stat, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="text-center"
-              >
+              <div key={index} className="text-center">
                 <div className="text-4xl font-bold text-black">
                   {stat.value}
                 </div>
                 <div className="text-gray-600 mt-2">{stat.label}</div>
-              </motion.div>
+              </div>
             ))}
           </div>
         </div>
-      </motion.section>
-
-      {/* Browse Gig Categories */}
+      </section>
       <section className="mt-32 px-6 max-w-7xl mx-auto">
         <div className="text-center mb-16">
           <h2 className="text-5xl font-bold mb-4">Browse Gig Categories</h2>
@@ -162,8 +134,6 @@ export default function Home() {
           })}
         </div>
       </section>
-
-      {/* How It Works */}
       <section className="mt-32 px-6 max-w-7xl mx-auto">
         <h2 className="text-4xl font-bold text-center mb-4">How It Works</h2>
         <p className="text-gray-600 text-center mb-16 max-w-2xl mx-auto">
@@ -187,8 +157,6 @@ export default function Home() {
           ))}
         </div>
       </section>
-
-      {/* Why Choose QuickGigs */}
       <section className="mt-32 px-6 max-w-7xl mx-auto">
         <div className="bg-linear-to-br from-gray-50 to-white rounded-2xl p-12 border border-gray-200 shadow-sm">
           <h2 className="text-4xl font-bold mb-4">Why Choose QuickGigs</h2>
@@ -208,8 +176,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
-      {/* Testimonials */}
       <section className="mt-32 px-6 max-w-7xl mx-auto">
         <h2 className="text-4xl font-bold text-center mb-4">
           Student Success Stories
@@ -238,8 +204,6 @@ export default function Home() {
           ))}
         </div>
       </section>
-
-      {/* Student Leaderboard */}
       <section className="mt-32 px-6 max-w-7xl mx-auto">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold mb-4">Top Performing Students</h2>
@@ -303,6 +267,7 @@ export default function Home() {
                             src={student.avatar}
                             alt={student.name}
                             fill
+                            sizes="40px"
                             className="object-cover"
                           />
                         </div>
@@ -380,8 +345,6 @@ export default function Home() {
           ))}
         </div>
       </section>
-
-      {/* FAQ Section */}
       <section className="mt-32 px-6 max-w-4xl mx-auto">
         <h2 className="text-4xl font-bold text-center mb-4">
           Frequently Asked Questions
@@ -395,8 +358,6 @@ export default function Home() {
           ))}
         </div>
       </section>
-
-      {/* CTA Section */}
       <section className="mt-32 mb-20 px-6">
         <div className="max-w-4xl mx-auto bg-linear-to-br from-black to-gray-900 rounded-2xl p-12 text-center text-white relative overflow-hidden shadow-xl">
           <div className="relative z-10">
@@ -423,8 +384,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
-      {/* Footer */}
       <footer className="bg-black text-white py-20">
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">

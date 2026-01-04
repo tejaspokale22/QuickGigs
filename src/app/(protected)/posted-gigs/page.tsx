@@ -4,22 +4,22 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { collection, query, where, onSnapshot } from 'firebase/firestore'
-import { firestore } from '@/app/utils/firebase'
-import { fetchUser } from '@/app/utils/actions/authActions'
-import { Gig, User } from '../utils/types'
-import { formatDeadline } from '../utils/utilityFunctions'
-import { 
-  CheckCircle, 
-  CreditCard, 
-  Eye, 
+import { firestore } from '@/utils/firebase'
+import { fetchUser } from '@/utils/actions/authActions'
+import { Gig, User } from '@/utils/types'
+import { formatDeadline } from '@/utils/utilityFunctions'
+import {
+  CheckCircle,
+  CreditCard,
+  Eye,
   Clock,
   Users,
   Briefcase,
-  AlertCircle
+  AlertCircle,
 } from 'lucide-react'
 import PaymentInfoDialog from '@/components/payment/paymentInfoDialog'
 import Spinner from '@/components/ui/spinner'
-import { approve } from '../utils/actions/gigActions'
+import { approve } from '@/utils/actions/gigActions'
 
 export default function PostedGigsPage() {
   const [gigs, setGigs] = useState<Gig[]>([])
@@ -103,199 +103,238 @@ export default function PostedGigsPage() {
       label: 'Total Gigs',
       value: gigs.length,
       icon: Briefcase,
-      color: 'bg-blue-50 text-blue-700'
+      color: 'text-gray-700',
+      bgColor: 'bg-gray-100',
     },
     {
       label: 'In Progress',
-      value: gigs.filter(gig => gig.status === 'progress').length,
+      value: gigs.filter((gig) => gig.status === 'progress').length,
       icon: Clock,
-      color: 'bg-yellow-50 text-yellow-700'
+      color: 'text-gray-700',
+      bgColor: 'bg-gray-100',
     },
     {
       label: 'Completed',
-      value: gigs.filter(gig => gig.status === 'completed').length,
+      value: gigs.filter((gig) => gig.status === 'completed').length,
       icon: CheckCircle,
-      color: 'bg-green-50 text-green-700'
-    }
+      color: 'text-gray-700',
+      bgColor: 'bg-gray-100',
+    },
   ]
 
   return (
-    <div className="p-6 max-w-7xl mx-auto pt-20 bg-gray-50">
-      <div className="bg-white rounded-2xl shadow-sm p-6 mb-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-2">Posted Gigs</h2>
-          <p className="text-gray-600">Review and manage your posted work</p>
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white pt-20">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-4xl font-bold text-gray-900">Posted Gigs</h1>
+          <p className="text-gray-600 mt-2">
+            Review and manage your posted gigs
+          </p>
         </div>
 
-      {/* Stats Section */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        {stats.map((stat, index) => {
-          const Icon = stat.icon
-          return (
-            <div
-              key={index}
-              className="bg-white rounded-xl border border-gray-200 p-6 flex items-center"
-            >
-              <div className={`${stat.color} p-3 rounded-lg`}>
-                <Icon className="h-6 w-6" />
-              </div>
-              <div className="ml-4">
-                <p className="text-sm text-gray-600">{stat.label}</p>
-                <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
-              </div>
-            </div>
-          )}
-        )}
-      </div>
-
-      {/* Gigs List */}
-      {gigs.length === 0 ? (
-        <div className="text-center py-12 bg-white rounded-xl border border-gray-200">
-          <Briefcase className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-900 mb-2">No gigs posted yet</h3>
-          <p className="text-gray-600">Start by posting your first gig</p>
-        </div>
-      ) : (
-        <div className="space-y-6">
-          {gigs.map((gig) => (
-            <div
-              key={gig.id}
-              className="bg-white rounded-xl border border-gray-200 overflow-hidden transition-all duration-200 hover:shadow-md"
-            >
-              {/* Gig Header */}
-              <div className="p-6 border-b border-gray-100">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <h2 className="text-xl font-semibold text-gray-900 mb-2">
-                      {gig.title}
-                    </h2>
-                    <div className="flex items-center gap-4 text-sm">
-                      <div className="flex items-center text-gray-600">
-                        <Clock className="h-4 w-4 mr-1.5" />
-                        {formatDeadline(gig.deadline)}
-                      </div>
-                      <span
-                        className={`px-3 py-1 rounded-full text-sm font-medium
-                          ${gig.status === 'completed'
-                            ? 'bg-green-50 text-green-700'
-                            : gig.status === 'progress'
-                            ? 'bg-yellow-50 text-yellow-700'
-                            : 'bg-gray-100 text-gray-700'
-                          }`}
-                      >
-                        {gig.status.charAt(0).toUpperCase() + gig.status.slice(1)}
-                      </span>
-                    </div>
+        {/* Stats Section */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          {stats.map((stat, index) => {
+            const Icon = stat.icon
+            return (
+              <div
+                key={index}
+                className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm hover:shadow-md hover:border-gray-300 transition-all"
+              >
+                <div className="flex items-center gap-4">
+                  <div className={`${stat.bgColor} p-3 rounded-lg`}>
+                    <Icon className={`h-6 w-6 ${stat.color}`} />
                   </div>
+                  <div>
+                    <p className="text-sm text-gray-600 font-medium">
+                      {stat.label}
+                    </p>
+                    <p className="text-3xl font-bold text-gray-900">
+                      {stat.value}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )
+          })}
+        </div>
 
-                  {gig.workStatus === true && (
-                    <button
-                      onClick={() => setPaymentInfoDialogOpen(true)}
-                      className="flex items-center gap-2 px-4 py-2 bg-black text-white rounded
-                        hover:bg-gray-800"
-                    >
-                      <CreditCard className="h-6 w-6" />
-                      <span className="font-medium">Pay Now</span>
-                    </button>
+        {/* Gigs List */}
+        {gigs.length === 0 ? (
+          <div className="text-center py-16 bg-white rounded-xl border border-gray-200">
+            <Briefcase className="h-14 w-14 text-gray-400 mx-auto mb-4" />
+            <h3 className="text-xl font-bold text-gray-900 mb-2">
+              No gigs posted yet
+            </h3>
+            <p className="text-gray-600 mb-6">
+              Start by posting your first gig
+            </p>
+            <Link href="/gig">
+              <button className="px-6 py-2.5 bg-black text-white rounded-lg font-semibold hover:bg-gray-900 transition-colors cursor-pointer">
+                Post a Gig
+              </button>
+            </Link>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {gigs.map((gig) => (
+              <div
+                key={gig.id}
+                className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm hover:shadow-lg hover:border-gray-300 transition-all group"
+              >
+                {/* Gig Header */}
+                <div className="p-6 border-b border-gray-100">
+                  <div className="flex justify-between items-start gap-4">
+                    <div className="flex-1">
+                      <h2 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-black transition-colors line-clamp-2">
+                        {gig.title}
+                      </h2>
+                      <div className="flex items-center gap-4 flex-wrap">
+                        <div className="flex items-center text-sm text-gray-600">
+                          <Clock className="h-4 w-4 mr-1.5" />
+                          {formatDeadline(gig.deadline)}
+                        </div>
+                        <span
+                          className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-colors
+                            ${
+                              gig.status === 'completed'
+                                ? 'bg-gray-200 text-gray-700'
+                                : gig.status === 'progress'
+                                ? 'bg-gray-100 text-gray-700'
+                                : 'bg-gray-50 text-gray-600 border border-gray-200'
+                            }`}
+                        >
+                          {gig.status.charAt(0).toUpperCase() +
+                            gig.status.slice(1)}
+                        </span>
+                      </div>
+                    </div>
+
+                    {gig.workStatus === true && (
+                      <button
+                        onClick={() => setPaymentInfoDialogOpen(true)}
+                        className="flex items-center gap-2 px-4 py-2.5 bg-black text-white rounded-lg font-semibold hover:bg-gray-900 transition-colors shadow-sm cursor-pointer whitespace-nowrap"
+                      >
+                        <CreditCard className="h-5 w-5" />
+                        <span>Pay Now</span>
+                      </button>
+                    )}
+                  </div>
+                </div>
+
+                {/* Gig Content */}
+                <div className="p-6">
+                  {/* Pending State */}
+                  {gig.status === 'pending' && !gig.freelancerId && (
+                    <div className="flex items-center justify-between gap-4 flex-wrap">
+                      <div className="flex items-center text-gray-700 font-medium">
+                        <Users className="h-5 w-5 mr-2 text-gray-500" />
+                        <span>Waiting for freelancers to apply</span>
+                      </div>
+                      <Link
+                        href={`/applied-freelancers/${gig.id}`}
+                        className="flex items-center gap-2 px-4 py-2.5 bg-gray-100 text-gray-900 rounded-lg font-semibold hover:bg-gray-200 transition-colors cursor-pointer"
+                      >
+                        <Eye className="h-4 w-4" />
+                        <span>View Applicants</span>
+                      </Link>
+                    </div>
+                  )}
+
+                  {/* Assigned State */}
+                  {(gig.status === 'pending' || gig.status === 'progress') &&
+                    gig.freelancerId && (
+                      <div className="flex items-center justify-between gap-4 flex-wrap">
+                        <div className="flex items-center gap-3">
+                          <Image
+                            src={
+                              freelancers[gig.freelancerId]?.profilePicture ||
+                              '/default-avatar.png'
+                            }
+                            alt={
+                              freelancers[gig.freelancerId]?.name ||
+                              'Freelancer'
+                            }
+                            width={44}
+                            height={44}
+                            className="rounded-full object-cover border-2 border-gray-200"
+                          />
+                          <div>
+                            <p className="text-xs text-gray-600 font-medium">
+                              {gig.status === 'pending'
+                                ? 'Assigned to'
+                                : 'In progress with'}
+                            </p>
+                            <p className="font-bold text-gray-900">
+                              {freelancers[gig.freelancerId]?.name}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                  {/* Completed State */}
+                  {gig.status === 'completed' && (
+                    <div className="flex items-center justify-between gap-4 flex-wrap">
+                      <div className="flex items-center gap-3">
+                        <Image
+                          src={
+                            freelancers[gig.freelancerId || '']
+                              ?.profilePicture || '/default-avatar.png'
+                          }
+                          alt={
+                            freelancers[gig.freelancerId || '']?.name ||
+                            'Freelancer'
+                          }
+                          width={44}
+                          height={44}
+                          className="rounded-full object-cover border-2 border-gray-200"
+                        />
+                        <div>
+                          <p className="text-xs text-gray-600 font-medium">
+                            Completed by
+                          </p>
+                          <p className="font-bold text-gray-900">
+                            {freelancers[gig.freelancerId || '']?.name}
+                          </p>
+                          <p className="text-xs text-gray-500 mt-0.5">
+                            {gig.workStatus
+                              ? 'Work approved'
+                              : 'Awaiting approval'}
+                          </p>
+                        </div>
+                      </div>
+
+                      {!gig.workStatus && (
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() => handleApprove(gig.id)}
+                            className="flex items-center gap-2 px-4 py-2.5 border-2 border-gray-300 text-gray-900 rounded-lg font-semibold hover:bg-gray-50 hover:border-gray-400 transition-all cursor-pointer"
+                          >
+                            <CheckCircle className="h-4 w-4" />
+                            <span>Approve</span>
+                          </button>
+                          <button className="flex items-center gap-2 px-4 py-2.5 border-2 border-gray-300 text-gray-900 rounded-lg font-semibold hover:bg-gray-50 hover:border-gray-400 transition-all cursor-pointer">
+                            <AlertCircle className="h-4 w-4" />
+                            <span>Reject</span>
+                          </button>
+                        </div>
+                      )}
+                    </div>
                   )}
                 </div>
               </div>
+            ))}
+          </div>
+        )}
 
-              {/* Gig Content */}
-              <div className="p-6">
-                {/* Pending State */}
-                {gig.status === 'pending' && !gig.freelancerId && (
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center text-gray-600">
-                      <Users className="h-5 w-5 mr-2" />
-                      <span>Waiting for freelancers to apply</span>
-                    </div>
-                    <Link
-                      href={`/applied-freelancers/${gig.id}`}
-                      className="flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 
-                        rounded-lg hover:bg-gray-200 transition-colors duration-200"
-                    >
-                      <Eye className="h-4 w-4" />
-                      <span className="font-medium">View Applicants</span>
-                    </Link>
-                  </div>
-                )}
-
-                {/* Assigned State */}
-                {(gig.status === 'pending' || gig.status === 'progress') && gig.freelancerId && (
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                    <p className="text-sm text-gray-600">
-                          {gig.status === 'pending' ? 'Assigned to' : 'Working on this gig'}
-                        </p>
-                      <Image
-                        src={freelancers[gig.freelancerId]?.profilePicture || '/default-avatar.png'}
-                        alt={freelancers[gig.freelancerId]?.name || 'Freelancer'}
-                        width={40}
-                        height={40}
-                        className="rounded-full object-cover border border-gray-200"
-                      />
-                      <div>
-                        <p className="font-medium text-gray-900">
-                          {freelancers[gig.freelancerId]?.name}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* Completed State */}
-                {gig.status === 'completed' && (
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <Image
-                        src={freelancers[gig.freelancerId || '']?.profilePicture || '/default-avatar.png'}
-                        alt={freelancers[gig.freelancerId || '']?.name || 'Freelancer'}
-                        width={40}
-                        height={40}
-                        className="rounded-full object-cover border border-gray-200"
-                      />
-                      <div>
-                        <p className="font-medium text-gray-900">
-                          {freelancers[gig.freelancerId || '']?.name}
-                        </p>
-                        <p className="text-sm text-gray-600">
-                          {gig.workStatus ? 'Work approved' : 'Completed work'}
-                        </p>
-                      </div>
-                    </div>
-
-                    {!gig.workStatus && (
-                      <div className="flex gap-3">
-                        <button
-                          onClick={() => handleApprove(gig.id)}
-                          className="flex items-center gap-2 px-4 py-2 border-2 border-green-500 text-green-600 
-                            rounded hover:bg-green-50 bg-transparent transition-colors duration-200"
-                        >
-                          <CheckCircle className="h-4 w-4" />
-                          <span className="font-medium">Approve</span>
-                        </button>
-                        <button
-                          className="flex items-center gap-2 px-4 py-2 border-2 border-red-500 text-red-600 
-                            rounded hover:bg-red-50 bg-transparent transition-colors duration-200"
-                        >
-                          <AlertCircle className="h-4 w-4" />
-                          <span className="font-medium">Reject</span>
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-
-      <PaymentInfoDialog
-        isOpen={paymentInfoDialogOpen}
-        onClose={() => setPaymentInfoDialogOpen(false)}
-        freelancerId={gigs.find(g => g.workStatus)?.freelancerId || ''}
-      />
+        <PaymentInfoDialog
+          isOpen={paymentInfoDialogOpen}
+          onClose={() => setPaymentInfoDialogOpen(false)}
+          freelancerId={gigs.find((g) => g.workStatus)?.freelancerId || ''}
+        />
+      </div>
     </div>
   )
 }
