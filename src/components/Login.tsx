@@ -16,16 +16,7 @@ import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import loginBg from '../../public/loginbg.jpg'
 import logoImg from '../../public/logoImg.png'
-import {
-  Lock,
-  LockKeyholeIcon,
-  Mail,
-  ArrowLeft,
-  CheckCircle2,
-  Loader2,
-  Eye,
-  EyeOff,
-} from 'lucide-react'
+import { Lock, LockKeyholeIcon, Mail, Loader2, Eye, EyeOff } from 'lucide-react'
 import { useState } from 'react'
 import toast from 'react-hot-toast'
 
@@ -85,7 +76,7 @@ const Login: React.FC = () => {
         return
       }
 
-      toast.success('Logged in successfully')
+      toast.success('Logged in successfully.')
       router.replace('/')
     } catch (error) {
       console.error('Authentication error:', error)

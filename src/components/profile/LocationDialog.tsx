@@ -11,6 +11,7 @@ import { firestore } from '@/utils/firebase'
 import { doc, updateDoc } from 'firebase/firestore'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
+import toast from 'react-hot-toast'
 
 interface LocationDialogProps {
   isOpen: boolean
@@ -41,7 +42,7 @@ const LocationDialog: React.FC<LocationDialogProps> = ({ isOpen, onClose }) => {
         })
 
         setLocation('') // Clear the input after successful submission
-        alert('Location added successfully!')
+        toast.success('Location added successfully!')
 
         // Reload the window to reflect changes
         window.location.reload()
@@ -49,10 +50,10 @@ const LocationDialog: React.FC<LocationDialogProps> = ({ isOpen, onClose }) => {
         onClose() // Close the dialog after submission
       } catch (error) {
         console.error('Error updating document: ', error)
-        alert('Failed to update location. Please try again.')
+        toast.error('Failed to update location. Please try again.')
       }
     } else {
-      alert("Please enter a valid location or ensure you're logged in.")
+      toast.error("Location can't be empty.")
     }
   }
 
@@ -77,7 +78,7 @@ const LocationDialog: React.FC<LocationDialogProps> = ({ isOpen, onClose }) => {
         <div className="mt-6 flex justify-end">
           <Button
             onClick={handleSubmit}
-            className="bg-black text-white px-6 py-2 rounded hover:bg-gray-800"
+            className="bg-black text-white px-6 py-2 rounded hover:bg-gray-800 cursor-pointer"
           >
             Add Location
           </Button>

@@ -188,11 +188,22 @@ const Register: React.FC = () => {
                 <Input
                   type="email"
                   placeholder="you@example.com"
-                  {...register('email')}
+                  {...register('email', {
+                    required: 'Email is required',
+                    pattern: {
+                      value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                      message: 'Enter a valid email address',
+                    },
+                  })}
                   disabled={emailLoading}
                   className="h-10 rounded-full bg-gray-50 border-gray-100
                          focus:bg-white focus:border-black focus:ring-0"
                 />
+                {errors.email && (
+                  <p className="text-xs text-red-500 mt-1">
+                    {errors.email.message}
+                  </p>
+                )}
               </div>
               {/* Password */}
               <div className="space-y-1.5">
@@ -204,7 +215,13 @@ const Register: React.FC = () => {
                   <Input
                     type={showPassword ? 'text' : 'password'}
                     placeholder="Create a strong password"
-                    {...register('password')}
+                    {...register('password', {
+                      required: 'Password is required',
+                      minLength: {
+                        value: 6,
+                        message: 'Password must be at least 6 characters',
+                      },
+                    })}
                     disabled={emailLoading}
                     className="h-10 pr-11 rounded-full bg-gray-50 border-gray-100
                            focus:bg-white focus:border-black focus:ring-0"
@@ -212,7 +229,7 @@ const Register: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+                    className="absolute right-3 top-1/3 text-gray-500"
                     tabIndex={-1}
                   >
                     {showPassword ? (
@@ -221,6 +238,11 @@ const Register: React.FC = () => {
                       <Eye className="w-4 h-4" />
                     )}
                   </button>
+                  {errors.password && (
+                    <p className="text-xs text-red-500 mt-1">
+                      {errors.password.message}
+                    </p>
+                  )}
                 </div>
               </div>
 
@@ -234,15 +256,18 @@ const Register: React.FC = () => {
                   <Input
                     type={showConfirmPassword ? 'text' : 'password'}
                     placeholder="Confirm your password"
-                    {...register('confirmPassword')}
+                    {...register('confirmPassword', {
+                      required: 'Please confirm your password',
+                    })}
                     disabled={emailLoading}
                     className="h-10 pr-11 rounded-full bg-gray-50 border-gray-100
                            focus:bg-white focus:border-black focus:ring-0"
                   />
+
                   <button
                     type="button"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+                    className="absolute right-3 top-1/3 text-gray-500"
                     tabIndex={-1}
                   >
                     {showConfirmPassword ? (
@@ -251,6 +276,11 @@ const Register: React.FC = () => {
                       <Eye className="w-4 h-4" />
                     )}
                   </button>
+                  {errors.confirmPassword && (
+                    <p className="text-xs text-red-500 mt-1">
+                      {errors.confirmPassword.message}
+                    </p>
+                  )}
                 </div>
               </div>
 

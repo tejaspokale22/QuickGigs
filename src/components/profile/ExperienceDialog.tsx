@@ -11,6 +11,7 @@ import { firestore } from '@/utils/firebase'
 import { doc, updateDoc } from 'firebase/firestore'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
+import toast from 'react-hot-toast'
 
 interface ExperienceDialogProps {
   isOpen: boolean
@@ -44,7 +45,7 @@ const ExperienceDialog: React.FC<ExperienceDialogProps> = ({
         })
 
         setExperience('') // Clear the input after successful submission
-        alert('Experience added successfully!')
+        toast.success('Experience added successfully.')
 
         // Reload the window to reflect changes
         window.location.reload()
@@ -52,10 +53,10 @@ const ExperienceDialog: React.FC<ExperienceDialogProps> = ({
         onClose() // Close the dialog after submission
       } catch (error) {
         console.error('Error updating document: ', error)
-        alert('Failed to update experience. Please try again.')
+        toast.error('Failed to update experience. Please try again.')
       }
     } else {
-      alert("Please enter a valid experience or ensure you're logged in.")
+      toast.error('Experience cannot be empty.')
     }
   }
 
@@ -80,7 +81,7 @@ const ExperienceDialog: React.FC<ExperienceDialogProps> = ({
         <div className="mt-6 flex justify-end">
           <Button
             onClick={handleSubmit}
-            className="bg-black text-white px-6 py-2 rounded hover:bg-gray-800"
+            className="bg-black text-white px-6 py-2 rounded hover:bg-gray-800 cursor-pointer"
           >
             Add Experience
           </Button>

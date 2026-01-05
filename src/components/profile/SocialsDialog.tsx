@@ -16,6 +16,7 @@ import Linkedin from '../../../public/linkedin.svg'
 import Instagram from '../../../public/instagram.svg'
 import Github from '../../../public/github.svg'
 import X from '../../../public/X.svg'
+import toast from 'react-hot-toast'
 
 interface SocialsDialogProps {
   isOpen: boolean
@@ -58,18 +59,15 @@ const SocialsDialog: React.FC<SocialsDialogProps> = ({ isOpen, onClose }) => {
           twitter: '',
           website: '',
         }) // Clear the inputs after successful submission
-        alert('Socials added successfully!')
-
-        // Reload the window to reflect changes
-        window.location.reload()
+        toast.success('Socials added successfully.')
 
         onClose() // Close the dialog after submission
       } catch (error) {
         console.error('Error updating document: ', error)
-        alert('Failed to update socials. Please try again.')
+        toast.error('Failed to update socials. Please try again.')
       }
     } else {
-      alert("Please ensure you're logged in.")
+      toast.error("Please ensure you're logged in.")
     }
   }
 
@@ -78,7 +76,7 @@ const SocialsDialog: React.FC<SocialsDialogProps> = ({ isOpen, onClose }) => {
       <DialogContent className="w-full max-w-md bg-white p-6 rounded-lg shadow-lg">
         <DialogHeader>
           <DialogTitle className="text-xl font-semibold text-gray-800">
-            Add Social Media Links
+            Connect
           </DialogTitle>
         </DialogHeader>
 
@@ -157,7 +155,7 @@ const SocialsDialog: React.FC<SocialsDialogProps> = ({ isOpen, onClose }) => {
         <div className="mt-6 flex justify-end">
           <Button
             onClick={handleSubmit}
-            className="bg-black text-white px-6 py-2 rounded hover:bg-gray-800"
+            className="bg-black text-white px-6 py-2 rounded hover:bg-gray-800 cursor-pointer"
           >
             Add Socials
           </Button>

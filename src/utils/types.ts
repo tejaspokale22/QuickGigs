@@ -47,9 +47,9 @@ export type Chat = {
 
 export type PaymentInfo = {
   upiId?: string
-  bankDetails?: {
-    accountHolder: string
-    accountNo: string
-    ifsc: string
+  qrCode?: {
+    fileId: string
+    fileUrl: string
+    uploadedAt?: string
   }
 }

@@ -1,16 +1,17 @@
 'use client'
 
-import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import Logo from './Logo'
-import ProfileDropdown from './ProfileDropdown'
-import { auth, signOut } from '@/utils/firebase'
-import { onAuthStateChanged, User } from 'firebase/auth'
-import logoImg from '../../public/logoImg.png'
-import { toast } from 'react-hot-toast'
 import { useRouter } from 'next/navigation'
 import { Bell } from 'lucide-react'
+import { signOut } from 'firebase/auth'
+import { toast } from 'react-hot-toast'
+
+import { auth } from '@/utils/firebase'
+import { useAuth } from '@/context/AuthContext'
+import Logo from './Logo'
+import ProfileDropdown from './ProfileDropdown'
+import logoImg from '../../public/logoImg.png'
 
 const NAV_LINKS = [
   { href: '/', label: 'Home' },
@@ -33,59 +34,13 @@ const AUTH_LINKS = [
 ]
 
 const Header = () => {
-  const [user, setUser] = useState<User | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
+  const { user } = useAuth()
   const router = useRouter()
-
-  useEffect(() => {
-    if (typeof window === 'undefined') return
-
-    const savedUser = localStorage.getItem('userData')
-    if (savedUser) {
-      setUser(JSON.parse(savedUser) as User)
-    }
-  }, [])
-
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser)
-
-      if (typeof window !== 'undefined') {
-        if (currentUser) {
-          localStorage.setItem(
-            'userData',
-            JSON.stringify({
-              displayName: currentUser.displayName,
-              photoURL: currentUser.photoURL,
-              email: currentUser.email,
-              uid: currentUser.uid,
-            }),
-          )
-          localStorage.setItem('uid', currentUser.uid)
-        } else {
-          localStorage.removeItem('userData')
-          localStorage.removeItem('uid')
-        }
-      }
-
-      setIsLoading(false)
-    })
-
-    return () => unsubscribe()
-  }, [])
 
   const handleLogout = async () => {
     try {
       await signOut(auth)
-
-      if (typeof window !== 'undefined') {
-        localStorage.removeItem('userData')
-        localStorage.removeItem('uid')
-        localStorage.removeItem('isAuthenticated')
-      }
-
-      toast.success('Logged out successfully')
-
+      toast.success('Logged out successfully.')
       router.replace('/login')
     } catch (error) {
       console.error('Error signing out:', error)
@@ -112,45 +67,42 @@ const Header = () => {
             <Logo />
           </Link>
 
-          {!isLoading && (
-            <nav className="hidden md:flex items-center gap-1">
-              {NAV_LINKS.map(({ href, label }) => (
-                <Link
-                  key={href}
-                  href={href}
-                  className="px-3 py-2 text-medium font-medium text-gray-700 hover:text-black hover:bg-gray-200 rounded-md"
-                >
-                  {label}
-                </Link>
-              ))}
-            </nav>
-          )}
+          <nav className="hidden md:flex items-center gap-1">
+            {NAV_LINKS.map(({ href, label }) => (
+              <Link
+                key={href}
+                href={href}
+                className="px-3 py-2 text-medium font-medium text-gray-700 hover:text-black hover:bg-gray-200 rounded-md"
+              >
+                {label}
+              </Link>
+            ))}
+          </nav>
         </div>
 
         {/* Right */}
-        {!isLoading && (
-          <div className="flex items-center gap-3">
-            {user ? (
-              <>
-                <Link
-                  href="/notifications"
-                  className="relative p-2 rounded-xl hover:bg-gray-100 transition-colors group"
-                >
-                  <Bell className="h-5 w-5 text-gray-700 group-hover:text-black" />
+        <div className="flex items-center gap-3">
+          {user ? (
+            <>
+              <Link
+                href="/notifications"
+                className="relative p-2 rounded-xl hover:bg-gray-100 transition-colors group"
+              >
+                <Bell className="h-5 w-5 text-gray-700 group-hover:text-black" />
+              </Link>
+
+              <ProfileDropdown user={user} handleLogout={handleLogout} />
+            </>
+          ) : (
+            <div className="flex items-center gap-2">
+              {AUTH_LINKS.map(({ href, label, className }) => (
+                <Link key={href} href={href} className={className}>
+                  {label}
                 </Link>
-                <ProfileDropdown user={user} handleLogout={handleLogout} />
-              </>
-            ) : (
-              <div className="flex items-center gap-2">
-                {AUTH_LINKS.map(({ href, label, className }) => (
-                  <Link key={href} href={href} className={className}>
-                    {label}
-                  </Link>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </header>
   )

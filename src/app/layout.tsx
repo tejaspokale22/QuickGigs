@@ -3,11 +3,13 @@ import '@/app/globals.css'
 import { Poppins } from 'next/font/google'
 import NextTopLoader from 'nextjs-toploader'
 import { Toaster } from 'react-hot-toast'
+
 import Header from '@/components/Header'
 import LayoutWrapper from '@/components/LayoutWrapper'
 import { AuthProvider } from '@/context/AuthContext'
+import AuthGate from '@/components/AuthGate'
 
-// App-level metadata
+// Metadata
 export const metadata: Metadata = {
   title: 'QuickGigs',
   description: 'Freelancing Platform for Students and Beginners.',
@@ -16,7 +18,7 @@ export const metadata: Metadata = {
   },
 }
 
-// Google Font configuration
+// Font
 const poppins = Poppins({
   subsets: ['latin'],
   weight: ['400', '500', '600', '700'],
@@ -25,33 +27,36 @@ const poppins = Poppins({
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode
-}>) {
+}) {
   return (
-    <html>
+    <html lang="en">
       <body className={poppins.className}>
         <AuthProvider>
-          <Header />
-          <Toaster
-            position="top-center"
-            toastOptions={{
-              duration: 3500,
-              style: {
-                zIndex: 9999,
-              },
-            }}
-          />
-          <NextTopLoader
-            color="#000000"
-            height={4}
-            crawl
-            showSpinner={false}
-            speed={300}
-          />
-          <main>
-            <LayoutWrapper>{children}</LayoutWrapper>
-          </main>
+          <AuthGate>
+            <Header />
+
+            <Toaster
+              position="top-center"
+              toastOptions={{
+                duration: 3500,
+                style: { zIndex: 9999 },
+              }}
+            />
+
+            <NextTopLoader
+              color="#000000"
+              height={4}
+              crawl
+              showSpinner={false}
+              speed={300}
+            />
+
+            <main>
+              <LayoutWrapper>{children}</LayoutWrapper>
+            </main>
+          </AuthGate>
         </AuthProvider>
       </body>
     </html>

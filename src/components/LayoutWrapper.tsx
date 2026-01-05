@@ -21,6 +21,8 @@ export default function LayoutWrapper({
     '/applied-gigs',
     '/completed-gigs',
     '/payment-details',
+    '/dashboard',
+    '/profile',
   ]
 
   // Check if current path starts with any of the allowed routes

@@ -6,11 +6,12 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import React, { useState, useEffect } from 'react'
-import { Phone } from 'lucide-react' // Import Phone icon from lucide-react
+import { Phone } from 'lucide-react'
 import { firestore } from '@/utils/firebase'
 import { doc, updateDoc } from 'firebase/firestore'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
+import toast from 'react-hot-toast'
 
 interface ContactDialogProps {
   isOpen: boolean
@@ -41,7 +42,7 @@ const ContactDialog: React.FC<ContactDialogProps> = ({ isOpen, onClose }) => {
         })
 
         setContact('') // Clear the input after successful submission
-        alert('Contact added successfully!')
+        toast.success('Contact added successfully!')
 
         // Reload the window to reflect changes
         window.location.reload()
@@ -49,10 +50,10 @@ const ContactDialog: React.FC<ContactDialogProps> = ({ isOpen, onClose }) => {
         onClose() // Close the dialog after submission
       } catch (error) {
         console.error('Error updating document: ', error)
-        alert('Failed to update contact. Please try again.')
+        toast.error('Failed to update contact. Please try again.')
       }
     } else {
-      alert("Please enter a valid contact or ensure you're logged in.")
+      toast.error("Contact can't be empty.")
     }
   }
 
@@ -77,7 +78,7 @@ const ContactDialog: React.FC<ContactDialogProps> = ({ isOpen, onClose }) => {
         <div className="mt-6 flex justify-end">
           <Button
             onClick={handleSubmit}
-            className="bg-black text-white px-6 py-2 rounded hover:bg-gray-800"
+            className="bg-black text-white px-6 py-2 rounded hover:bg-gray-800 cursor-pointer"
           >
             Add Contact
           </Button>

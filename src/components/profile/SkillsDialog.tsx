@@ -10,6 +10,8 @@ import { firestore } from '@/utils/firebase'
 import { doc, updateDoc, getDoc } from 'firebase/firestore'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
+import toast from 'react-hot-toast'
+import { X } from 'lucide-react' // Import X icon for remove button
 
 interface SkillsDialogProps {
   isOpen: boolean
@@ -49,6 +51,10 @@ const SkillsDialog: React.FC<SkillsDialogProps> = ({ isOpen, onClose }) => {
   }, [uid])
 
   const handleAddSkill = () => {
+    if (newSkill.length == 0) {
+      toast.error('Skill cannot be empty.')
+      return
+    }
     if (newSkill.trim() && !skills.includes(newSkill.trim())) {
       setSkills((prevSkills) => [...prevSkills, newSkill.trim()])
       setNewSkill('') // Clear input after adding
@@ -71,14 +77,14 @@ const SkillsDialog: React.FC<SkillsDialogProps> = ({ isOpen, onClose }) => {
           skills: skills, // Save the skills array
         })
 
-        alert('Skills updated successfully!')
+        toast.success('Skills updated successfully!')
         onClose() // Close the dialog after submission
       } catch (error) {
         console.error('Error updating skills:', error)
-        alert('Failed to update skills. Please try again.')
+        toast.error('Failed to update skills. Please try again.')
       }
     } else {
-      alert('Please enter at least one skill.')
+      toast.error('Please enter at least one skill.')
     }
   }
 
@@ -100,14 +106,13 @@ const SkillsDialog: React.FC<SkillsDialogProps> = ({ isOpen, onClose }) => {
           />
           <Button
             onClick={handleAddSkill}
-            className="mt-2 bg-black text-white px-6 py-2 rounded hover:bg-gray-800"
+            className="mt-2 bg-black text-white px-6 py-2 rounded hover:bg-gray-800 cursor-pointer"
           >
             Add Skill
           </Button>
         </div>
 
-        <div className="mt-4">
-          <h3 className="text-lg font-semibold">Current Skills:</h3>
+        <div className="mt-2">
           <ul className="mt-2">
             {skills.map((skill, index) => (
               <li key={index} className="flex justify-between items-center">
@@ -115,18 +120,19 @@ const SkillsDialog: React.FC<SkillsDialogProps> = ({ isOpen, onClose }) => {
                 <button
                   onClick={() => handleRemoveSkill(skill)}
                   className="text-gray-500 hover:text-gray-700"
+                  title="remove"
                 >
-                  Remove
+                  <X size={16} />
                 </button>
               </li>
             ))}
           </ul>
         </div>
 
-        <div className="mt-6 flex justify-end">
+        <div className="flex justify-end">
           <Button
             onClick={handleSubmit}
-            className="bg-black text-white px-6 py-2 rounded hover:bg-gray-800"
+            className="bg-black text-white px-6 py-2 rounded hover:bg-gray-800 cursor-pointer"
           >
             Save Skills
           </Button>

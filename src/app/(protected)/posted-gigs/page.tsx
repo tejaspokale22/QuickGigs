@@ -20,8 +20,10 @@ import {
 import PaymentInfoDialog from '@/components/payment/paymentInfoDialog'
 import Spinner from '@/components/ui/spinner'
 import { approve } from '@/utils/actions/gigActions'
+import { useAuth } from '@/context/AuthContext'
 
 export default function PostedGigsPage() {
+  const { user } = useAuth()
   const [gigs, setGigs] = useState<Gig[]>([])
   const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<string | null>(null)
@@ -42,9 +44,8 @@ export default function PostedGigsPage() {
   }
 
   useEffect(() => {
-    const clientId = localStorage.getItem('uid')
-    if (!clientId) {
-      setError('User ID not found. Please log in.')
+    if (!user?.uid) {
+      setError('User not authenticated. Please log in.')
       setLoading(false)
       return
     }
@@ -52,7 +53,7 @@ export default function PostedGigsPage() {
     setLoading(true)
     const gigsQuery = query(
       collection(firestore, 'gigs'),
-      where('clientId', '==', clientId),
+      where('clientId', '==', user.uid),
     )
 
     const unsubscribe = onSnapshot(
@@ -88,12 +89,20 @@ export default function PostedGigsPage() {
     )
 
     return () => unsubscribe()
-  }, [])
+  }, [user])
 
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen bg-gray-50">
         <Spinner />
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="flex justify-center items-center min-h-screen bg-gray-50">
+        <p className="text-red-500 text-sm font-semibold">{error}</p>
       </div>
     )
   }
@@ -122,8 +131,34 @@ export default function PostedGigsPage() {
     },
   ]
 
+  const statusStyles: Record<
+    string,
+    { bg: string; text: string; label: string }
+  > = {
+    pending: {
+      bg: 'bg-amber-50 border-amber-100',
+      text: 'text-amber-800',
+      label: 'Pending',
+    },
+    progress: {
+      bg: 'bg-blue-50 border-blue-100',
+      text: 'text-blue-800',
+      label: 'In Progress',
+    },
+    completed: {
+      bg: 'bg-emerald-50 border-emerald-100',
+      text: 'text-emerald-800',
+      label: 'Completed',
+    },
+    default: {
+      bg: 'bg-gray-50 border-gray-200',
+      text: 'text-gray-800',
+      label: 'Pending',
+    },
+  }
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white pt-20">
+    <div className="min-h-screen bg-linear-to-b from-gray-50 to-white py-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-8">
@@ -134,13 +169,13 @@ export default function PostedGigsPage() {
         </div>
 
         {/* Stats Section */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
           {stats.map((stat, index) => {
             const Icon = stat.icon
             return (
               <div
                 key={index}
-                className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm hover:shadow-md hover:border-gray-300 transition-all"
+                className="bg-white rounded-2xl border border-gray-200/80 p-6 shadow-sm hover:shadow-lg hover:border-gray-300 transition-all"
               >
                 <div className="flex items-center gap-4">
                   <div className={`${stat.bgColor} p-3 rounded-lg`}>
@@ -162,7 +197,7 @@ export default function PostedGigsPage() {
 
         {/* Gigs List */}
         {gigs.length === 0 ? (
-          <div className="text-center py-16 bg-white rounded-xl border border-gray-200">
+          <div className="text-center py-16 bg-white rounded-2xl border border-dashed border-gray-300">
             <Briefcase className="h-14 w-14 text-gray-400 mx-auto mb-4" />
             <h3 className="text-xl font-bold text-gray-900 mb-2">
               No gigs posted yet
@@ -177,37 +212,48 @@ export default function PostedGigsPage() {
             </Link>
           </div>
         ) : (
-          <div className="space-y-4">
+          <div className="space-y-5">
             {gigs.map((gig) => (
               <div
                 key={gig.id}
-                className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm hover:shadow-lg hover:border-gray-300 transition-all group"
+                className="bg-white rounded-2xl border border-gray-200/80 overflow-hidden shadow-sm hover:shadow-xl hover:border-gray-300 transition-all group"
               >
                 {/* Gig Header */}
-                <div className="p-6 border-b border-gray-100">
-                  <div className="flex justify-between items-start gap-4">
-                    <div className="flex-1">
-                      <h2 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-black transition-colors line-clamp-2">
-                        {gig.title}
-                      </h2>
-                      <div className="flex items-center gap-4 flex-wrap">
-                        <div className="flex items-center text-sm text-gray-600">
-                          <Clock className="h-4 w-4 mr-1.5" />
-                          {formatDeadline(gig.deadline)}
-                        </div>
+                <div className="p-6 border-b border-gray-100 bg-linear-to-r from-white to-gray-50">
+                  <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                    <div className="flex-1 space-y-2">
+                      <div className="flex items-center gap-3 flex-wrap">
+                        <h2 className="text-xl font-bold text-gray-900 group-hover:text-black transition-colors line-clamp-2">
+                          {gig.title}
+                        </h2>
                         <span
-                          className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-colors
-                            ${
-                              gig.status === 'completed'
-                                ? 'bg-gray-200 text-gray-700'
-                                : gig.status === 'progress'
-                                ? 'bg-gray-100 text-gray-700'
-                                : 'bg-gray-50 text-gray-600 border border-gray-200'
-                            }`}
+                          className={`px-3 py-1 rounded-full text-xs font-semibold border ${
+                            (statusStyles[gig.status] || statusStyles.default)
+                              .bg
+                          } ${
+                            (statusStyles[gig.status] || statusStyles.default)
+                              .text
+                          }`}
                         >
-                          {gig.status.charAt(0).toUpperCase() +
-                            gig.status.slice(1)}
+                          {
+                            (statusStyles[gig.status] || statusStyles.default)
+                              .label
+                          }
                         </span>
+                      </div>
+                      <div className="flex items-center gap-4 flex-wrap text-sm text-gray-600">
+                        <div className="flex items-center">
+                          <Clock className="h-4 w-4 mr-1.5" />
+                          <span>Deadline: {formatDeadline(gig.deadline)}</span>
+                        </div>
+                        <div className="flex items-center">
+                          <Users className="h-4 w-4 mr-1.5" />
+                          <span>
+                            {gig.freelancerId
+                              ? 'Freelancer assigned'
+                              : 'Awaiting assignment'}
+                          </span>
+                        </div>
                       </div>
                     </div>
 
@@ -224,10 +270,10 @@ export default function PostedGigsPage() {
                 </div>
 
                 {/* Gig Content */}
-                <div className="p-6">
+                <div className="p-6 space-y-4">
                   {/* Pending State */}
                   {gig.status === 'pending' && !gig.freelancerId && (
-                    <div className="flex items-center justify-between gap-4 flex-wrap">
+                    <div className="flex items-center justify-between gap-4 flex-wrap bg-gray-50 rounded-xl px-4 py-3 border border-gray-100">
                       <div className="flex items-center text-gray-700 font-medium">
                         <Users className="h-5 w-5 mr-2 text-gray-500" />
                         <span>Waiting for freelancers to apply</span>
@@ -245,7 +291,7 @@ export default function PostedGigsPage() {
                   {/* Assigned State */}
                   {(gig.status === 'pending' || gig.status === 'progress') &&
                     gig.freelancerId && (
-                      <div className="flex items-center justify-between gap-4 flex-wrap">
+                      <div className="flex items-center justify-between gap-4 flex-wrap bg-gray-50 rounded-xl px-4 py-3 border border-gray-100">
                         <div className="flex items-center gap-3">
                           <Image
                             src={
@@ -276,7 +322,7 @@ export default function PostedGigsPage() {
 
                   {/* Completed State */}
                   {gig.status === 'completed' && (
-                    <div className="flex items-center justify-between gap-4 flex-wrap">
+                    <div className="flex items-center justify-between gap-4 flex-wrap bg-gray-50 rounded-xl px-4 py-3 border border-gray-100">
                       <div className="flex items-center gap-3">
                         <Image
                           src={

@@ -1,5 +1,5 @@
-import React from "react";
-import { Medal } from "lucide-react";
+import React from 'react'
+import { Medal } from 'lucide-react'
 
 const RightSidebar: React.FC = () => {
   return (
@@ -51,7 +51,7 @@ const RightSidebar: React.FC = () => {
         </button>
       </div>
     </aside>
-  );
-};
+  )
+}
 
-export default RightSidebar;
+export default RightSidebar
