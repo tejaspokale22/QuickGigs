@@ -1,8 +1,6 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-hot-toast'
-import { auth } from '@/utils/firebase'
-import { onAuthStateChanged } from 'firebase/auth'
 import {
   Dialog,
   DialogContent,
@@ -18,6 +16,7 @@ import { postGig } from '@/utils/actions/gigActions'
 import { Timestamp } from 'firebase/firestore'
 import { Upload, X, Loader2 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
+import { useAuth } from '@/context/AuthContext'
 
 type GigFormInputs = {
   title: string
@@ -42,16 +41,9 @@ export default function GigForm({ isOpen, onClose }: GigFormProps) {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([])
   const [selectedSkills, setSelectedSkills] = useState<string[]>([])
   const [searchSkill, setSearchSkill] = useState('')
-  const [isSubmitting, setIsSubmitting] = useState(true)
-  const [user, setUser] = useState<any>(null)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const { user } = useAuth()
   const router = useRouter()
-
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser)
-    })
-    return () => unsubscribe()
-  }, [])
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files
@@ -69,7 +61,7 @@ export default function GigForm({ isOpen, onClose }: GigFormProps) {
       setIsSubmitting(true)
 
       if (!user) {
-        toast.error('Not authenticated')
+        toast.error('Please log in to post a gig')
         return
       }
 
@@ -290,7 +282,7 @@ export default function GigForm({ isOpen, onClose }: GigFormProps) {
                           className="flex items-center justify-between bg-gray-50 p-3 rounded-lg border border-gray-200 group"
                         >
                           <div className="flex items-center gap-2 flex-1 min-w-0">
-                            <Upload className="h-4 w-4 text-gray-400 flex-shrink-0" />
+                            <Upload className="h-4 w-4 text-gray-400 shrink-0" />
                             <div className="min-w-0">
                               <p className="text-sm font-medium text-gray-900 truncate">
                                 {file.name}
@@ -303,7 +295,7 @@ export default function GigForm({ isOpen, onClose }: GigFormProps) {
                           <button
                             type="button"
                             onClick={() => removeFile(index)}
-                            className="ml-2 p-1 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors flex-shrink-0"
+                            className="ml-2 p-1 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors shrink-0"
                             title="Remove file"
                           >
                             <X className="h-4 w-4" />
